@@ -1,0 +1,281 @@
+package com.bmqa.brac.fitnesstracker.features.imagepicker
+
+import android.Manifest
+import android.content.Context
+import android.net.Uri
+import android.os.Build
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import android.content.pm.PackageManager
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
+
+@Composable
+fun ImagePicker(
+    onImageSelected: (Uri) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    var showPictureDialog by remember { mutableStateOf(false) }
+    var showPermissionDialog by remember { mutableStateOf(false) }
+    var permissionType by remember { mutableStateOf("") }
+    
+    // Camera launcher
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            // The URI was already set when launching the camera
+            // onImageSelected will be called from the callback
+        }
+    }
+    
+    // Gallery launcher
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let { 
+            onImageSelected(it)
+        }
+    }
+    
+    // Permission launcher
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            when (permissionType) {
+                "camera" -> launchCamera(context, cameraLauncher) { uri ->
+                    onImageSelected(uri)
+                }
+                "gallery" -> galleryLauncher.launch("image/*")
+            }
+        } else {
+            showPermissionDialog = true
+        }
+    }
+    
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Take Picture Button
+        Button(
+            onClick = {
+                showPictureDialog = true
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Take Picture",
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "Take Picture",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        
+        // Picture Selection Dialog
+        if (showPictureDialog) {
+            PictureSelectionDialog(
+                onCameraClick = {
+                    showPictureDialog = false
+                    if (checkCameraPermission(context)) {
+                        launchCamera(context, cameraLauncher) { uri ->
+                            onImageSelected(uri)
+                        }
+                    } else {
+                        permissionType = "camera"
+                        permissionLauncher.launch(Manifest.permission.CAMERA)
+                    }
+                },
+                onGalleryClick = {
+                    showPictureDialog = false
+                    if (checkStoragePermission(context)) {
+                        galleryLauncher.launch("image/*")
+                    } else {
+                        permissionType = "gallery"
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                        } else {
+                            permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                        }
+                    }
+                },
+                onDismiss = { showPictureDialog = false }
+            )
+        }
+        
+        // Permission Dialog
+        if (showPermissionDialog) {
+            PermissionDialog(
+                permissionType = permissionType,
+                onDismiss = { showPermissionDialog = false }
+            )
+        }
+    }
+}
+
+@Composable
+private fun PictureSelectionDialog(
+    onCameraClick: () -> Unit,
+    onGalleryClick: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { 
+            Text(
+                text = "Choose Picture Source",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = { 
+            Text(
+                text = "Select how you want to get your picture",
+                fontSize = 14.sp,
+                color = Color.Gray
+            )
+        },
+        confirmButton = {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedButton(
+                    onClick = onCameraClick,
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Camera",
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Camera")
+                }
+                
+                OutlinedButton(
+                    onClick = onGalleryClick,
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Gallery",
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Gallery")
+                }
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
+@Composable
+private fun PermissionDialog(
+    permissionType: String,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Permission Required") },
+        text = { 
+            Text(
+                when (permissionType) {
+                    "camera" -> "Camera permission is required to take photos. Please grant camera permission in Settings."
+                    "gallery" -> "Storage permission is required to access images. Please grant storage permission in Settings."
+                    else -> "Permission is required for this feature."
+                }
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("OK")
+            }
+        }
+    )
+}
+
+// Helper functions
+private fun checkCameraPermission(context: Context): Boolean {
+    return ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.CAMERA
+    ) == PackageManager.PERMISSION_GRANTED
+}
+
+private fun checkStoragePermission(context: Context): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.READ_MEDIA_IMAGES
+        ) == PackageManager.PERMISSION_GRANTED
+    } else {
+        ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+}
+
+private fun launchCamera(context: Context, launcher: androidx.activity.result.ActivityResultLauncher<Uri>, onUriCreated: (Uri) -> Unit) {
+    val photoFile = createImageFile(context)
+    photoFile?.let { file ->
+        val photoUri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            file
+        )
+        onUriCreated(photoUri)
+        launcher.launch(photoUri)
+    }
+}
+
+private fun createImageFile(context: Context): File? {
+    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+    val storageDir = context.getExternalFilesDir("Pictures")
+    return File.createTempFile(
+        "JPEG_${timeStamp}_",
+        ".jpg",
+        storageDir
+    )
+}
