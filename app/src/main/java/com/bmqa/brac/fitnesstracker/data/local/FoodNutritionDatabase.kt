@@ -30,14 +30,4 @@ object FoodNutritionDatabase {
     fun getFoodNutrition(foodName: String): FoodNutrition? {
         return foodDatabase[foodName.lowercase()]
     }
-    
-    fun searchFood(query: String): List<String> {
-        return foodDatabase.keys.filter { 
-            it.lowercase().contains(query.lowercase()) 
-        }.take(10)
-    }
-    
-    fun getAllFoods(): List<String> {
-        return foodDatabase.keys.toList()
-    }
 }
