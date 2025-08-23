@@ -44,9 +44,10 @@ class ClarifaiTestActivity : AppCompatActivity() {
         
         val clarifai = ClarifaiHelper()
         
-        clarifai.predictImage(
-            "https://s3.amazonaws.com/samples.clarifai.com/featured-models/image-captioning-statue-of-liberty.jpeg"
-        ) { result ->
+        // Create a simple test image (1x1 pixel) for testing
+        val testImageBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+        
+        clarifai.predictImageBase64(testImageBase64) { result ->
             runOnUiThread {
                 textView.text = result
             }
