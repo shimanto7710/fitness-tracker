@@ -17,6 +17,7 @@
     <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
+        android:name=".FitnessTrackerApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -51,11 +52,7 @@
             </intent-filter>
         </activity>
         
-        <activity
-            android:name=".ClarifaiTestActivity"
-            android:exported="true"
-            android:label="Clarifai Test"
-            android:theme="@style/Theme.FitnessTracker" />
+
     </application>
 
 </manifest>

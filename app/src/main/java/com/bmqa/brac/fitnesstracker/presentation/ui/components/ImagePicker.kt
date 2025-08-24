@@ -1,4 +1,4 @@
-package com.bmqa.brac.fitnesstracker.features.imagepicker
+package com.bmqa.brac.fitnesstracker.presentation.ui.components
 
 import android.Manifest
 import android.content.Context
@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,6 +25,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import android.content.pm.PackageManager
+import com.bmqa.brac.fitnesstracker.common.constants.AppConstants
+import com.bmqa.brac.fitnesstracker.ui.theme.Dimensions
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -77,26 +80,26 @@ fun ImagePicker(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Take Picture Button
+        // Image Picker Button
         Button(
             onClick = {
                 showPictureDialog = true
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp)
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .height(Dimensions.buttonHeight)
+                .padding(horizontal = Dimensions.spacingMedium, vertical = Dimensions.spacingSmall),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(Dimensions.borderRadiusMedium)
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
-                contentDescription = "Take Picture",
-                modifier = Modifier.size(24.dp)
+                contentDescription = "Select Image",
+                modifier = Modifier.size(Dimensions.iconSizeMedium)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(Dimensions.spacingSmall))
             Text(
-                text = "Take Picture",
+                text = AppConstants.UiText.PICK_FOOD_IMAGE,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -143,71 +146,94 @@ fun ImagePicker(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PictureSelectionDialog(
     onCameraClick: () -> Unit,
     onGalleryClick: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    AlertDialog(
+    ModalBottomSheet(
         onDismissRequest = onDismiss,
-        title = { 
+        containerColor = MaterialTheme.colorScheme.surface,
+        dragHandle = { BottomSheetDefaults.DragHandle() }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimensions.spacingLarge),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Header
             Text(
                 text = "Choose Picture Source",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = Dimensions.spacingMedium)
             )
-        },
-        text = { 
+            
             Text(
                 text = "Select how you want to get your picture",
-                fontSize = 14.sp,
-                color = Color.Gray
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(bottom = Dimensions.spacingLarge)
             )
-        },
-        confirmButton = {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            
+            // Camera Button
+            Button(
+                onClick = onCameraClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(Dimensions.buttonHeight),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
+                shape = RoundedCornerShape(Dimensions.borderRadiusMedium)
             ) {
-                OutlinedButton(
-                    onClick = onCameraClick,
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Camera",
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Camera")
-                }
-                
-                OutlinedButton(
-                    onClick = onGalleryClick,
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = MaterialTheme.colorScheme.secondary,
-                        contentColor = MaterialTheme.colorScheme.onSecondary
-                    )
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Gallery",
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Gallery")
-                }
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Camera",
+                    modifier = Modifier.size(Dimensions.iconSizeMedium)
+                )
+                Spacer(modifier = Modifier.width(Dimensions.spacingSmall))
+                Text(
+                    text = "Take Photo with Camera",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
             }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
+            
+            Spacer(modifier = Modifier.height(Dimensions.spacingMedium))
+            
+            // Gallery Button
+            OutlinedButton(
+                onClick = onGalleryClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(Dimensions.buttonHeight),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.primary
+                ),
+                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                shape = RoundedCornerShape(Dimensions.borderRadiusMedium)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Gallery",
+                    modifier = Modifier.size(Dimensions.iconSizeMedium)
+                )
+                Spacer(modifier = Modifier.width(Dimensions.spacingSmall))
+                Text(
+                    text = "Choose from Gallery",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
             }
+            
+            Spacer(modifier = Modifier.height(Dimensions.spacingLarge))
         }
-    )
+    }
 }
 
 @Composable

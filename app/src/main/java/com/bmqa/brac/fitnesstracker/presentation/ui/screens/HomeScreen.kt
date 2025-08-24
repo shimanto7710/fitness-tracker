@@ -1,4 +1,4 @@
-package com.bmqa.brac.fitnesstracker.features.navigation
+package com.bmqa.brac.fitnesstracker.presentation.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,72 +15,71 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bmqa.brac.fitnesstracker.common.constants.AppConstants
+import com.bmqa.brac.fitnesstracker.presentation.state.AppBarState
+import com.bmqa.brac.fitnesstracker.ui.theme.Dimensions
 
 @Composable
-fun NavigationScreen(
-    onNavigateToImagePicker: () -> Unit,
+fun HomeScreen(
+    onNavigateToCaloriesManagement: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Update app bar title and hide back button
+    LaunchedEffect(Unit) {
+        AppBarState.updateTitle("Fitness Tracker")
+        AppBarState.hideBackButton()
+    }
+    
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(Dimensions.spacingMedium),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Header
-        Text(
-            text = "Fitness Tracker",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        
         Text(
             text = "Choose your feature",
             fontSize = 16.sp,
             color = Color.Gray,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = 48.dp)
+            modifier = Modifier.padding(bottom = Dimensions.spacingExtraLarge)
         )
         
         // Feature Cards
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(Dimensions.spacingMedium)
         ) {
-            // Image Picker Card
+            // Calories Management Card
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp),
+                    .height(Dimensions.cardHeight),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-                onClick = onNavigateToImagePicker
+                onClick = onNavigateToCaloriesManagement
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp),
+                        .padding(Dimensions.spacingMedium),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Image Picker",
-                        modifier = Modifier.size(48.dp),
+                        contentDescription = AppConstants.UiText.IMAGE_PICKER_TITLE,
+                        modifier = Modifier.size(Dimensions.iconSizeExtraLarge),
                         tint = MaterialTheme.colorScheme.primary
                     )
-                    Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.width(Dimensions.spacingMedium))
                     Column(
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(
-                            text = "Calories Management",
+                            text = AppConstants.UiText.CALORIES_MANAGEMENT_TITLE,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(Dimensions.spacingSmall))
                         Text(
                             text = "Analyze food images for calorie tracking",
                             fontSize = 14.sp,
@@ -90,7 +89,7 @@ fun NavigationScreen(
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = "Gallery",
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier.size(Dimensions.iconSizeMedium),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -100,23 +99,23 @@ fun NavigationScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp),
+                    .height(Dimensions.cardHeight),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp),
+                        .padding(Dimensions.spacingMedium),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         imageVector = Icons.Default.Star,
                         contentDescription = "Fitness Tracking",
-                        modifier = Modifier.size(48.dp),
-                        tint = MaterialTheme.colorScheme.secondary
+                        modifier = Modifier.size(Dimensions.iconSizeExtraLarge),
+                        tint = MaterialTheme.colorScheme.tertiary
                     )
-                    Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.width(Dimensions.spacingMedium))
                     Column(
                         modifier = Modifier.weight(1f)
                     ) {
@@ -124,13 +123,13 @@ fun NavigationScreen(
                             text = "Fitness Tracking",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                            color = MaterialTheme.colorScheme.onTertiaryContainer
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(Dimensions.spacingSmall))
                         Text(
                             text = "Track workouts and progress",
                             fontSize = 14.sp,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+                            color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
                         )
                     }
                     Text(
@@ -138,18 +137,18 @@ fun NavigationScreen(
                         fontSize = 12.sp,
                         color = Color.Gray,
                         modifier = Modifier
-                            .background(Color.White, RoundedCornerShape(12.dp))
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                            .background(Color.White, RoundedCornerShape(Dimensions.borderRadiusSmall))
+                            .padding(horizontal = Dimensions.spacingSmall, vertical = 4.dp)
                     )
                 }
             }
         }
         
-        Spacer(modifier = Modifier.weight(1f))
+        /*Spacer(modifier = Modifier.weight(1f))
         
         // Action Button
         Button(
-            onClick = onNavigateToImagePicker,
+            onClick = onNavigateToCaloriesManagement,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
@@ -159,14 +158,14 @@ fun NavigationScreen(
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = "Start",
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(AppConstants.Dimensions.ICON_SIZE_MEDIUM.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(AppConstants.Dimensions.PADDING_SMALL.dp))
             Text(
                 text = "Start Image Picker",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
-        }
+        }*/
     }
 }

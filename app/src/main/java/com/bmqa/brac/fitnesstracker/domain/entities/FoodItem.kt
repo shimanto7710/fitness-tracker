@@ -1,4 +1,4 @@
-package com.bmqa.brac.fitnesstracker.data.models
+package com.bmqa.brac.fitnesstracker.domain.entities
 
 data class FoodItem(
     val name: String,
