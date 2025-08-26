@@ -1,5 +1,6 @@
 package com.bmqa.brac.fitnesstracker.di
 
+import android.content.Context
 import com.bmqa.brac.fitnesstracker.data.remote.api.OpenRouterApiService
 import com.bmqa.brac.fitnesstracker.data.remote.datasource.OpenRouterRemoteDataSource
 import com.bmqa.brac.fitnesstracker.data.remote.datasource.OpenRouterRemoteDataSourceImpl
@@ -8,6 +9,7 @@ import com.bmqa.brac.fitnesstracker.domain.repository.OpenRouterRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -61,8 +63,11 @@ object OpenRouterNetworkModule {
     
     @Provides
     @Singleton
-    fun provideOpenRouterRepository(remoteDataSource: OpenRouterRemoteDataSource): OpenRouterRepository {
-        return OpenRouterRepositoryImpl(remoteDataSource)
+    fun provideOpenRouterRepository(
+        remoteDataSource: OpenRouterRemoteDataSource,
+        @ApplicationContext context: Context
+    ): OpenRouterRepository {
+        return OpenRouterRepositoryImpl(remoteDataSource, context)
     }
     
     private fun createLoggingInterceptor(): HttpLoggingInterceptor {

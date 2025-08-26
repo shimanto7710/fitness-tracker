@@ -112,10 +112,7 @@ fun ImageCaptureScreen(
     // Handle analyze button click
     fun handleAnalyzeClick() {
         selectedImageUri?.let { uri ->
-            val base64Image = ImageUtils.convertImageToBase64(context, uri)
-            base64Image?.let { base64 ->
-                viewModel.analyzeFoodImage(base64)
-            }
+            viewModel.analyzeFoodImage(uri)
         }
     }
     

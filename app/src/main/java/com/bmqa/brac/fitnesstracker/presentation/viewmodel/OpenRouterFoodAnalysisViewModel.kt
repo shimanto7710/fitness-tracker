@@ -1,5 +1,6 @@
 package com.bmqa.brac.fitnesstracker.presentation.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bmqa.brac.fitnesstracker.data.remote.dto.OpenRouterResponse
@@ -19,12 +20,12 @@ class OpenRouterFoodAnalysisViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<OpenRouterFoodAnalysisUiState>(OpenRouterFoodAnalysisUiState.Idle)
     val uiState: StateFlow<OpenRouterFoodAnalysisUiState> = _uiState.asStateFlow()
     
-    fun analyzeFoodImage(imageBase64: String, customText: String? = null) {
+    fun analyzeFoodImage(imageUri: Uri, customText: String? = null) {
         viewModelScope.launch {
             _uiState.value = OpenRouterFoodAnalysisUiState.Loading
             
             try {
-                val result = analyzeFoodImageUseCase(imageBase64, customText)
+                val result = analyzeFoodImageUseCase(imageUri, customText)
                 result.fold(
                     onSuccess = { response ->
                         _uiState.value = OpenRouterFoodAnalysisUiState.Success(response)

@@ -1,5 +1,8 @@
 package com.bmqa.brac.fitnesstracker.data.repository
 
+import android.content.Context
+import android.net.Uri
+import com.bmqa.brac.fitnesstracker.common.utils.ImageUtils
 import com.bmqa.brac.fitnesstracker.data.remote.datasource.OpenRouterRemoteDataSource
 import com.bmqa.brac.fitnesstracker.data.remote.dto.OpenRouterContent
 import com.bmqa.brac.fitnesstracker.data.remote.dto.OpenRouterMessage
@@ -9,12 +12,17 @@ import com.bmqa.brac.fitnesstracker.domain.repository.OpenRouterRepository
 import javax.inject.Inject
 
 class OpenRouterRepositoryImpl @Inject constructor(
-    private val remoteDataSource: OpenRouterRemoteDataSource
+    private val remoteDataSource: OpenRouterRemoteDataSource,
+    private val context: Context
 ) : OpenRouterRepository {
     
-    override suspend fun analyzeFoodImage(imageBase64: String, customText: String?): Result<OpenRouterResponse> {
+    override suspend fun analyzeFoodImage(imageUri: Uri, customText: String?): Result<OpenRouterResponse> {
         return try {
-            val request = createRequest(imageBase64, customText)
+            // Convert Uri to base64
+            val base64Image = ImageUtils.convertImageToBase64(context, imageUri)
+                ?: return Result.failure(Exception("Failed to convert image to base64"))
+            
+            val request = createRequest(base64Image, customText)
             remoteDataSource.analyzeFood(request)
         } catch (e: Exception) {
             Result.failure(e)
