@@ -57,7 +57,9 @@ object OpenRouterNetworkModule {
     
     @Provides
     @Singleton
-    fun provideOpenRouterRemoteDataSource(apiService: OpenRouterApiService): OpenRouterRemoteDataSource {
+    fun provideOpenRouterRemoteDataSource(
+        apiService: OpenRouterApiService
+    ): OpenRouterRemoteDataSource {
         return OpenRouterRemoteDataSourceImpl(apiService)
     }
     
