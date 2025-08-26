@@ -6,6 +6,7 @@ object AppConstants {
     object Navigation {
         const val SCREEN_HOME = "home"
         const val SCREEN_CALORIES_MANAGEMENT = "calories_management"
+        const val SCREEN_IMAGE_CAPTURE = "image_capture"
     }
     
     // API Configuration
@@ -43,6 +44,7 @@ object AppConstants {
         const val IMAGE_PICKER_TITLE = "Image Picker"
         const val CALORIES_MANAGEMENT_TITLE = "Calories Management"
         const val FOOD_RECOGNITION_TITLE = "Food Recognition"
+        const val IMAGE_CAPTURE_TITLE = "AI Food Analysis"
         
         // Buttons
         const val SELECT_IMAGE = "Select Image"
