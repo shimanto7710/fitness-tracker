@@ -32,6 +32,11 @@ class GeminiFoodAnalysisDataSourceImpl @Inject constructor() : GeminiFoodAnalysi
     override suspend fun analyzeFoodWithGemini(imageUri: Uri, context: Context): Result<GeminiFoodAnalysis> {
         return withContext(Dispatchers.IO) {
             try {
+                // TEMPORARY: Return mock data instead of calling API
+                val mockData = createMockFoodAnalysis()
+                Result.success(mockData)
+                
+                /* REAL API CALL - COMMENTED OUT FOR TEMPORARY MOCK
                 val inputStream: InputStream = context.contentResolver.openInputStream(imageUri)
                     ?: return@withContext Result.failure(Exception("Could not open image stream"))
                 
@@ -52,7 +57,8 @@ class GeminiFoodAnalysisDataSourceImpl @Inject constructor() : GeminiFoodAnalysi
                 // Parse the JSON response
                 val foodAnalysis = parseGeminiResponse(responseText)
                 Result.success(foodAnalysis)
-                
+                */
+
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -195,6 +201,67 @@ class GeminiFoodAnalysisDataSourceImpl @Inject constructor() : GeminiFoodAnalysi
             ),
             analysisSummary = responseText.takeIf { it.isNotBlank() } 
                 ?: "Food analysis completed. Please check the image for details."
+        )
+    }
+    
+    // TEMPORARY: Mock data function for testing
+    private fun createMockFoodAnalysis(): GeminiFoodAnalysis {
+        return GeminiFoodAnalysis(
+            isError = false,
+            errorMessage = "",
+            foodItems = listOf(
+                GeminiFoodItem(
+                    name = "Grilled Pork Chop",
+                    portion = "150g",
+                    digestionTime = "3-4 hours",
+                    healthStatus = HealthStatus.MODERATE,
+                    calories = 350,
+                    protein = "30g",
+                    carbs = "0g",
+                    fat = "25g",
+                    healthBenefits = listOf(
+                        "Good source of protein",
+                        "Provides essential amino acids"
+                    ),
+                    healthConcerns = listOf(
+                        "High in saturated fat",
+                        "May contribute to high cholesterol if consumed in excess"
+                    )
+                ),
+                GeminiFoodItem(
+                    name = "Boiled Potatoes with Dill",
+                    portion = "3 medium potatoes",
+                    digestionTime = "2-3 hours",
+                    healthStatus = HealthStatus.GOOD,
+                    calories = 210,
+                    protein = "5g",
+                    carbs = "45g",
+                    fat = "0g",
+                    healthBenefits = listOf(
+                        "Good source of potassium",
+                        "Provides complex carbohydrates for energy"
+                    ),
+                    healthConcerns = listOf(
+                        "High glycemic index, may cause blood sugar spikes"
+                    )
+                ),
+                GeminiFoodItem(
+                    name = "Tomato and Onion Salad with Greens",
+                    portion = "1 cup",
+                    digestionTime = "1-2 hours",
+                    healthStatus = HealthStatus.EXCELLENT,
+                    calories = 50,
+                    protein = "2g",
+                    carbs = "8g",
+                    fat = "2g",
+                    healthBenefits = listOf(
+                        "Rich in vitamins and antioxidants",
+                        "Provides dietary fiber for digestive health"
+                    ),
+                    healthConcerns = emptyList()
+                )
+            ),
+            analysisSummary = "This meal provides a good source of protein and carbohydrates, along with essential vitamins and minerals from the salad. However, the pork chop is high in saturated fat, so moderation is key. The potatoes have a high glycemic index which is a concern for people with diabetes. The meal is relatively balanced, offering both nutritional benefits and potential drawbacks depending on individual health needs and dietary habits."
         )
     }
 }
