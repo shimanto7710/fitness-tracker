@@ -33,14 +33,14 @@ import coil.compose.AsyncImage
 import com.bmqa.brac.fitnesstracker.common.utils.CameraUtils
 import com.bmqa.brac.fitnesstracker.common.utils.ImageUtils
 import com.bmqa.brac.fitnesstracker.presentation.state.AppBarState
-import com.bmqa.brac.fitnesstracker.presentation.viewmodel.OpenRouterFoodAnalysisUiState
-import com.bmqa.brac.fitnesstracker.presentation.viewmodel.OpenRouterFoodAnalysisViewModel
+import com.bmqa.brac.fitnesstracker.presentation.viewmodel.GeminiFoodAnalysisUiState
+import com.bmqa.brac.fitnesstracker.presentation.viewmodel.GeminiFoodAnalysisViewModel
 import java.io.File
 
 @Composable
 fun ImageCaptureScreen(
     onNavigateBack: () -> Unit,
-    viewModel: OpenRouterFoodAnalysisViewModel = hiltViewModel()
+    viewModel: GeminiFoodAnalysisViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     var hasCameraPermission by remember { mutableStateOf(false) }
@@ -112,7 +112,7 @@ fun ImageCaptureScreen(
     // Handle analyze button click
     fun handleAnalyzeClick() {
         selectedImageUri?.let { uri ->
-            viewModel.analyzeFoodImage(uri)
+            viewModel.analyzeFoodWithGemini(uri, context)
         }
     }
     
@@ -206,7 +206,7 @@ fun ImageCaptureScreen(
                     containerColor = MaterialTheme.colorScheme.primary
                 ),
                 shape = RoundedCornerShape(12.dp),
-                enabled = uiState !is OpenRouterFoodAnalysisUiState.Loading
+                enabled = uiState !is GeminiFoodAnalysisUiState.Loading
             ) {
                 Icon(
                     imageVector = Icons.Default.Star,
@@ -230,7 +230,7 @@ fun ImageCaptureScreen(
                     2.dp,
                     MaterialTheme.colorScheme.primary
                 ),
-                enabled = uiState !is OpenRouterFoodAnalysisUiState.Loading
+                enabled = uiState !is GeminiFoodAnalysisUiState.Loading
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -251,7 +251,7 @@ fun ImageCaptureScreen(
         Spacer(modifier = Modifier.height(24.dp))
         
         // Analyze button
-        if (selectedImageUri != null && uiState !is OpenRouterFoodAnalysisUiState.Loading) {
+        if (selectedImageUri != null && uiState !is GeminiFoodAnalysisUiState.Loading) {
             Button(
                 onClick = { handleAnalyzeClick() },
                 modifier = Modifier.fillMaxWidth(),
@@ -308,7 +308,7 @@ fun ImageCaptureScreen(
         
         // API Response Display
         when (val currentState = uiState) {
-            is OpenRouterFoodAnalysisUiState.Loading -> {
+            is GeminiFoodAnalysisUiState.Loading -> {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -342,8 +342,8 @@ fun ImageCaptureScreen(
                 }
             }
             
-            is OpenRouterFoodAnalysisUiState.Success -> {
-                val response = currentState.response
+            is GeminiFoodAnalysisUiState.Success -> {
+                val foodAnalysis = currentState.foodAnalysis
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -376,28 +376,18 @@ fun ImageCaptureScreen(
                             Column(
                                 modifier = Modifier.padding(12.dp)
                             ) {
-                                Text(
-                                    text = "API Response Details",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text(
-                                    text = "Model: ${response.model}",
-                                    fontSize = 14.sp,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
-                                )
-                                Text(
-                                    text = "Provider: ${response.provider}",
-                                    fontSize = 14.sp,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
-                                )
-                                Text(
-                                    text = "Tokens Used: ${response.usage.totalTokens}",
-                                    fontSize = 14.sp,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
-                                )
+                                                        Text(
+                            text = "Food Analysis Summary",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = foodAnalysis.analysisSummary,
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                        )
                             }
                         }
                         
@@ -420,18 +410,53 @@ fun ImageCaptureScreen(
                             ),
                             shape = RoundedCornerShape(8.dp)
                         ) {
-                            Text(
-                                text = response.choices.firstOrNull()?.message?.content ?: "No content",
-                                fontSize = 14.sp,
-                                modifier = Modifier.padding(12.dp),
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
+                            Column(
+                                modifier = Modifier.padding(12.dp)
+                            ) {
+                                Text(
+                                    text = "Detected Food Items:",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                foodAnalysis.foodItems.forEach { foodItem ->
+                                    Card(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 4.dp),
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                                        )
+                                    ) {
+                                        Column(
+                                            modifier = Modifier.padding(8.dp)
+                                        ) {
+                                            Text(
+                                                text = foodItem.name,
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                            Text(
+                                                text = "Portion: ${foodItem.portion}",
+                                                fontSize = 12.sp
+                                            )
+                                            foodItem.calories?.let { calories ->
+                                                Text(
+                                                    text = "Calories: $calories",
+                                                    fontSize = 12.sp
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
             
-            is OpenRouterFoodAnalysisUiState.Error -> {
+            is GeminiFoodAnalysisUiState.Error -> {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -458,7 +483,7 @@ fun ImageCaptureScreen(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(
-                            onClick = { viewModel.clearError() },
+                            onClick = { viewModel.resetState() },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.error
                             )

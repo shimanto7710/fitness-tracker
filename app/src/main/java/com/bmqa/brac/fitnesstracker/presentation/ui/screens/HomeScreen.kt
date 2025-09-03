@@ -2,7 +2,9 @@ package com.bmqa.brac.fitnesstracker.presentation.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Star
@@ -24,6 +26,7 @@ fun HomeScreen(
     onNavigateToCaloriesManagement: () -> Unit,
     onNavigateToFoodDetection: () -> Unit,
     onNavigateToImageCapture: () -> Unit,
+    onNavigateToGeminiFoodAnalysis: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Update app bar title and hide back button
@@ -35,6 +38,7 @@ fun HomeScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(Dimensions.spacingMedium),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -177,7 +181,7 @@ fun HomeScreen(
                         )
                         Spacer(modifier = Modifier.height(Dimensions.spacingSmall))
                         Text(
-                            text = "AI-powered food analysis with OpenRouter",
+                            text = "AI-powered food analysis with advanced models",
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
                         )
@@ -187,6 +191,53 @@ fun HomeScreen(
                         contentDescription = "Navigate",
                         modifier = Modifier.size(Dimensions.iconSizeMedium),
                         tint = MaterialTheme.colorScheme.tertiary
+                    )
+                }
+            }
+            
+            // Gemini Food Analysis Card
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(Dimensions.cardHeight),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+                onClick = onNavigateToGeminiFoodAnalysis
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(Dimensions.spacingMedium),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Gemini Food Analysis",
+                        modifier = Modifier.size(Dimensions.iconSizeExtraLarge),
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                    Spacer(modifier = Modifier.width(Dimensions.spacingMedium))
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = AppConstants.UiText.GEMINI_FOOD_ANALYSIS_TITLE,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                        Spacer(modifier = Modifier.height(Dimensions.spacingSmall))
+                        Text(
+                            text = "Advanced AI food analysis with Google Gemini",
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.7f)
+                        )
+                    }
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Navigate",
+                        modifier = Modifier.size(Dimensions.iconSizeMedium),
+                        tint = MaterialTheme.colorScheme.error
                     )
                 }
             }

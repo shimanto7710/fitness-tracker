@@ -11,6 +11,7 @@ import com.bmqa.brac.fitnesstracker.presentation.ui.screens.CaloriesManagementSc
 import com.bmqa.brac.fitnesstracker.presentation.ui.screens.FoodDetectionScreen
 import com.bmqa.brac.fitnesstracker.presentation.ui.screens.HomeScreen
 import com.bmqa.brac.fitnesstracker.presentation.ui.screens.ImageCaptureScreen
+import com.bmqa.brac.fitnesstracker.presentation.ui.screens.GeminiFoodAnalysisScreen
 
 
 sealed class Screen(val route: String) {
@@ -18,6 +19,7 @@ sealed class Screen(val route: String) {
     object CaloriesManagement : Screen(AppConstants.Navigation.SCREEN_CALORIES_MANAGEMENT)
     object FoodDetection : Screen("food_detection")
     object ImageCapture : Screen(AppConstants.Navigation.SCREEN_IMAGE_CAPTURE)
+    object GeminiFoodAnalysis : Screen("gemini_food_analysis")
     
     companion object {
         fun fromRoute(route: String?): Screen {
@@ -26,6 +28,7 @@ sealed class Screen(val route: String) {
                 CaloriesManagement.route -> CaloriesManagement
                 FoodDetection.route -> FoodDetection
                 ImageCapture.route -> ImageCapture
+                GeminiFoodAnalysis.route -> GeminiFoodAnalysis
                 null -> Home
                 else -> throw IllegalArgumentException("Route $route is not recognized.")
             }
@@ -54,6 +57,9 @@ fun FitnessTrackerNavGraph(
                 },
                 onNavigateToImageCapture = {
                     navController.navigate(Screen.ImageCapture.route)
+                },
+                onNavigateToGeminiFoodAnalysis = {
+                    navController.navigate(Screen.GeminiFoodAnalysis.route)
                 }
             )
         }
@@ -76,6 +82,14 @@ fun FitnessTrackerNavGraph(
         
         composable(Screen.ImageCapture.route) {
             ImageCaptureScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        
+        composable(Screen.GeminiFoodAnalysis.route) {
+            GeminiFoodAnalysisScreen(
                 onNavigateBack = {
                     navController.popBackStack()
                 }

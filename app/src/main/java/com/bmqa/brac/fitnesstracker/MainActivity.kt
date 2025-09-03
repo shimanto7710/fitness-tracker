@@ -35,7 +35,9 @@ class MainActivity : ComponentActivity() {
                     }
                 ) { paddingValues ->
                     FitnessTrackerNavGraph(
-                        modifier = Modifier.padding(paddingValues)
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
                     )
                 }
             }
