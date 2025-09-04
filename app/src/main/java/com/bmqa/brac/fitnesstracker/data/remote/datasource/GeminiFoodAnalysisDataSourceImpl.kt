@@ -29,7 +29,7 @@ class GeminiFoodAnalysisDataSourceImpl @Inject constructor() : GeminiFoodAnalysi
     
     private val gson = Gson()
     
-    override suspend fun analyzeFoodWithGemini(imageUri: Uri, context: Context): Result<GeminiFoodAnalysis> {
+    override suspend fun analyzeFoodWithGemini(imageUri: String, base64Image: String): Result<GeminiFoodAnalysis> {
         return withContext(Dispatchers.IO) {
             try {
                 // TEMPORARY: Return mock data instead of calling API

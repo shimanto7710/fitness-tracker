@@ -21,12 +21,12 @@ class CustomFoodDetectionViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<CustomFoodDetectionUiState>(CustomFoodDetectionUiState.Idle)
     val uiState: StateFlow<CustomFoodDetectionUiState> = _uiState.asStateFlow()
     
-    fun detectFoodFromImage(imageUri: Uri, context: Context) {
+    fun detectFoodFromImage(imageUri: Uri) {
         viewModelScope.launch {
             _uiState.value = CustomFoodDetectionUiState.Loading
             
             try {
-                val result = customFoodDetectionUseCase(imageUri, context)
+                val result = customFoodDetectionUseCase(imageUri.toString())
                 result.fold(
                     onSuccess = { foodItems ->
                         _uiState.value = CustomFoodDetectionUiState.Success(foodItems)

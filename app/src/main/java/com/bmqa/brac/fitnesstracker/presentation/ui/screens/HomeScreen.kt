@@ -25,13 +25,12 @@ import com.bmqa.brac.fitnesstracker.ui.theme.Dimensions
 fun HomeScreen(
     onNavigateToCaloriesManagement: () -> Unit,
     onNavigateToFoodDetection: () -> Unit,
-    onNavigateToImageCapture: () -> Unit,
     onNavigateToGeminiFoodAnalysis: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Update app bar title and hide back button
     LaunchedEffect(Unit) {
-        AppBarState.updateTitle("Fitness Tracker")
+        AppBarState.updateTitle(AppConstants.UiText.NAVIGATION_TITLE)
         AppBarState.hideBackButton()
     }
     
@@ -43,7 +42,7 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Choose your feature",
+            text = AppConstants.UiText.CHOOSE_YOUR_FEATURE,
             fontSize = 16.sp,
             color = Color.Gray,
             textAlign = TextAlign.Center,
@@ -71,7 +70,7 @@ fun HomeScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Food Detection",
+                        contentDescription = AppConstants.UiText.CONTENT_DESC_FOOD_DETECTION,
                         modifier = Modifier.size(Dimensions.iconSizeExtraLarge),
                         tint = MaterialTheme.colorScheme.secondary
                     )
@@ -80,21 +79,21 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(
-                            text = "Food Detection",
+                            text = AppConstants.UiText.FOOD_DETECTION_TITLE,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                         Spacer(modifier = Modifier.height(Dimensions.spacingSmall))
                         Text(
-                            text = "Take photos and analyze food for nutrition",
+                            text = AppConstants.UiText.TAKE_PHOTOS_AND_ANALYZE,
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
                         )
                     }
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Navigate",
+                        contentDescription = AppConstants.UiText.CONTENT_DESC_NAVIGATE,
                         modifier = Modifier.size(Dimensions.iconSizeMedium),
                         tint = MaterialTheme.colorScheme.secondary
                     )
@@ -134,66 +133,20 @@ fun HomeScreen(
                         )
                         Spacer(modifier = Modifier.height(Dimensions.spacingSmall))
                         Text(
-                            text = "Analyze food images for calorie tracking",
+                            text = AppConstants.UiText.ANALYZE_FOOD_IMAGES_FOR_CALORIES,
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
                         )
                     }
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Gallery",
+                        contentDescription = AppConstants.UiText.CONTENT_DESC_GALLERY,
                         modifier = Modifier.size(Dimensions.iconSizeMedium),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
             }
             
-            // AI Food Analysis Card
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(Dimensions.cardHeight),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
-                onClick = onNavigateToImageCapture
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(Dimensions.spacingMedium),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = "AI Food Analysis",
-                        modifier = Modifier.size(Dimensions.iconSizeExtraLarge),
-                        tint = MaterialTheme.colorScheme.tertiary
-                    )
-                    Spacer(modifier = Modifier.width(Dimensions.spacingMedium))
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(
-                            text = AppConstants.UiText.IMAGE_CAPTURE_TITLE,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onTertiaryContainer
-                        )
-                        Spacer(modifier = Modifier.height(Dimensions.spacingSmall))
-                        Text(
-                            text = "AI-powered food analysis with advanced models",
-                            fontSize = 14.sp,
-                            color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
-                        )
-                    }
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Navigate",
-                        modifier = Modifier.size(Dimensions.iconSizeMedium),
-                        tint = MaterialTheme.colorScheme.tertiary
-                    )
-                }
-            }
             
             // Gemini Food Analysis Card
             Card(
@@ -212,7 +165,7 @@ fun HomeScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Star,
-                        contentDescription = "Gemini Food Analysis",
+                        contentDescription = AppConstants.UiText.CONTENT_DESC_GEMINI_FOOD_ANALYSIS,
                         modifier = Modifier.size(Dimensions.iconSizeExtraLarge),
                         tint = MaterialTheme.colorScheme.error
                     )
@@ -228,67 +181,20 @@ fun HomeScreen(
                         )
                         Spacer(modifier = Modifier.height(Dimensions.spacingSmall))
                         Text(
-                            text = "Advanced AI food analysis with Google Gemini",
+                            text = AppConstants.UiText.ADVANCED_AI_FOOD_ANALYSIS,
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.7f)
                         )
                     }
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Navigate",
+                        contentDescription = AppConstants.UiText.CONTENT_DESC_NAVIGATE,
                         modifier = Modifier.size(Dimensions.iconSizeMedium),
                         tint = MaterialTheme.colorScheme.error
                     )
                 }
             }
             
-            // Fitness Tracking Card (Placeholder for future features)
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(Dimensions.cardHeight),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(Dimensions.spacingMedium),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = "Fitness Tracking",
-                        modifier = Modifier.size(Dimensions.iconSizeExtraLarge),
-                        tint = MaterialTheme.colorScheme.tertiary
-                    )
-                    Spacer(modifier = Modifier.width(Dimensions.spacingMedium))
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(
-                            text = "Fitness Tracking",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onTertiaryContainer
-                        )
-                        Spacer(modifier = Modifier.height(Dimensions.spacingSmall))
-                        Text(
-                            text = "Track workouts and progress",
-                            fontSize = 14.sp,
-                            color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
-                        )
-                    }
-                    Text(
-                        text = "Coming Soon",
-                        fontSize = 12.sp,
-                        color = Color.Gray,
-                        modifier = Modifier
-                            .background(Color.White, RoundedCornerShape(Dimensions.borderRadiusSmall))
-                            .padding(horizontal = Dimensions.spacingSmall, vertical = 4.dp)
-                    )
-                }
-            }
         }
         
         /*Spacer(modifier = Modifier.weight(1f))

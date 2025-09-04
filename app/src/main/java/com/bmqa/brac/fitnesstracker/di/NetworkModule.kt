@@ -10,12 +10,13 @@ import com.bmqa.brac.fitnesstracker.data.repository.ClarifaiRepositoryImpl
 import com.bmqa.brac.fitnesstracker.data.mapper.ClarifaiMapper
 import com.bmqa.brac.fitnesstracker.domain.repository.ClarifaiRepository
 import com.bmqa.brac.fitnesstracker.domain.usecase.RecognizeFoodUseCase
-import com.bmqa.brac.fitnesstracker.presentation.service.ClarifaiService
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Singleton
 
 @Module
@@ -39,6 +40,7 @@ abstract class NetworkModule {
     abstract fun bindClarifaiRemoteDataSource(
         impl: ClarifaiRemoteDataSourceImpl
     ): ClarifaiRemoteDataSource
+    
 }
 
 @Module
@@ -73,9 +75,8 @@ object NetworkProvidesModule {
     
     @Provides
     @Singleton
-    fun provideClarifaiService(
-        useCase: RecognizeFoodUseCase
-    ): ClarifaiService {
-        return ClarifaiService(useCase)
+    fun provideContext(@ApplicationContext context: Context): Context {
+        return context
     }
+    
 }

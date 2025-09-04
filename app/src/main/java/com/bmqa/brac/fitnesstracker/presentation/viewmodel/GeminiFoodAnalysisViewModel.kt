@@ -21,12 +21,12 @@ class GeminiFoodAnalysisViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<GeminiFoodAnalysisUiState>(GeminiFoodAnalysisUiState.Idle)
     val uiState: StateFlow<GeminiFoodAnalysisUiState> = _uiState.asStateFlow()
     
-    fun analyzeFoodWithGemini(imageUri: Uri, context: Context) {
+    fun analyzeFoodWithGemini(imageUri: Uri) {
         viewModelScope.launch {
             _uiState.value = GeminiFoodAnalysisUiState.Loading
             
             try {
-                val result = geminiFoodAnalysisUseCase(imageUri, context)
+                val result = geminiFoodAnalysisUseCase(imageUri.toString())
                 result.fold(
                     onSuccess = { foodAnalysis ->
                         _uiState.value = GeminiFoodAnalysisUiState.Success(foodAnalysis)

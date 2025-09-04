@@ -23,7 +23,7 @@ fun CaloriesManagementScreen(
     
     // Update app bar title and show back button
     LaunchedEffect(Unit) {
-        AppBarState.updateTitle("Calories Management")
+        AppBarState.updateTitle(AppConstants.UiText.CALORIES_MANAGEMENT_TITLE)
         AppBarState.showBackButton(onNavigateBack)
     }
     

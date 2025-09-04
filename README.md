@@ -1,6 +1,6 @@
-# Fitness Tracker
+# Food Analysis App
 
-A comprehensive fitness tracking application with AI-powered food analysis capabilities.
+A comprehensive food analysis application with AI-powered nutritional information capabilities.
 
 ## Features
 

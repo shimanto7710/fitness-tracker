@@ -14,19 +14,19 @@ import java.io.FileOutputStream
 import javax.inject.Inject
 
 interface CustomFoodDetectionDataSource {
-    suspend fun detectFoodFromImage(imageUri: Uri, context: Context): Result<List<FoodItem>>
+    suspend fun detectFoodFromImage(imageUri: String, base64Image: String): Result<List<FoodItem>>
 }
 
 class CustomFoodDetectionDataSourceImpl @Inject constructor(
     private val apiService: CustomFoodDetectionApiService
 ) : CustomFoodDetectionDataSource {
     
-    override suspend fun detectFoodFromImage(imageUri: Uri, context: Context): Result<List<FoodItem>> {
+    override suspend fun detectFoodFromImage(imageUri: String, base64Image: String): Result<List<FoodItem>> {
         return try {
             Log.d("CustomFoodDetection", "Starting food detection for image: $imageUri")
             
-            // Convert URI to File
-            val imageFile = uriToFile(imageUri, context)
+            // Convert base64 to File
+            val imageFile = base64ToFile(base64Image)
             
             // Create MultipartBody.Part for the image
             val requestBody = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
@@ -68,14 +68,12 @@ class CustomFoodDetectionDataSourceImpl @Inject constructor(
         }
     }
     
-    private fun uriToFile(uri: Uri, context: Context): File {
-        val inputStream = context.contentResolver.openInputStream(uri)
-        val file = File.createTempFile("food_image", ".jpg", context.cacheDir)
+    private fun base64ToFile(base64Image: String): File {
+        val file = File.createTempFile("food_image", ".jpg")
+        val bytes = android.util.Base64.decode(base64Image, android.util.Base64.DEFAULT)
         
-        inputStream?.use { input ->
-            FileOutputStream(file).use { output ->
-                input.copyTo(output)
-            }
+        FileOutputStream(file).use { output ->
+            output.write(bytes)
         }
         
         return file

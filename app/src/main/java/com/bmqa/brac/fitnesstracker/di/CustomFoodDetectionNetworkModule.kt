@@ -3,9 +3,12 @@ package com.bmqa.brac.fitnesstracker.di
 import com.bmqa.brac.fitnesstracker.data.remote.api.CustomFoodDetectionApiService
 import com.bmqa.brac.fitnesstracker.data.remote.datasource.CustomFoodDetectionDataSource
 import com.bmqa.brac.fitnesstracker.data.remote.datasource.CustomFoodDetectionDataSourceImpl
-import com.bmqa.brac.fitnesstracker.data.repository.CustomFoodDetectionRepository
 import com.bmqa.brac.fitnesstracker.data.repository.CustomFoodDetectionRepositoryImpl
+import com.bmqa.brac.fitnesstracker.domain.repository.CustomFoodDetectionRepository
 import com.bmqa.brac.fitnesstracker.domain.usecase.CustomFoodDetectionUseCase
+import com.bmqa.brac.fitnesstracker.domain.service.ImageProcessingService
+import com.bmqa.brac.fitnesstracker.data.service.ImageProcessingServiceImpl
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -73,7 +76,16 @@ object CustomFoodDetectionNetworkModule {
     
     @Provides
     @Singleton
-    fun provideCustomFoodDetectionUseCase(repository: CustomFoodDetectionRepository): CustomFoodDetectionUseCase {
-        return CustomFoodDetectionUseCase(repository)
+    fun provideImageProcessingService(context: Context): ImageProcessingService {
+        return ImageProcessingServiceImpl(context)
+    }
+    
+    @Provides
+    @Singleton
+    fun provideCustomFoodDetectionUseCase(
+        repository: CustomFoodDetectionRepository,
+        imageProcessingService: ImageProcessingService
+    ): CustomFoodDetectionUseCase {
+        return CustomFoodDetectionUseCase(repository, imageProcessingService)
     }
 }

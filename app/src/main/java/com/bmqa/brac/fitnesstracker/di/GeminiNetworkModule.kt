@@ -2,9 +2,12 @@ package com.bmqa.brac.fitnesstracker.di
 
 import com.bmqa.brac.fitnesstracker.data.remote.datasource.GeminiFoodAnalysisDataSource
 import com.bmqa.brac.fitnesstracker.data.remote.datasource.GeminiFoodAnalysisDataSourceImpl
-import com.bmqa.brac.fitnesstracker.data.repository.GeminiFoodAnalysisRepository
 import com.bmqa.brac.fitnesstracker.data.repository.GeminiFoodAnalysisRepositoryImpl
+import com.bmqa.brac.fitnesstracker.domain.repository.GeminiFoodAnalysisRepository
 import com.bmqa.brac.fitnesstracker.domain.usecase.GeminiFoodAnalysisUseCase
+import com.bmqa.brac.fitnesstracker.domain.service.ImageProcessingService
+import com.bmqa.brac.fitnesstracker.data.service.ImageProcessingServiceImpl
+import android.content.Context
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -36,8 +39,9 @@ object GeminiProvidesModule {
     @Provides
     @Singleton
     fun provideGeminiFoodAnalysisUseCase(
-        repository: GeminiFoodAnalysisRepository
+        repository: GeminiFoodAnalysisRepository,
+        imageProcessingService: ImageProcessingService
     ): GeminiFoodAnalysisUseCase {
-        return GeminiFoodAnalysisUseCase(repository)
+        return GeminiFoodAnalysisUseCase(repository, imageProcessingService)
     }
 }

@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.bmqa.brac.fitnesstracker.common.constants.AppConstants
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodItem
 import com.bmqa.brac.fitnesstracker.domain.entities.HealthStatus
 import com.bmqa.brac.fitnesstracker.presentation.state.AppBarState
@@ -36,11 +37,10 @@ fun GeminiFoodAnalysisScreen(
 ) {
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     val viewModel: GeminiFoodAnalysisViewModel = hiltViewModel()
-    val context = LocalContext.current
     
     // Update app bar title and show back button
     LaunchedEffect(Unit) {
-        AppBarState.updateTitle("Gemini Food Analysis")
+        AppBarState.updateTitle(AppConstants.UiText.GEMINI_FOOD_ANALYSIS_TITLE)
         AppBarState.showBackButton(onNavigateBack)
     }
     
@@ -53,14 +53,14 @@ fun GeminiFoodAnalysisScreen(
     ) {
         // Header
         Text(
-            text = "AI-Powered Food Analysis",
+            text = AppConstants.UiText.AI_POWERED_FOOD_ANALYSIS,
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = Dimensions.spacingMedium)
         )
         
         Text(
-            text = "Take a photo or select from gallery to get detailed food analysis using Gemini AI",
+            text = AppConstants.UiText.TAKE_PHOTO_OR_SELECT_GALLERY_GEMINI,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(bottom = Dimensions.spacingLarge),
@@ -90,7 +90,7 @@ fun GeminiFoodAnalysisScreen(
                 Box(modifier = Modifier.fillMaxSize()) {
                     AsyncImage(
                         model = uri,
-                        contentDescription = "Selected food image",
+                        contentDescription = AppConstants.UiText.CONTENT_DESC_SELECTED_FOOD_IMAGE,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
@@ -102,7 +102,7 @@ fun GeminiFoodAnalysisScreen(
             // Analyze Button - Only visible when image is selected
             Button(
                 onClick = { 
-                    viewModel.analyzeFoodWithGemini(uri, context)
+                    viewModel.analyzeFoodWithGemini(uri)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -114,12 +114,12 @@ fun GeminiFoodAnalysisScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Analyze",
+                    contentDescription = AppConstants.UiText.CONTENT_DESC_ANALYZE,
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(Dimensions.spacingSmall))
                 Text(
-                    text = "Analyze with Gemini AI",
+                    text = AppConstants.UiText.ANALYZE_WITH_GEMINI_AI,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -130,8 +130,7 @@ fun GeminiFoodAnalysisScreen(
             // Analysis Results Section
             GeminiAnalysisResultsSection(
                 selectedImageUri = uri,
-                viewModel = viewModel,
-                context = context
+                viewModel = viewModel
             )
         }
     }
@@ -140,8 +139,7 @@ fun GeminiFoodAnalysisScreen(
 @Composable
 private fun GeminiAnalysisResultsSection(
     selectedImageUri: Uri,
-    viewModel: GeminiFoodAnalysisViewModel,
-    context: Context
+    viewModel: GeminiFoodAnalysisViewModel
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     
@@ -163,13 +161,13 @@ private fun GeminiAnalysisResultsSection(
                     )
                     Spacer(modifier = Modifier.height(Dimensions.spacingMedium))
                     Text(
-                        text = "Analyzing food with Gemini AI...",
+                        text = AppConstants.UiText.ANALYZING_FOOD_WITH_GEMINI,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(Dimensions.spacingSmall))
                     Text(
-                        text = "This may take a few moments",
+                        text = AppConstants.UiText.THIS_MAY_TAKE_FEW_MOMENTS,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -188,7 +186,7 @@ private fun GeminiAnalysisResultsSection(
                     modifier = Modifier.padding(Dimensions.spacingMedium)
                 ) {
                     Text(
-                        text = "Analysis Error",
+                        text = AppConstants.UiText.ANALYSIS_ERROR,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onErrorContainer
@@ -206,14 +204,14 @@ private fun GeminiAnalysisResultsSection(
                     
                     Button(
                         onClick = { 
-                            viewModel.analyzeFoodWithGemini(selectedImageUri, context)
+                            viewModel.analyzeFoodWithGemini(selectedImageUri)
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.error
                         ),
                         shape = RoundedCornerShape(Dimensions.borderRadiusSmall)
                     ) {
-                        Text("Retry Analysis")
+                        Text(AppConstants.UiText.RETRY_ANALYSIS)
                     }
                 }
             }
@@ -235,7 +233,7 @@ private fun GeminiAnalysisResultsSection(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "⚠️ Not a Food Image",
+                            text = AppConstants.UiText.NOT_A_FOOD_IMAGE,
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onErrorContainer
@@ -261,7 +259,7 @@ private fun GeminiAnalysisResultsSection(
                             ),
                             shape = RoundedCornerShape(Dimensions.borderRadiusSmall)
                         ) {
-                            Text("Try Different Image")
+                            Text(AppConstants.UiText.TRY_DIFFERENT_IMAGE)
                         }
                     }
                 }
@@ -277,7 +275,7 @@ private fun GeminiAnalysisResultsSection(
                         modifier = Modifier.padding(Dimensions.spacingMedium)
                     ) {
                         Text(
-                            text = "Gemini AI Analysis Results",
+                            text = AppConstants.UiText.GEMINI_AI_ANALYSIS_RESULTS,
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -304,7 +302,7 @@ private fun GeminiAnalysisResultsSection(
                         // New Analysis button
                         OutlinedButton(
                             onClick = { 
-                                viewModel.analyzeFoodWithGemini(selectedImageUri, context)
+                                viewModel.analyzeFoodWithGemini(selectedImageUri)
                             },
                             modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.outlinedButtonColors(
@@ -314,7 +312,7 @@ private fun GeminiAnalysisResultsSection(
                             border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                             shape = RoundedCornerShape(Dimensions.borderRadiusSmall)
                         ) {
-                            Text("Analyze Again")
+                            Text(AppConstants.UiText.ANALYZE_AGAIN)
                         }
                     }
                 }
@@ -363,7 +361,7 @@ private fun GeminiFoodItemResult(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Portion:",
+                        text = AppConstants.UiText.LABEL_PORTION,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -376,7 +374,7 @@ private fun GeminiFoodItemResult(
                 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Digestion:",
+                        text = AppConstants.UiText.LABEL_DIGESTION,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -393,7 +391,7 @@ private fun GeminiFoodItemResult(
             // Nutrition information
             if (foodItem.calories != null || foodItem.protein != null || foodItem.carbs != null || foodItem.fat != null) {
                 Text(
-                    text = "Nutrition Information",
+                    text = AppConstants.UiText.LABEL_NUTRITION_INFORMATION,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
@@ -406,16 +404,16 @@ private fun GeminiFoodItemResult(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     foodItem.calories?.let { calories ->
-                        NutritionInfo(label = "Calories", value = "$calories")
+                        NutritionInfo(label = AppConstants.UiText.CALORIES.replace(": %d", ""), value = "$calories")
                     }
                     foodItem.protein?.let { protein ->
-                        NutritionInfo(label = "Protein", value = protein)
+                        NutritionInfo(label = AppConstants.UiText.PROTEIN.replace(": %s", ""), value = protein)
                     }
                     foodItem.carbs?.let { carbs ->
-                        NutritionInfo(label = "Carbs", value = carbs)
+                        NutritionInfo(label = AppConstants.UiText.CARBS.replace(": %s", ""), value = carbs)
                     }
                     foodItem.fat?.let { fat ->
-                        NutritionInfo(label = "Fat", value = fat)
+                        NutritionInfo(label = AppConstants.UiText.FAT.replace(": %s", ""), value = fat)
                     }
                 }
                 
@@ -425,7 +423,7 @@ private fun GeminiFoodItemResult(
             // Health benefits
             if (foodItem.healthBenefits.isNotEmpty()) {
                 Text(
-                    text = "Health Benefits",
+                    text = AppConstants.UiText.LABEL_HEALTH_BENEFITS,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
@@ -459,7 +457,7 @@ private fun GeminiFoodItemResult(
             // Health concerns
             if (foodItem.healthConcerns.isNotEmpty()) {
                 Text(
-                    text = "Health Concerns",
+                    text = AppConstants.UiText.LABEL_HEALTH_CONCERNS,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.error

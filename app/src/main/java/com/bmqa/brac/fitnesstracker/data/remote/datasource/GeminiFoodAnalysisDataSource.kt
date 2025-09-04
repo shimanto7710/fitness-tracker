@@ -6,5 +6,5 @@ import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 import javax.inject.Inject
 
 interface GeminiFoodAnalysisDataSource {
-    suspend fun analyzeFoodWithGemini(imageUri: Uri, context: Context): Result<GeminiFoodAnalysis>
+    suspend fun analyzeFoodWithGemini(imageUri: String, base64Image: String): Result<GeminiFoodAnalysis>
 }

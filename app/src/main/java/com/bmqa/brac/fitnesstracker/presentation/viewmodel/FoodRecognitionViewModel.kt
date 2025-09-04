@@ -4,7 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bmqa.brac.fitnesstracker.domain.entities.FoodItem
-import com.bmqa.brac.fitnesstracker.presentation.service.ClarifaiService
+import com.bmqa.brac.fitnesstracker.domain.usecase.RecognizeFoodUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FoodRecognitionViewModel @Inject constructor(
-    private val clarifaiService: ClarifaiService
+    private val recognizeFoodUseCase: RecognizeFoodUseCase
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(FoodRecognitionUiState())
@@ -25,18 +25,51 @@ class FoodRecognitionViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
             try {
-                val foodItems = clarifaiService.recognizeFoodFromImage(imageUri, context)
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    foodItems = foodItems,
-                    error = null
-                )
+                // Convert URI to base64
+                val base64Image = uriToBase64(imageUri, context)
+                if (base64Image != null) {
+                    val result = recognizeFoodUseCase(base64Image)
+                    result.fold(
+                        onSuccess = { foodItems ->
+                            _uiState.value = _uiState.value.copy(
+                                isLoading = false,
+                                foodItems = foodItems,
+                                error = null
+                            )
+                        },
+                        onFailure = { exception ->
+                            _uiState.value = _uiState.value.copy(
+                                isLoading = false,
+                                error = exception.message ?: "Unknown error occurred"
+                            )
+                        }
+                    )
+                } else {
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = "Failed to convert image to base64"
+                    )
+                }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = e.message ?: "Unknown error occurred"
                 )
             }
+        }
+    }
+    
+    private fun uriToBase64(uri: Uri, context: android.content.Context): String? {
+        return try {
+            val inputStream: java.io.InputStream? = context.contentResolver.openInputStream(uri)
+            if (inputStream == null) {
+                return null
+            }
+            
+            val bytes = inputStream.readBytes()
+            android.util.Base64.encodeToString(bytes, android.util.Base64.NO_WRAP)
+        } catch (e: Exception) {
+            null
         }
     }
     

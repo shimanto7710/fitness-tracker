@@ -37,11 +37,10 @@ fun FoodDetectionScreen(
 ) {
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     val viewModel: CustomFoodDetectionViewModel = hiltViewModel()
-    val context = LocalContext.current
     
     // Update app bar title and show back button
     LaunchedEffect(Unit) {
-        AppBarState.updateTitle("Food Detection")
+        AppBarState.updateTitle(AppConstants.UiText.FOOD_DETECTION_TITLE)
         AppBarState.showBackButton(onNavigateBack)
     }
     
@@ -54,14 +53,14 @@ fun FoodDetectionScreen(
     ) {
         // Header
         Text(
-            text = "Food Detection",
+            text = AppConstants.UiText.FOOD_DETECTION_TITLE,
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = Dimensions.spacingMedium)
         )
         
         Text(
-            text = "Take a photo or select from gallery to analyze food",
+            text = AppConstants.UiText.TAKE_PHOTO_OR_SELECT_GALLERY,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(bottom = Dimensions.spacingLarge),
@@ -91,7 +90,7 @@ fun FoodDetectionScreen(
                 Box(modifier = Modifier.fillMaxSize()) {
                     AsyncImage(
                         model = uri,
-                        contentDescription = "Selected food image",
+                        contentDescription = AppConstants.UiText.CONTENT_DESC_SELECTED_FOOD_IMAGE,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
@@ -103,7 +102,7 @@ fun FoodDetectionScreen(
             // Analyze Button - Only visible when image is selected
             Button(
                 onClick = { 
-                    viewModel.detectFoodFromImage(uri, context)
+                    viewModel.detectFoodFromImage(uri)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -115,12 +114,12 @@ fun FoodDetectionScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Analyze",
+                    contentDescription = AppConstants.UiText.CONTENT_DESC_ANALYZE,
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(Dimensions.spacingSmall))
                 Text(
-                    text = "Analyze Food",
+                    text = AppConstants.UiText.ANALYZE_FOOD,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -131,8 +130,7 @@ fun FoodDetectionScreen(
             // Analysis Results Section
             AnalysisResultsSection(
                 selectedImageUri = uri,
-                viewModel = viewModel,
-                context = context
+                viewModel = viewModel
             )
         }
     }
@@ -141,8 +139,7 @@ fun FoodDetectionScreen(
 @Composable
 private fun AnalysisResultsSection(
     selectedImageUri: Uri,
-    viewModel: CustomFoodDetectionViewModel,
-    context: Context
+    viewModel: CustomFoodDetectionViewModel
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     
@@ -164,7 +161,7 @@ private fun AnalysisResultsSection(
                     )
                     Spacer(modifier = Modifier.height(Dimensions.spacingMedium))
                     Text(
-                        text = "Analyzing food image...",
+                        text = AppConstants.UiText.ANALYZING_FOOD_IMAGE,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -183,7 +180,7 @@ private fun AnalysisResultsSection(
                     modifier = Modifier.padding(Dimensions.spacingMedium)
                 ) {
                     Text(
-                        text = "Error",
+                        text = AppConstants.UiText.ERROR,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onErrorContainer
@@ -201,14 +198,14 @@ private fun AnalysisResultsSection(
                     
                     Button(
                         onClick = { 
-                            viewModel.detectFoodFromImage(selectedImageUri, context)
+                            viewModel.detectFoodFromImage(selectedImageUri)
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.error
                         ),
                         shape = RoundedCornerShape(Dimensions.borderRadiusSmall)
                     ) {
-                        Text("Retry")
+                        Text(AppConstants.UiText.RETRY)
                     }
                 }
             }
@@ -226,7 +223,7 @@ private fun AnalysisResultsSection(
                     modifier = Modifier.padding(Dimensions.spacingMedium)
                 ) {
                     Text(
-                        text = "Detection Results",
+                        text = AppConstants.UiText.DETECTION_RESULTS,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -235,7 +232,7 @@ private fun AnalysisResultsSection(
                     Spacer(modifier = Modifier.height(Dimensions.spacingMedium))
                     
                     Text(
-                        text = "Found ${foodItems.size} food item(s)",
+                        text = AppConstants.UiText.FOUND_FOOD_ITEMS.format(foodItems.size),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -253,7 +250,7 @@ private fun AnalysisResultsSection(
                     // New Analysis button
                     OutlinedButton(
                         onClick = { 
-                            viewModel.detectFoodFromImage(selectedImageUri, context)
+                            viewModel.detectFoodFromImage(selectedImageUri)
                         },
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.outlinedButtonColors(
@@ -295,7 +292,7 @@ private fun FoodItemResult(
             Spacer(modifier = Modifier.height(Dimensions.spacingSmall))
             
             Text(
-                text = "Confidence: ${(foodItem.confidence * 100).toInt()}%",
+                text = AppConstants.UiText.CONFIDENCE.format((foodItem.confidence * 100).toInt()),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -304,7 +301,7 @@ private fun FoodItemResult(
             foodItem.boundingBox?.let { bbox ->
                 Spacer(modifier = Modifier.height(Dimensions.spacingSmall))
                 Text(
-                    text = "Location: x=${bbox.x}, y=${bbox.y}, w=${bbox.width}, h=${bbox.height}",
+                    text = AppConstants.UiText.LABEL_LOCATION.format(bbox.x, bbox.y, bbox.width, bbox.height),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -313,7 +310,7 @@ private fun FoodItemResult(
             // Note: This API doesn't provide nutrition info, so we show a message
             Spacer(modifier = Modifier.height(Dimensions.spacingSmall))
             Text(
-                text = "Nutrition info not available from this API",
+                text = AppConstants.UiText.NUTRITION_INFO_NOT_AVAILABLE,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
