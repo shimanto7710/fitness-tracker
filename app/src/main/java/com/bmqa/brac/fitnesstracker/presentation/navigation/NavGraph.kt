@@ -8,7 +8,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.bmqa.brac.fitnesstracker.common.constants.AppConstants
 import com.bmqa.brac.fitnesstracker.presentation.ui.screens.CaloriesManagementScreen
-import com.bmqa.brac.fitnesstracker.presentation.ui.screens.FoodDetectionScreen
 import com.bmqa.brac.fitnesstracker.presentation.ui.screens.HomeScreen
 import com.bmqa.brac.fitnesstracker.presentation.ui.screens.GeminiFoodAnalysisScreen
 
@@ -16,7 +15,6 @@ import com.bmqa.brac.fitnesstracker.presentation.ui.screens.GeminiFoodAnalysisSc
 sealed class Screen(val route: String) {
     object Home : Screen(AppConstants.Navigation.SCREEN_HOME)
     object CaloriesManagement : Screen(AppConstants.Navigation.SCREEN_CALORIES_MANAGEMENT)
-    object FoodDetection : Screen(AppConstants.Navigation.SCREEN_FOOD_DETECTION)
     object GeminiFoodAnalysis : Screen(AppConstants.Navigation.SCREEN_GEMINI_FOOD_ANALYSIS)
     
     companion object {
@@ -24,7 +22,6 @@ sealed class Screen(val route: String) {
             return when (route?.substringBefore("/")) {
                 Home.route -> Home
                 CaloriesManagement.route -> CaloriesManagement
-                FoodDetection.route -> FoodDetection
                 GeminiFoodAnalysis.route -> GeminiFoodAnalysis
                 null -> Home
                 else -> throw IllegalArgumentException("Route $route is not recognized.")
@@ -49,9 +46,6 @@ fun FitnessTrackerNavGraph(
                 onNavigateToCaloriesManagement = {
                     navController.navigate(Screen.CaloriesManagement.route)
                 },
-                onNavigateToFoodDetection = {
-                    navController.navigate(Screen.FoodDetection.route)
-                },
                 onNavigateToGeminiFoodAnalysis = {
                     navController.navigate(Screen.GeminiFoodAnalysis.route)
                 }
@@ -66,13 +60,6 @@ fun FitnessTrackerNavGraph(
             )
         }
         
-        composable(Screen.FoodDetection.route) {
-            FoodDetectionScreen(
-                onNavigateBack = {
-                    navController.popBackStack()
-                }
-            )
-        }
         
         
         composable(Screen.GeminiFoodAnalysis.route) {

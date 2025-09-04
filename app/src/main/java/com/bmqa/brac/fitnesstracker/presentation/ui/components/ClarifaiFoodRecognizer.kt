@@ -225,34 +225,6 @@ fun FoodItemCard(
                 text = AppConstants.UiText.CONFIDENCE.format((food.confidence * 100).toInt()),
                 style = MaterialTheme.typography.bodyMedium
             )
-            
-            food.calories?.let { calories ->
-                Text(
-                    text = AppConstants.UiText.CALORIES.format(calories),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-            
-            food.protein?.let { protein ->
-                Text(
-                    text = AppConstants.UiText.PROTEIN.format(protein),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-            
-            food.carbs?.let { carbs ->
-                Text(
-                    text = AppConstants.UiText.CARBS.format(carbs),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-            
-            food.fat?.let { fat ->
-                Text(
-                    text = AppConstants.UiText.FAT.format(fat),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
         }
     }
 }

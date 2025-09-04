@@ -24,7 +24,6 @@ import com.bmqa.brac.fitnesstracker.ui.theme.Dimensions
 @Composable
 fun HomeScreen(
     onNavigateToCaloriesManagement: () -> Unit,
-    onNavigateToFoodDetection: () -> Unit,
     onNavigateToGeminiFoodAnalysis: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -53,53 +52,6 @@ fun HomeScreen(
         Column(
             verticalArrangement = Arrangement.spacedBy(Dimensions.spacingMedium)
         ) {
-            // Food Detection Card
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(Dimensions.cardHeight),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
-                onClick = onNavigateToFoodDetection
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(Dimensions.spacingMedium),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = AppConstants.UiText.CONTENT_DESC_FOOD_DETECTION,
-                        modifier = Modifier.size(Dimensions.iconSizeExtraLarge),
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                    Spacer(modifier = Modifier.width(Dimensions.spacingMedium))
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(
-                            text = AppConstants.UiText.FOOD_DETECTION_TITLE,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                        Spacer(modifier = Modifier.height(Dimensions.spacingSmall))
-                        Text(
-                            text = AppConstants.UiText.TAKE_PHOTOS_AND_ANALYZE,
-                            fontSize = 14.sp,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
-                        )
-                    }
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = AppConstants.UiText.CONTENT_DESC_NAVIGATE,
-                        modifier = Modifier.size(Dimensions.iconSizeMedium),
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                }
-            }
-            
             // Calories Management Card
             Card(
                 modifier = Modifier

@@ -1,7 +1,5 @@
 package com.bmqa.brac.fitnesstracker.data.repository
 
-import com.bmqa.brac.fitnesstracker.common.constants.AppConstants
-import com.bmqa.brac.fitnesstracker.data.local.datasource.FoodNutritionDataSource
 import com.bmqa.brac.fitnesstracker.data.remote.datasource.ClarifaiRemoteDataSource
 import com.bmqa.brac.fitnesstracker.data.mapper.ClarifaiMapper
 import com.bmqa.brac.fitnesstracker.domain.entities.FoodItem
@@ -14,7 +12,6 @@ import javax.inject.Singleton
 @Singleton
 class ClarifaiRepositoryImpl @Inject constructor(
     private val remoteDataSource: ClarifaiRemoteDataSource,
-    private val nutritionDataSource: FoodNutritionDataSource,
     private val clarifaiMapper: ClarifaiMapper
 ) : ClarifaiRepository {
     
@@ -22,9 +19,7 @@ class ClarifaiRepositoryImpl @Inject constructor(
         try {
             val clarifaiResponse = remoteDataSource.recognizeFood(base64Image)
             clarifaiResponse.map { response ->
-                clarifaiMapper.mapToFoodItems(response) { foodName ->
-                    nutritionDataSource.getFoodNutrition(foodName)
-                }
+                clarifaiMapper.mapToFoodItems(response)
             }
         } catch (e: Exception) {
             Result.failure(e)

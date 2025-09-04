@@ -6,7 +6,6 @@ object AppConstants {
     object Navigation {
         const val SCREEN_HOME = "home"
         const val SCREEN_CALORIES_MANAGEMENT = "calories_management"
-        const val SCREEN_FOOD_DETECTION = "food_detection"
         const val SCREEN_GEMINI_FOOD_ANALYSIS = "gemini_food_analysis"
     }
     
@@ -46,7 +45,6 @@ object AppConstants {
         const val CALORIES_MANAGEMENT_TITLE = "Calories Management"
         const val FOOD_RECOGNITION_TITLE = "Food Recognition"
         const val GEMINI_FOOD_ANALYSIS_TITLE = "Gemini Food Analysis"
-        const val FOOD_DETECTION_TITLE = "Food Detection"
         
         // Buttons
         const val SELECT_IMAGE = "Select Image"
@@ -68,7 +66,6 @@ object AppConstants {
         const val NO_FOOD_DETECTED = "No food detected"
         const val ERROR_ANALYZING_FOOD = "Error analyzing food"
         const val CHOOSE_YOUR_FEATURE = "Choose your feature"
-        const val TAKE_PHOTOS_AND_ANALYZE = "Take photos and analyze food for nutrition"
         const val ANALYZE_FOOD_IMAGES_FOR_CALORIES = "Analyze food images for calorie tracking"
         const val ADVANCED_AI_FOOD_ANALYSIS = "Advanced AI food analysis with Google Gemini"
         const val TAKE_PHOTO_OR_SELECT_GALLERY = "Take a photo or select from gallery to analyze food"
@@ -93,7 +90,6 @@ object AppConstants {
         const val FAT = "Fat: %s"
         
         // Content Descriptions
-        const val CONTENT_DESC_FOOD_DETECTION = "Food Detection"
         const val CONTENT_DESC_NAVIGATE = "Navigate"
         const val CONTENT_DESC_GALLERY = "Gallery"
         const val CONTENT_DESC_GEMINI_FOOD_ANALYSIS = "Gemini Food Analysis"
