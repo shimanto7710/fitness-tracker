@@ -1,13 +1,11 @@
 package com.bmqa.brac.fitnesstracker.di
 
 import com.bmqa.brac.fitnesstracker.data.remote.api.ClarifaiApiService
-import com.bmqa.brac.fitnesstracker.data.remote.datasource.ClarifaiRemoteDataSource
-import com.bmqa.brac.fitnesstracker.data.remote.datasource.ClarifaiRemoteDataSourceImpl
-import com.bmqa.brac.fitnesstracker.data.remote.datasource.GeminiFoodAnalysisDataSource
-import com.bmqa.brac.fitnesstracker.data.remote.datasource.GeminiFoodAnalysisDataSourceImpl
 import com.bmqa.brac.fitnesstracker.data.remote.network.RetrofitClient
 import com.bmqa.brac.fitnesstracker.data.repository.ClarifaiRepositoryImpl
 import com.bmqa.brac.fitnesstracker.data.repository.GeminiFoodAnalysisRepositoryImpl
+import com.bmqa.brac.fitnesstracker.data.repository.MockGeminiFoodAnalysisRepositoryImpl
+import com.bmqa.brac.fitnesstracker.common.constants.GeminiConstants
 import com.bmqa.brac.fitnesstracker.data.mapper.ClarifaiMapper
 import com.bmqa.brac.fitnesstracker.data.service.ImageProcessingServiceImpl
 import com.bmqa.brac.fitnesstracker.domain.repository.ClarifaiRepository
@@ -34,19 +32,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class NetworkModule {
     
-    // Data Source Bindings
-    @Binds
-    @Singleton
-    abstract fun bindClarifaiRemoteDataSource(
-        impl: ClarifaiRemoteDataSourceImpl
-    ): ClarifaiRemoteDataSource
-    
-    @Binds
-    @Singleton
-    abstract fun bindGeminiFoodAnalysisDataSource(
-        impl: GeminiFoodAnalysisDataSourceImpl
-    ): GeminiFoodAnalysisDataSource
-    
     // Repository Bindings
     @Binds
     @Singleton
@@ -54,11 +39,6 @@ abstract class NetworkModule {
         impl: ClarifaiRepositoryImpl
     ): ClarifaiRepository
     
-    @Binds
-    @Singleton
-    abstract fun bindGeminiFoodAnalysisRepository(
-        impl: GeminiFoodAnalysisRepositoryImpl
-    ): GeminiFoodAnalysisRepository
     
     // Service Bindings
     @Binds
@@ -145,6 +125,19 @@ object NetworkProvidesModule {
         return RecognizeFoodUseCase(repository)
     }
     
+    
+    @Provides
+    @Singleton
+    fun provideGeminiFoodAnalysisRepository(
+        realRepository: GeminiFoodAnalysisRepositoryImpl,
+        mockRepository: MockGeminiFoodAnalysisRepositoryImpl
+    ): GeminiFoodAnalysisRepository {
+        return if (GeminiConstants.USE_MOCK_DATA) {
+            mockRepository
+        } else {
+            realRepository
+        }
+    }
     
     @Provides
     @Singleton
