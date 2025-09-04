@@ -18,10 +18,14 @@ object AppConstants {
         const val API_KEY = "57aee404b0c44eddb317dc69f04895b5"
         const val AUTHORIZATION_HEADER = "Key $API_KEY"
         
-        // Timeouts
-        const val CONNECT_TIMEOUT = 30L
-        const val READ_TIMEOUT = 30L
-        const val WRITE_TIMEOUT = 30L
+        // Debug flag
+        const val IS_DEBUG = true // Set to false for production
+        
+        // Timeouts (in milliseconds)
+        const val REQUEST_TIMEOUT = 30_000L
+        const val CONNECT_TIMEOUT = 15_000L
+        const val READ_TIMEOUT = 30_000L
+        const val WRITE_TIMEOUT = 30_000L
     }
     
     // UI Text

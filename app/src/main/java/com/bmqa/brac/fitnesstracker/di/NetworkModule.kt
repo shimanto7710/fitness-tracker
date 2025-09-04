@@ -1,7 +1,8 @@
 package com.bmqa.brac.fitnesstracker.di
 
-import com.bmqa.brac.fitnesstracker.data.remote.api.ClarifaiApiService
-import com.bmqa.brac.fitnesstracker.data.remote.network.RetrofitClient
+import com.bmqa.brac.fitnesstracker.data.remote.api.ClarifaiKtorApiService
+import com.bmqa.brac.fitnesstracker.data.remote.network.KtorClient
+import io.ktor.client.*
 import com.bmqa.brac.fitnesstracker.data.repository.ClarifaiRepositoryImpl
 import com.bmqa.brac.fitnesstracker.data.repository.GeminiFoodAnalysisRepositoryImpl
 import com.bmqa.brac.fitnesstracker.data.repository.MockGeminiFoodAnalysisRepositoryImpl
@@ -20,11 +21,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -67,52 +63,26 @@ object NetworkProvidesModule {
         return ClarifaiMapper()
     }
     
-    // OkHttp Client Providers
+    // Ktor Client Provider
+    @Provides
+    @Singleton
+    fun provideKtorClient(): KtorClient {
+        return KtorClient()
+    }
+    
+    // HttpClient Provider
     @Provides
     @Singleton
     @Named("Clarifai")
-    fun provideClarifaiOkHttpClient(): OkHttpClient {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-        
-        // Add OkHttp Profiler interceptor for API monitoring
-        val profilerInterceptor = com.localebro.okhttpprofiler.OkHttpProfilerInterceptor()
-        
-        return OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .addInterceptor(profilerInterceptor)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
+    fun provideClarifaiHttpClient(ktorClient: KtorClient): HttpClient {
+        return ktorClient.createClarifaiClient()
     }
     
-    
-    // Retrofit Client Providers
+    // API Service Provider
     @Provides
     @Singleton
-    fun provideRetrofitClient(): RetrofitClient {
-        return RetrofitClient()
-    }
-    
-    @Provides
-    @Singleton
-    @Named("Clarifai")
-    fun provideClarifaiRetrofit(@Named("Clarifai") client: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl("https://api.clarifai.com/")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-    
-    
-    // API Service Providers
-    @Provides
-    @Singleton
-    fun provideClarifaiApiService(retrofitClient: RetrofitClient): ClarifaiApiService {
-        return retrofitClient.createService(ClarifaiApiService::class.java)
+    fun provideClarifaiKtorApiService(@Named("Clarifai") httpClient: HttpClient): ClarifaiKtorApiService {
+        return ClarifaiKtorApiService(httpClient)
     }
     
     

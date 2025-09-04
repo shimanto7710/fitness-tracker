@@ -2,7 +2,7 @@ package com.bmqa.brac.fitnesstracker.data.repository
 
 import com.bmqa.brac.fitnesstracker.common.constants.AppConstants
 import com.bmqa.brac.fitnesstracker.data.mapper.ClarifaiMapper
-import com.bmqa.brac.fitnesstracker.data.remote.api.ClarifaiApiService
+import com.bmqa.brac.fitnesstracker.data.remote.api.ClarifaiKtorApiService
 import com.bmqa.brac.fitnesstracker.data.remote.dto.ClarifaiRequest
 import com.bmqa.brac.fitnesstracker.data.remote.dto.ClarifaiResponse
 import com.bmqa.brac.fitnesstracker.data.remote.dto.ClarifaiUserAppId
@@ -18,7 +18,7 @@ import javax.inject.Singleton
 
 @Singleton
 class ClarifaiRepositoryImpl @Inject constructor(
-    private val apiService: ClarifaiApiService,
+    private val apiService: ClarifaiKtorApiService,
     private val clarifaiMapper: ClarifaiMapper
 ) : ClarifaiRepository {
     
@@ -38,18 +38,9 @@ class ClarifaiRepositoryImpl @Inject constructor(
                 )
             )
             
-            val response = apiService.recognizeFood(
-                authorization = AppConstants.Api.AUTHORIZATION_HEADER,
-                requestBody = request
-            )
-            
-            if (response.isSuccessful) {
-                val clarifaiResponse = response.body()!!
-                Result.success(clarifaiResponse).map { response ->
-                    clarifaiMapper.mapToFoodItems(response)
-                }
-            } else {
-                Result.failure(Exception("API call failed: ${response.code()}"))
+            val clarifaiResponse = apiService.recognizeFood(request)
+            Result.success(clarifaiResponse).map { response ->
+                clarifaiMapper.mapToFoodItems(response)
             }
         } catch (e: Exception) {
             Result.failure(e)
