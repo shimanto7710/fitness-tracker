@@ -43,7 +43,6 @@ object AppConstants {
         const val NAVIGATION_TITLE = "Fitness Tracker"
         const val IMAGE_PICKER_TITLE = "Image Picker"
         const val CALORIES_MANAGEMENT_TITLE = "Calories Management"
-        const val FOOD_RECOGNITION_TITLE = "Food Recognition"
         const val GEMINI_FOOD_ANALYSIS_TITLE = "Gemini Food Analysis"
         
         // Buttons
@@ -68,10 +67,8 @@ object AppConstants {
         const val CHOOSE_YOUR_FEATURE = "Choose your feature"
         const val ANALYZE_FOOD_IMAGES_FOR_CALORIES = "Analyze food images for calorie tracking"
         const val ADVANCED_AI_FOOD_ANALYSIS = "Advanced AI food analysis with Google Gemini"
-        const val TAKE_PHOTO_OR_SELECT_GALLERY = "Take a photo or select from gallery to analyze food"
         const val TAKE_PHOTO_OR_SELECT_GALLERY_GEMINI = "Take a photo or select from gallery to get detailed food analysis using Gemini AI"
         const val AI_POWERED_FOOD_ANALYSIS = "AI-Powered Food Analysis"
-        const val ANALYZING_FOOD_IMAGE = "Analyzing food image..."
         const val ANALYZING_FOOD_WITH_GEMINI = "Analyzing food with Gemini AI..."
         const val THIS_MAY_TAKE_FEW_MOMENTS = "This may take a few moments"
         const val ANALYSIS_ERROR = "Analysis Error"

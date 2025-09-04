@@ -4,7 +4,8 @@ A comprehensive food analysis application with AI-powered nutritional informatio
 
 ## Features
 
-- **AI Food Analysis**: Uses OpenRouter API to analyze food images and provide nutritional information
+- **Food Recognition**: Uses Clarifai API to recognize food items from images
+- **AI Food Analysis**: Uses Google Gemini API to analyze food images and provide nutritional information
 - **Image Capture**: Take photos or select from gallery for food analysis
 - **Network Profiling**: Built-in OkHttp Profiler for debugging API calls
 
@@ -39,9 +40,9 @@ The app includes OkHttp Profiler integration to help debug and monitor network c
 
 ### Network Configuration
 
-The app uses separate OkHttp clients for different APIs:
-- **OpenRouter API**: For AI food analysis
-- **Custom Food Detection API**: For additional food detection features
+The app uses OkHttp clients for API calls:
+- **Clarifai API**: For food recognition
+- **Google Gemini API**: For advanced food analysis
 
 Both clients include:
 - HTTP logging interceptor (for console logs)
@@ -54,8 +55,7 @@ Both clients include:
 ```
 1. User selects/captures image
 2. Image converted to base64
-3. OpenRouter API request sent with:
-   - Model: qwen/qwen-2.5-vl-7b-instruct
+3. API request sent with:
    - Image data in base64 format
    - Custom prompt for food analysis
 4. Response processed and displayed in UI
