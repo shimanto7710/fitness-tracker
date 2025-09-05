@@ -7,11 +7,7 @@ import com.bmqa.brac.fitnesstracker.domain.repository.GeminiFoodAnalysisReposito
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
-import javax.inject.Singleton
-
-@Singleton
-class MockGeminiFoodAnalysisRepositoryImpl @Inject constructor() : GeminiFoodAnalysisRepository {
+class MockGeminiFoodAnalysisRepositoryImpl : GeminiFoodAnalysisRepository {
     
     override suspend fun analyzeFoodWithGemini(imageUri: String, base64Image: String): Result<GeminiFoodAnalysis> = withContext(Dispatchers.IO) {
         try {

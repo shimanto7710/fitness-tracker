@@ -19,18 +19,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.bmqa.brac.fitnesstracker.common.constants.AppConstants
 import com.bmqa.brac.fitnesstracker.domain.entities.FoodItem
 import com.bmqa.brac.fitnesstracker.presentation.viewmodel.FoodRecognitionViewModel
 import com.bmqa.brac.fitnesstracker.ui.theme.Dimensions
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ClarifaiFoodRecognizer(
     selectedImageUri: Uri?,
-    viewModel: FoodRecognitionViewModel = hiltViewModel()
+    viewModel: FoodRecognitionViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

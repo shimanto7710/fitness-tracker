@@ -13,9 +13,6 @@ import com.bmqa.brac.fitnesstracker.presentation.navigation.FitnessTrackerNavGra
 import com.bmqa.brac.fitnesstracker.presentation.ui.components.AppBar
 import com.bmqa.brac.fitnesstracker.presentation.state.AppBarState
 import com.bmqa.brac.fitnesstracker.ui.theme.FitnessTrackerTheme
-import dagger.hilt.android.AndroidEntryPoint
-
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

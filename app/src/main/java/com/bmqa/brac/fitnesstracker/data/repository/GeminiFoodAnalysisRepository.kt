@@ -17,11 +17,7 @@ import com.google.gson.JsonParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.InputStream
-import javax.inject.Inject
-import javax.inject.Singleton
-
-@Singleton
-class GeminiFoodAnalysisRepositoryImpl @Inject constructor(
+class GeminiFoodAnalysisRepositoryImpl(
     private val context: Context
 ) : GeminiFoodAnalysisRepository {
     

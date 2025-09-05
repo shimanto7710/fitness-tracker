@@ -5,17 +5,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bmqa.brac.fitnesstracker.domain.entities.FoodItem
 import com.bmqa.brac.fitnesstracker.domain.usecase.RecognizeFoodUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-@HiltViewModel
-class FoodRecognitionViewModel @Inject constructor(
-    private val recognizeFoodUseCase: RecognizeFoodUseCase
-) : ViewModel() {
+class FoodRecognitionViewModel : ViewModel(), KoinComponent {
+    
+    private val recognizeFoodUseCase: RecognizeFoodUseCase by inject()
     
     private val _uiState = MutableStateFlow(FoodRecognitionUiState())
     val uiState: StateFlow<FoodRecognitionUiState> = _uiState.asStateFlow()

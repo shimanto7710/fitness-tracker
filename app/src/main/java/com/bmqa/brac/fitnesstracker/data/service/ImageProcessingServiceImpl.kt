@@ -6,11 +6,7 @@ import com.bmqa.brac.fitnesstracker.domain.service.ImageProcessingService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.InputStream
-import javax.inject.Inject
-import javax.inject.Singleton
-
-@Singleton
-class ImageProcessingServiceImpl @Inject constructor(
+class ImageProcessingServiceImpl(
     private val context: Context
 ) : ImageProcessingService {
     

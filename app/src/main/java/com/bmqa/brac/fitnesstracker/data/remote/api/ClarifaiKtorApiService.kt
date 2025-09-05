@@ -11,11 +11,8 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class ClarifaiKtorApiService @Inject constructor(
+class ClarifaiKtorApiService(
     private val httpClient: HttpClient
 ) {
     

@@ -1,8 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.hilt)
-    id("kotlin-kapt")
 }
 
 android {
@@ -87,11 +85,11 @@ dependencies {
     
     // Compose Navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     
-    // Hilt for dependency injection
-    implementation("com.google.dagger:hilt-android:2.48")
-    kapt("com.google.dagger:hilt-android-compiler:2.48")
+    // Dependency Injection - Koin
+    implementation("io.insert-koin:koin-android:3.5.3")
+    implementation("io.insert-koin:koin-androidx-compose:3.5.3")
+    implementation("io.insert-koin:koin-core:3.5.3")
     
     // Google AI SDK for Gemini
     implementation("com.google.ai.client.generativeai:generativeai:0.1.2")

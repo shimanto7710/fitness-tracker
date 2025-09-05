@@ -11,11 +11,8 @@ import io.ktor.http.*
 import io.ktor.serialization.gson.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class KtorClient @Inject constructor() {
+class KtorClient {
     
     fun createClarifaiClient(): HttpClient {
         return HttpClient(OkHttp) {

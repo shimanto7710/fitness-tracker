@@ -3,9 +3,7 @@ package com.bmqa.brac.fitnesstracker.domain.usecase
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 import com.bmqa.brac.fitnesstracker.domain.repository.GeminiFoodAnalysisRepository
 import com.bmqa.brac.fitnesstracker.domain.service.ImageProcessingService
-import javax.inject.Inject
-
-class GeminiFoodAnalysisUseCase @Inject constructor(
+class GeminiFoodAnalysisUseCase(
     private val repository: GeminiFoodAnalysisRepository,
     private val imageProcessingService: ImageProcessingService
 ) {

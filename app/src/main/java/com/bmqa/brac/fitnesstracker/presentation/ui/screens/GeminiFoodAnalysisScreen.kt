@@ -18,7 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.bmqa.brac.fitnesstracker.common.constants.AppConstants
@@ -29,6 +28,7 @@ import com.bmqa.brac.fitnesstracker.presentation.ui.components.ImagePicker
 import com.bmqa.brac.fitnesstracker.presentation.viewmodel.GeminiFoodAnalysisViewModel
 import com.bmqa.brac.fitnesstracker.presentation.viewmodel.GeminiFoodAnalysisUiState
 import com.bmqa.brac.fitnesstracker.ui.theme.Dimensions
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun GeminiFoodAnalysisScreen(
@@ -36,7 +36,7 @@ fun GeminiFoodAnalysisScreen(
     modifier: Modifier = Modifier
 ) {
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-    val viewModel: GeminiFoodAnalysisViewModel = hiltViewModel()
+    val viewModel: GeminiFoodAnalysisViewModel = koinViewModel()
     
     // Update app bar title and show back button
     LaunchedEffect(Unit) {

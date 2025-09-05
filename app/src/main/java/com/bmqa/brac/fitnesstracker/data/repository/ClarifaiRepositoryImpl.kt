@@ -13,11 +13,8 @@ import com.bmqa.brac.fitnesstracker.domain.entities.FoodItem
 import com.bmqa.brac.fitnesstracker.domain.repository.ClarifaiRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class ClarifaiRepositoryImpl @Inject constructor(
+class ClarifaiRepositoryImpl(
     private val apiService: ClarifaiKtorApiService,
     private val clarifaiMapper: ClarifaiMapper
 ) : ClarifaiRepository {
