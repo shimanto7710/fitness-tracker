@@ -17,6 +17,9 @@ object AppBarState {
     var onBackClick by mutableStateOf<(() -> Unit)?>(null)
         private set
     
+    var isTransparent by mutableStateOf(false)
+        private set
+    
     /**
      * Update the app bar title
      */
@@ -41,11 +44,19 @@ object AppBarState {
     }
     
     /**
+     * Set transparent mode
+     */
+    fun setTransparentMode(isTransparent: Boolean) {
+        this.isTransparent = isTransparent
+    }
+    
+    /**
      * Reset to default state
      */
     fun resetToDefault() {
         title = "Fitness Tracker"
         showBackButton = false
         onBackClick = null
+        isTransparent = false
     }
 }

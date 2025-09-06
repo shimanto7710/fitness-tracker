@@ -25,6 +25,7 @@ import com.bmqa.brac.fitnesstracker.ui.theme.Dimensions
 fun HomeScreen(
     onNavigateToCaloriesManagement: () -> Unit,
     onNavigateToGeminiFoodAnalysis: () -> Unit,
+    onNavigateToNutrition: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Update app bar title and hide back button
@@ -143,6 +144,53 @@ fun HomeScreen(
                         contentDescription = AppConstants.UiText.CONTENT_DESC_NAVIGATE,
                         modifier = Modifier.size(Dimensions.iconSizeMedium),
                         tint = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
+            
+            // Nutrition Tracking Card
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(Dimensions.cardHeight),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+                onClick = onNavigateToNutrition
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(Dimensions.spacingMedium),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Nutrition Tracking",
+                        modifier = Modifier.size(Dimensions.iconSizeExtraLarge),
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                    Spacer(modifier = Modifier.width(Dimensions.spacingMedium))
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = "Nutrition Tracking",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                        Spacer(modifier = Modifier.height(Dimensions.spacingSmall))
+                        Text(
+                            text = "View detailed nutrition information for your meals",
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+                        )
+                    }
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Navigate to Nutrition",
+                        modifier = Modifier.size(Dimensions.iconSizeMedium),
+                        tint = MaterialTheme.colorScheme.secondary
                     )
                 }
             }

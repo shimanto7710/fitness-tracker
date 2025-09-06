@@ -27,7 +27,8 @@ class MainActivity : ComponentActivity() {
                         AppBar(
                             title = AppBarState.title,
                             showBackButton = AppBarState.showBackButton,
-                            onBackClick = AppBarState.onBackClick
+                            onBackClick = AppBarState.onBackClick,
+                            isTransparent = AppBarState.isTransparent
                         )
                     }
                 ) { paddingValues ->

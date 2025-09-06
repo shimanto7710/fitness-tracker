@@ -7,6 +7,7 @@ object AppConstants {
         const val SCREEN_HOME = "home"
         const val SCREEN_CALORIES_MANAGEMENT = "calories_management"
         const val SCREEN_GEMINI_FOOD_ANALYSIS = "gemini_food_analysis"
+        const val SCREEN_NUTRITION = "nutrition"
     }
     
     // API Configuration
@@ -48,6 +49,7 @@ object AppConstants {
         const val IMAGE_PICKER_TITLE = "Image Picker"
         const val CALORIES_MANAGEMENT_TITLE = "Calories Management"
         const val GEMINI_FOOD_ANALYSIS_TITLE = "Gemini Food Analysis"
+        const val NUTRITION_TITLE = "Nutrition"
         
         // Buttons
         const val SELECT_IMAGE = "Select Image"
@@ -97,6 +99,17 @@ object AppConstants {
         const val CONTENT_DESC_ANALYZE = "Analyze"
         const val CONTENT_DESC_SELECTED_FOOD_IMAGE = "Selected food image"
         const val CONTENT_DESC_START = "Start"
+        
+        // Nutrition Screen
+        const val FIX_RESULTS = "Fix Results"
+        const val DONE = "Done"
+        const val HEALTH_SCORE = "Health Score"
+        const val INGREDIENTS = "Ingredients"
+        const val SERVING_SIZE = "1 /"
+        const val CALORIES_LABEL = "Calories"
+        const val PROTEIN_LABEL = "Protein"
+        const val CARBS_LABEL = "Carbs"
+        const val FATS_LABEL = "Fats"
         
         // Nutrition Labels
         const val LABEL_PORTION = "Portion:"
