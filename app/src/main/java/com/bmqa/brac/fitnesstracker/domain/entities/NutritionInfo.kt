@@ -25,3 +25,4 @@ data class Meal(
     val nutritionInfo: NutritionInfo,
     val timestamp: Long = System.currentTimeMillis()
 )
+
