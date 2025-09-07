@@ -9,7 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.bmqa.brac.fitnesstracker.presentation.navigation.FitnessTrackerNavGraph
+import com.bmqa.brac.fitnesstracker.presentation.navigation.AppNavigation
 import com.bmqa.brac.fitnesstracker.presentation.ui.components.AppBar
 import com.bmqa.brac.fitnesstracker.presentation.state.AppBarState
 import com.bmqa.brac.fitnesstracker.ui.theme.FitnessTrackerTheme
@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) { paddingValues ->
-                    FitnessTrackerNavGraph(
+                    AppNavigation(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(paddingValues)

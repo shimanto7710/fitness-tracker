@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -40,9 +42,6 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
     }
 }
 
@@ -84,7 +83,10 @@ dependencies {
     implementation ("com.localebro:okhttpprofiler:1.0.8")
     
     // Compose Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation(libs.androidx.navigation.compose)
+    
+    // Kotlinx Serialization
+    implementation(libs.kotlinx.serialization.json)
     
     // Dependency Injection - Koin
     implementation("io.insert-koin:koin-android:3.5.3")
