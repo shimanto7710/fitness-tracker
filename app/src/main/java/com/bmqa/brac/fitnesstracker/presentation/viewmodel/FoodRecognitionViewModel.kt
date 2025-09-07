@@ -12,17 +12,18 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class FoodRecognitionViewModel : ViewModel(), KoinComponent {
-    
-    private val recognizeFoodUseCase: RecognizeFoodUseCase by inject()
-    
+class FoodRecognitionViewModel(private val recognizeFoodUseCase: RecognizeFoodUseCase) :
+    ViewModel(), KoinComponent {
+
+//    private val recognizeFoodUseCase: RecognizeFoodUseCase by inject()
+
     private val _uiState = MutableStateFlow(FoodRecognitionUiState())
     val uiState: StateFlow<FoodRecognitionUiState> = _uiState.asStateFlow()
-    
+
     fun recognizeFoodFromImage(imageUri: Uri, context: android.content.Context) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-            
+
             try {
                 // Convert URI to base64
                 val base64Image = uriToBase64(imageUri, context)
@@ -57,25 +58,25 @@ class FoodRecognitionViewModel : ViewModel(), KoinComponent {
             }
         }
     }
-    
+
     private fun uriToBase64(uri: Uri, context: android.content.Context): String? {
         return try {
             val inputStream: java.io.InputStream? = context.contentResolver.openInputStream(uri)
             if (inputStream == null) {
                 return null
             }
-            
+
             val bytes = inputStream.readBytes()
             android.util.Base64.encodeToString(bytes, android.util.Base64.NO_WRAP)
         } catch (e: Exception) {
             null
         }
     }
-    
+
     fun selectFood(food: FoodItem) {
         _uiState.value = _uiState.value.copy(selectedFood = food)
     }
-    
+
     fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)
     }

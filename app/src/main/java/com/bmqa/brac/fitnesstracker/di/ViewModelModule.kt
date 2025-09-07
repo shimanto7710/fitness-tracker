@@ -8,6 +8,6 @@ import org.koin.dsl.module
 val viewModelModule = module {
     
     // ViewModels
-    viewModel { FoodRecognitionViewModel() }
-    viewModel { GeminiFoodAnalysisViewModel() }
+    viewModel { FoodRecognitionViewModel(get()) }
+    viewModel { GeminiFoodAnalysisViewModel(get()) }
 }

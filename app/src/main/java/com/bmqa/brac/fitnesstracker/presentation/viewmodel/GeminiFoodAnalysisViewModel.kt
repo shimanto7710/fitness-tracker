@@ -10,12 +10,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-class GeminiFoodAnalysisViewModel : ViewModel(), KoinComponent {
-    
-    private val geminiFoodAnalysisUseCase: GeminiFoodAnalysisUseCase by inject()
+class GeminiFoodAnalysisViewModel(
+    private val geminiFoodAnalysisUseCase: GeminiFoodAnalysisUseCase
+) : ViewModel() {
     
     private val _uiState = MutableStateFlow<GeminiFoodAnalysisUiState>(GeminiFoodAnalysisUiState.Idle)
     val uiState: StateFlow<GeminiFoodAnalysisUiState> = _uiState.asStateFlow()
