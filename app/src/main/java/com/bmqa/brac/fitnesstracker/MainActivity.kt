@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import com.bmqa.brac.fitnesstracker.presentation.navigation.AppNavigation
 import com.bmqa.brac.fitnesstracker.ui.theme.FitnessTrackerTheme
@@ -23,7 +24,11 @@ class MainActivity : ComponentActivity() {
                     AppNavigation(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(paddingValues)
+                            .padding(
+                                start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                                end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                                bottom = paddingValues.calculateBottomPadding()
+                            )
                     )
                 }
             }

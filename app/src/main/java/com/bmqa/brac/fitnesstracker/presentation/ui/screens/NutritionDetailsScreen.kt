@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import coil.compose.rememberAsyncImagePainter
 import com.bmqa.brac.fitnesstracker.presentation.ui.utils.AssetImageUtils
 import java.io.File
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.LayoutDirection
 import coil.compose.AsyncImage
 import com.bmqa.brac.fitnesstracker.R
 import com.bmqa.brac.fitnesstracker.common.constants.AppConstants
@@ -47,6 +49,7 @@ import org.koin.androidx.compose.koinViewModel
 fun NutritionDetailsScreen(
     geminiAnalysis: GeminiFoodAnalysis? = null,
     onNavigateBack: () -> Unit,
+    onTryAgain: () -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: GeminiFoodAnalysisViewModel = koinViewModel()
 ) {
@@ -56,7 +59,8 @@ fun NutritionDetailsScreen(
 
     NutritionDetailsContent(
         geminiAnalysis = analysis,
-        onNavigateBack = onNavigateBack
+        onNavigateBack = onNavigateBack,
+        onTryAgain = onTryAgain
     )
 
 }
@@ -66,6 +70,7 @@ fun NutritionDetailsScreen(
 private fun NutritionDetailsContent(
     geminiAnalysis: GeminiFoodAnalysis,
     onNavigateBack: () -> Unit,
+    onTryAgain: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -91,12 +96,16 @@ private fun NutritionDetailsContent(
                     navigationIconContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
-        }
+        },
     ) { paddingValues ->
         Surface {
             LazyColumn(
                 modifier = Modifier
-                    .padding(paddingValues)
+                    .padding(
+                        start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                        end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                        top = paddingValues.calculateTopPadding()
+                    )
                     .fillMaxSize()
                     .background(Color.White)
             ) {
@@ -120,8 +129,9 @@ private fun NutritionDetailsContent(
                 item {
                     Card(
                         modifier = Modifier
-                            .offset(y = (-24).dp)
+
                             .fillMaxWidth()
+                            .fillMaxHeight()
                             .background(Color.White),
                         elevation = CardDefaults.cardElevation(8.dp),
                         shape = RoundedCornerShape(
@@ -133,83 +143,83 @@ private fun NutritionDetailsContent(
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
-                            // Title and time
-                            Box(
-                                modifier = Modifier
-                                    .width(80.dp)
-                                    .heightIn(min = 20.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(Color(0xFFF8F8F8)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    "12:46 PM",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = Color.Gray,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier.padding(horizontal = 4.dp)
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
+                        // Title and time
+                        Box(
+                            modifier = Modifier
+                                .width(80.dp)
+                                .heightIn(min = 20.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color(0xFFF8F8F8)),
+                            contentAlignment = Alignment.Center
+                        ) {
                             Text(
-                                geminiAnalysis.foodItems.firstOrNull()?.name ?: "Unknown Food",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
+                                "12:46 PM",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = Color.Gray,
                                 maxLines = 2,
                                 overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.padding(horizontal = 4.dp)
                             )
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            geminiAnalysis.foodItems.firstOrNull()?.name ?: "Unknown Food",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.fillMaxWidth()
+                        )
 
-                            Spacer(modifier = Modifier.height(16.dp))
-                            // Total Calories
-                            CaloriesCard(
-                                calories = geminiAnalysis.totalNutrition?.totalCalories
-                            )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        // Total Calories
+                        CaloriesCard(
+                            calories = geminiAnalysis.totalNutrition?.totalCalories
+                        )
 
-                            Spacer(modifier = Modifier.height(16.dp))
-                            // Calorie details
-                            CalorieDetails(
-                                protein = geminiAnalysis.totalNutrition?.totalProtein,
-                                carbs = geminiAnalysis.totalNutrition?.totalCarbs,
-                                fat = geminiAnalysis.totalNutrition?.totalFat
-                            )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        // Calorie details
+                        CalorieDetails(
+                            protein = geminiAnalysis.totalNutrition?.totalProtein,
+                            carbs = geminiAnalysis.totalNutrition?.totalCarbs,
+                            fat = geminiAnalysis.totalNutrition?.totalFat
+                        )
 
-                            Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                            // Health info
-                            HealthScoreCard(
-                                title = "Health Score",
-                                value = when (geminiAnalysis.totalNutrition?.overallHealthStatus) {
-                                    HealthStatus.EXCELLENT -> "9/10"
-                                    HealthStatus.GOOD -> "7/10"
-                                    HealthStatus.MODERATE -> "5/10"
-                                    HealthStatus.POOR -> "3/10"
-                                    else -> "N/A"
-                                },
-                                progress = when (geminiAnalysis.totalNutrition?.overallHealthStatus) {
-                                    HealthStatus.EXCELLENT -> 0.9f
-                                    HealthStatus.GOOD -> 0.7f
-                                    HealthStatus.MODERATE -> 0.5f
-                                    HealthStatus.POOR -> 0.3f
-                                    else -> 0.0f
-                                },
-                                icon = Icons.Filled.Favorite
-                            )
+                        // Health info
+                        HealthScoreCard(
+                            title = "Health Score",
+                            value = when (geminiAnalysis.totalNutrition?.overallHealthStatus) {
+                                HealthStatus.EXCELLENT -> "9/10"
+                                HealthStatus.GOOD -> "7/10"
+                                HealthStatus.MODERATE -> "5/10"
+                                HealthStatus.POOR -> "3/10"
+                                else -> "N/A"
+                            },
+                            progress = when (geminiAnalysis.totalNutrition?.overallHealthStatus) {
+                                HealthStatus.EXCELLENT -> 0.9f
+                                HealthStatus.GOOD -> 0.7f
+                                HealthStatus.MODERATE -> 0.5f
+                                HealthStatus.POOR -> 0.3f
+                                else -> 0.0f
+                            },
+                            icon = Icons.Filled.Favorite
+                        )
 
-                            Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(24.dp))
 
-                            Text(
-                                "Food Items",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            "Food Items",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                            FoodItemDetails(
-                                foodItems = geminiAnalysis.foodItems
-                            )
+                         FoodItemDetails(
+                             foodItems = geminiAnalysis.foodItems
+                         )
                         }
                     }
                 }
@@ -311,7 +321,6 @@ fun CalorieCard(label: String, value: String, modifier: Modifier = Modifier) {
     ) {
 
 
-
         Row(
             verticalAlignment = Alignment.Top,
             modifier = Modifier
@@ -334,7 +343,11 @@ fun CalorieCard(label: String, value: String, modifier: Modifier = Modifier) {
                 )
             }
 
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier.padding(start = 8.dp)) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(start = 8.dp)
+            ) {
                 Text(label, fontSize = 12.sp)
                 Text(
                     value,
@@ -346,7 +359,6 @@ fun CalorieCard(label: String, value: String, modifier: Modifier = Modifier) {
 
     }
 }
-
 
 
 @Composable
@@ -433,8 +445,8 @@ data class FoodItemData(
 @Composable
 fun FoodItemDetails(
     foodItems: List<GeminiFoodItem>
-){
-    
+) {
+
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier.fillMaxWidth()
@@ -483,7 +495,10 @@ fun FoodItem(
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold
             )
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
                 Icon(
                     imageVector = Icons.Filled.AccountCircle,
                     contentDescription = null,
@@ -510,7 +525,9 @@ fun FoodItem(
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
             ) {
                 Column(
                     verticalArrangement = Arrangement.Center,
@@ -520,7 +537,7 @@ fun FoodItem(
                         .padding(top = 16.dp)
                 ) {
                     Text(
-                        protein, 
+                        protein,
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -537,7 +554,7 @@ fun FoodItem(
                         .padding(top = 16.dp)
                 ) {
                     Text(
-                        carbs, 
+                        carbs,
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -554,7 +571,7 @@ fun FoodItem(
                         .padding(top = 16.dp)
                 ) {
                     Text(
-                        fat, 
+                        fat,
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -685,7 +702,8 @@ private fun NutritionDetailsContent_Preview() {
 
     NutritionDetailsContent(
         geminiAnalysis = mockData,
-        onNavigateBack = {}
+        onNavigateBack = {},
+        onTryAgain = {}
     )
 }
 
