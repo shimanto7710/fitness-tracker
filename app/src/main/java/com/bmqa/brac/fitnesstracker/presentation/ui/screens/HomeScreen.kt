@@ -25,6 +25,7 @@ fun HomeScreen(
     onNavigateToCaloriesManagement: () -> Unit,
     onNavigateToGeminiFoodAnalysis: () -> Unit,
     onNavigateToNutrition: () -> Unit,
+    onNavigateToCalendar: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     
@@ -185,6 +186,53 @@ fun HomeScreen(
                         contentDescription = "Navigate to Nutrition",
                         modifier = Modifier.size(Dimensions.iconSizeMedium),
                         tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
+            
+            // Calendar Card
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(Dimensions.cardHeight),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
+                onClick = onNavigateToCalendar
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(Dimensions.spacingMedium),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Calendar",
+                        modifier = Modifier.size(Dimensions.iconSizeExtraLarge),
+                        tint = MaterialTheme.colorScheme.tertiary
+                    )
+                    Spacer(modifier = Modifier.width(Dimensions.spacingMedium))
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = "Calendar",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer
+                        )
+                        Spacer(modifier = Modifier.height(Dimensions.spacingSmall))
+                        Text(
+                            text = "View your fitness calendar and track your progress",
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
+                        )
+                    }
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Navigate to Calendar",
+                        modifier = Modifier.size(Dimensions.iconSizeMedium),
+                        tint = MaterialTheme.colorScheme.tertiary
                     )
                 }
             }

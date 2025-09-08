@@ -53,6 +53,13 @@ fun NavController.navigateToNutrition(
 }
 
 /**
+ * Navigate to calendar screen
+ */
+fun NavController.navigateToCalendar() {
+    navigateToRoute(Route.Calendar)
+}
+
+/**
  * Navigate back with proper handling
  */
 fun NavController.navigateBack() {

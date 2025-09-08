@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.bmqa.brac.fitnesstracker.presentation.ui.screens.CalendarScreen
 import com.bmqa.brac.fitnesstracker.presentation.ui.screens.CaloriesManagementScreen
 import com.bmqa.brac.fitnesstracker.presentation.ui.screens.HomeScreen
 import com.bmqa.brac.fitnesstracker.presentation.ui.screens.GeminiFoodAnalysisScreen
@@ -48,6 +49,9 @@ fun AppNavigation(
                 },
                 onNavigateToNutrition = {
                     navController.navigateToNutrition()
+                },
+                onNavigateToCalendar = {
+                    navController.navigateToCalendar()
                 }
             )
         }
@@ -81,6 +85,10 @@ fun AppNavigation(
                     navController.navigateBack()
                 }
             )
+        }
+
+        composable<Route.Calendar> {
+            CalendarScreen()
         }
     }
 }
