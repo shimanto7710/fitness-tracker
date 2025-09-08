@@ -75,19 +75,14 @@ private fun NutritionDetailsContent(
 ) {
     Scaffold { paddingValues ->
         Surface {
-            Box(
+            LazyColumn(
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxSize()
                     .background(Color.White)
-                // Remove or change contentAlignment
             ) {
-                Column(
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Top,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    // image section
+                // Image section
+                item {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -100,11 +95,14 @@ private fun NutritionDetailsContent(
                             contentDescription = "Meal Image"
                         )
                     }
+                }
 
+                // Content card
+                item {
                     Card(
                         modifier = Modifier
                             .offset(y = (-24).dp)
-                            .fillMaxSize()
+                            .fillMaxWidth()
                             .background(Color.White),
                         elevation = CardDefaults.cardElevation(8.dp),
                         shape = RoundedCornerShape(
@@ -113,74 +111,66 @@ private fun NutritionDetailsContent(
                         ),
                         colors = CardDefaults.cardColors(containerColor = Color.White)
                     ) {
-                        Box(modifier = Modifier.padding(16.dp)) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            // Title and time
+                            Box(
                                 modifier = Modifier
-                                    .fillMaxWidth()
+                                    .width(80.dp)
+                                    .heightIn(min = 20.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(Color(0xFFF8F8F8)),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Column {
-                                    // title and time
-                                    Box(
-                                        modifier = Modifier
-                                            .width(80.dp)
-                                            .heightIn(min = 20.dp)
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .background(Color(0xFFF8F8F8)),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            "12:46 PM",
-                                            style = MaterialTheme.typography.labelMedium,
-                                            color = Color.Gray,
-                                            maxLines = 2,
-                                            overflow = TextOverflow.Ellipsis,
-                                            modifier = Modifier.padding(horizontal = 4.dp)
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Text(
-                                        foodItem?.name ?: "Unknown Food",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis,
-                                        modifier = Modifier.fillMaxWidth()
-                                    )
-
-                                    Spacer(modifier = Modifier.height(16.dp))
-                                    // total Calories
-                                    CaloriesCard()
-
-
-                                    Spacer(modifier = Modifier.height(16.dp))
-//                                    calorie details
-                                    CalorieDetails()
-
-                                    Spacer(modifier = Modifier.height(16.dp))
-
-//                                    health info
-                                    HealthScoreCard(
-                                        title = "Health Score",
-                                        value = "7/10",
-                                        progress = 0.7f,
-                                        icon = Icons.Filled.Favorite
-                                    )
-
-                                    Spacer(modifier = Modifier.height(24.dp))
-
-                                    Text(
-                                        "Ingredients",
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-
-                                    FoodItemDetails()
-
-                                }
+                                Text(
+                                    "12:46 PM",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = Color.Gray,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.padding(horizontal = 4.dp)
+                                )
                             }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                foodItem?.name ?: "Unknown Food",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+                            // Total Calories
+                            CaloriesCard()
+
+                            Spacer(modifier = Modifier.height(16.dp))
+                            // Calorie details
+                            CalorieDetails()
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // Health info
+                            HealthScoreCard(
+                                title = "Health Score",
+                                value = "7/10",
+                                progress = 0.7f,
+                                icon = Icons.Filled.Favorite
+                            )
+
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            Text(
+                                "Ingredients",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            FoodItemDetails()
                         }
                     }
                 }
@@ -424,11 +414,11 @@ fun FoodItemDetails(){
         )
     )
     
-    LazyColumn(
+    Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        items(foodItems) { foodItem ->
+        foodItems.forEach { foodItem ->
             FoodItem(
                 name = foodItem.name,
                 calories = foodItem.calories,
@@ -490,7 +480,7 @@ fun FoodItem(
             Text(
                 text = description,
                 fontSize = 12.sp,
-                color = Color.Gray,
+                color = Color.Black,
                 maxLines = 5,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
