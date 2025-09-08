@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -14,8 +15,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,274 +43,234 @@ fun CalendarScreen(
     var currentMonth by remember { mutableStateOf(today.month) }
     var currentYear by remember { mutableStateOf(today.year) }
     var showMonthDropdown by remember { mutableStateOf(false) }
-    
+
     // Initialize displayedWeekIndex to show the week containing today's date
     val initialCalendarDays = generateCalendarDays(today.year, today.month.value)
     val initialWeeks = initialCalendarDays.chunked(7)
     val initialWeekIndex = initialWeeks.indexOfFirst { it.contains(today) }.coerceAtLeast(0)
     var displayedWeekIndex by remember { mutableStateOf(initialWeekIndex) }
 
-    Column(
+    LazyColumn(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // Compact Month Header - Integrated with Calendar
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Previous Month Button
-            IconButton(
-                onClick = {
-                    if (currentMonth == java.time.Month.JANUARY) {
-                        currentMonth = java.time.Month.DECEMBER
-                        currentYear--
-                    } else {
-                        currentMonth = currentMonth.minus(1)
-                    }
-                    displayedWeekIndex = 0
-                },
-                modifier = Modifier.size(32.dp)
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowLeft,
-                    contentDescription = "Previous Month",
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-
-            // Month/Year Display - Clickable for dropdown
-            Box {
-                Text(
-                    text = "${currentMonth.getDisplayName(TextStyle.SHORT, Locale.getDefault())} $currentYear",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.clickable { showMonthDropdown = true }
-                )
-
-                // Month Dropdown Menu
-                DropdownMenu(
-                    expanded = showMonthDropdown,
-                    onDismissRequest = { showMonthDropdown = false }
+                // Previous Month Button
+                IconButton(
+                    onClick = {
+                        if (currentMonth == java.time.Month.JANUARY) {
+                            currentMonth = java.time.Month.DECEMBER
+                            currentYear--
+                        } else {
+                            currentMonth = currentMonth.minus(1)
+                        }
+                        displayedWeekIndex = 0
+                    },
+                    modifier = Modifier.size(32.dp)
                 ) {
-                    (1..12).forEach { month ->
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = java.time.Month.of(month)
-                                        .getDisplayName(TextStyle.FULL, Locale.getDefault())
-                                )
-                            },
-                            onClick = {
-                                currentMonth = java.time.Month.of(month)
-                                displayedWeekIndex = 0 // Reset to first week of new month
-                                showMonthDropdown = false
-                            }
-                        )
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        contentDescription = "Previous Month",
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+
+                // Month/Year Display - Clickable for dropdown
+                Box {
+                    Text(
+                        text = "${currentMonth.getDisplayName(TextStyle.SHORT, Locale.getDefault())} $currentYear",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.clickable { showMonthDropdown = true }
+                    )
+
+                    // Month Dropdown Menu
+                    DropdownMenu(
+                        expanded = showMonthDropdown,
+                        onDismissRequest = { showMonthDropdown = false }
+                    ) {
+                        (1..12).forEach { month ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = java.time.Month.of(month)
+                                            .getDisplayName(TextStyle.FULL, Locale.getDefault())
+                                    )
+                                },
+                                onClick = {
+                                    currentMonth = java.time.Month.of(month)
+                                    displayedWeekIndex = 0 // Reset to first week of new month
+                                    showMonthDropdown = false
+                                }
+                            )
+                        }
                     }
                 }
-            }
 
-            // Next Month Button
-            IconButton(
-                onClick = {
-                    if (currentMonth == java.time.Month.DECEMBER) {
-                        currentMonth = java.time.Month.JANUARY
-                        currentYear++
-                    } else {
-                        currentMonth = currentMonth.plus(1)
-                    }
-                    displayedWeekIndex = 0
-                },
-                modifier = Modifier.size(32.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowRight,
-                    contentDescription = "Next Month",
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.size(20.dp)
-                )
+                // Next Month Button
+                IconButton(
+                    onClick = {
+                        if (currentMonth == java.time.Month.DECEMBER) {
+                            currentMonth = java.time.Month.JANUARY
+                            currentYear++
+                        } else {
+                            currentMonth = currentMonth.plus(1)
+                        }
+                        displayedWeekIndex = 0
+                    },
+                    modifier = Modifier.size(32.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = "Next Month",
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
         }
 
         // Calendar Days - Single Row with Week Navigation
-        val calendarDays = generateCalendarDays(currentYear, currentMonth.value)
-        val weeks = calendarDays.chunked(7)
-        val safeWeekIndex = displayedWeekIndex.coerceIn(0, weeks.size - 1)
-        val currentWeek = weeks[safeWeekIndex]
+        item {
+            val calendarDays = generateCalendarDays(currentYear, currentMonth.value)
+            val weeks = calendarDays.chunked(7)
+            val safeWeekIndex = displayedWeekIndex.coerceIn(0, weeks.size - 1)
+            val currentWeek = weeks[safeWeekIndex]
 
-        // Days of Week Header - Aligned with calendar days
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            // Spacer to align with previous week button
-            Spacer(modifier = Modifier.width(48.dp))
-            
-            // Day names aligned with calendar days
+            // Days of Week Header - Aligned with calendar days
             Row(
-                modifier = Modifier.weight(1f),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                currentWeek.forEach { day ->
-                    Text(
-                        text = day.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.weight(1f)
+                // Spacer to align with previous week button
+                Spacer(modifier = Modifier.width(48.dp))
+
+                // Day names aligned with calendar days
+                Row(
+                    modifier = Modifier.weight(1f),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    currentWeek.forEach { day ->
+                        Text(
+                            text = day.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                // Spacer to align with next week button
+                Spacer(modifier = Modifier.width(48.dp))
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Previous Week Button
+                IconButton(
+                    onClick = {
+                        if (safeWeekIndex > 0) {
+                            displayedWeekIndex--
+                        }
+                    },
+                    enabled = safeWeekIndex > 0
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        contentDescription = "Previous Week",
+                        tint = if (safeWeekIndex > 0)
+                            MaterialTheme.colorScheme.onBackground
+                        else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+                    )
+                }
+
+                // Calendar Days
+                Row(
+                    modifier = Modifier.weight(1f),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    currentWeek.forEach { day ->
+                        CalendarDayItem(
+                            day = day,
+                            isSelected = day == selectedDate,
+                            isCurrentMonth = day.month == currentMonth,
+                            onClick = { selectedDate = day },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                // Next Week Button
+                IconButton(
+                    onClick = {
+                        if (safeWeekIndex < weeks.size - 1) {
+                            displayedWeekIndex++
+                        }
+                    },
+                    enabled = safeWeekIndex < weeks.size - 1
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = "Next Week",
+                        tint = if (safeWeekIndex < weeks.size - 1)
+                            MaterialTheme.colorScheme.onBackground
+                        else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
                     )
                 }
             }
-            
-            // Spacer to align with next week button
-            Spacer(modifier = Modifier.width(48.dp))
-        }
-        
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Previous Week Button
-            IconButton(
-                onClick = {
-                    if (safeWeekIndex > 0) {
-                        displayedWeekIndex--
-                    }
-                },
-                enabled = safeWeekIndex > 0
-            ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowLeft,
-                    contentDescription = "Previous Week",
-                    tint = if (safeWeekIndex > 0) 
-                        MaterialTheme.colorScheme.onBackground 
-                    else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
-                )
-            }
-            
-            // Calendar Days
-            Row(
-                modifier = Modifier.weight(1f),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                currentWeek.forEach { day ->
-                    CalendarDayItem(
-                        day = day,
-                        isSelected = day == selectedDate,
-                        isCurrentMonth = day.month == currentMonth,
-                        onClick = { selectedDate = day },
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-            }
-            
-            // Next Week Button
-            IconButton(
-                onClick = {
-                    if (safeWeekIndex < weeks.size - 1) {
-                        displayedWeekIndex++
-                    }
-                },
-                enabled = safeWeekIndex < weeks.size - 1
-            ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowRight,
-                    contentDescription = "Next Week",
-                    tint = if (safeWeekIndex < weeks.size - 1) 
-                        MaterialTheme.colorScheme.onBackground 
-                    else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
-                )
-            }
         }
 
-        // Today Button - Compact and integrated
-/*        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            TextButton(
-                onClick = {
-                    selectedDate = today
-                    currentMonth = today.month
-                    currentYear = today.year
-                    val todayCalendarDays = generateCalendarDays(today.year, today.month.value)
-                    val todayWeeks = todayCalendarDays.chunked(7)
-                    displayedWeekIndex = todayWeeks.indexOfFirst { it.contains(today) }.coerceAtLeast(0)
-                },
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = MaterialTheme.colorScheme.primary
-                )
-            ) {
-                Text(
-                    text = "Today",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Calories Card
+            TotalCalorieCount(
+                calories = 250 // You can make this dynamic based on selected date
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+             CalorieTypeDetails(
+                 protein = "30g",
+                 carbs = "50g",
+                 fat = "10g"
+             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Recently Used List
+            Text(
+                text = "Recently Used",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
+
+            RecentlyUsedList()
         }
-
-        Spacer(modifier = Modifier.height(16.dp))*/
-
-        /*// Selected Date Info
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            ),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Text(
-                    text = "Selected Date",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = selectedDate.format(
-                        java.time.format.DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy")
-                    ),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-        }*/
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Calories Card
-        TotalCalorieCount(
-            calories = 250 // You can make this dynamic based on selected date
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        CalorieTypeDetails(
-            protein = "30g",
-            carbs = "50g",
-            fat = "10g"
-        )
     }
 }
 
@@ -322,7 +284,7 @@ private fun CalendarDayItem(
     modifier: Modifier = Modifier
 ) {
     val isToday = day == LocalDate.now()
-    
+
     Box(
         modifier = modifier
             .aspectRatio(1f)
@@ -355,30 +317,24 @@ private fun CalendarDayItem(
 }
 
 @SuppressLint("NewApi")
-private fun findCurrentWeek(calendarDays: List<LocalDate>, selectedDate: LocalDate): List<LocalDate> {
-    val weeks = calendarDays.chunked(7)
-    return weeks.find { week -> week.contains(selectedDate) } ?: weeks.first()
-}
-
-@SuppressLint("NewApi")
 private fun generateCalendarDays(year: Int, month: Int): List<LocalDate> {
     val firstDayOfMonth = LocalDate.of(year, month, 1)
     val lastDayOfMonth = firstDayOfMonth.withDayOfMonth(firstDayOfMonth.lengthOfMonth())
-    
+
     // Get the first Monday of the week containing the first day of the month
     val firstMonday = firstDayOfMonth.minusDays((firstDayOfMonth.dayOfWeek.value - 1).toLong())
-    
+
     // Get the last Sunday of the week containing the last day of the month
     val lastSunday = lastDayOfMonth.plusDays((7 - lastDayOfMonth.dayOfWeek.value).toLong())
-    
+
     val days = mutableListOf<LocalDate>()
     var currentDay = firstMonday
-    
+
     while (!currentDay.isAfter(lastSunday)) {
         days.add(currentDay)
         currentDay = currentDay.plusDays(1)
     }
-    
+
     return days
 }
 
@@ -514,6 +470,125 @@ fun CalorieTypeCard(label: String, value: String, modifier: Modifier = Modifier)
 
     }
 }
+
+@Composable
+private fun RecentlyUsedList() {
+    val recentlyUsedItems = listOf(
+        RecentlyUsedItem(
+            id = 1,
+            name = "Grilled Chicken Breast",
+            totalCalories = "165 kcal",
+            imageUrl = "https://example.com/chicken.jpg"
+        ),
+        RecentlyUsedItem(
+            id = 2,
+            name = "Brown Rice Bowl",
+            totalCalories = "220 kcal",
+            imageUrl = "https://example.com/rice.jpg"
+        ),
+        RecentlyUsedItem(
+            id = 3,
+            name = "Mixed Green Salad",
+            totalCalories = "85 kcal",
+            imageUrl = "https://example.com/salad.jpg"
+        ),
+        RecentlyUsedItem(
+            id = 4,
+            name = "Greek Yogurt",
+            totalCalories = "100 kcal",
+            imageUrl = "https://example.com/yogurt.jpg"
+        )
+    )
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        recentlyUsedItems.forEach { item ->
+            RecentlyUsedItemCard(item = item)
+        }
+    }
+}
+
+@Composable
+private fun RecentlyUsedItemCard(
+    item: RecentlyUsedItem,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .border(
+                width = 1.dp,
+                color = Color(0xFFE0E0E0),
+                shape = RoundedCornerShape(12.dp)
+            ),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Left side image with rounded corners on left side only
+            Box(
+                modifier = Modifier
+                    .width(80.dp)
+                    .height(80.dp)
+                    .clip(
+                        RoundedCornerShape(
+                            topStart = 12.dp,
+                            bottomStart = 12.dp,
+                            topEnd = 0.dp,
+                            bottomEnd = 0.dp
+                        )
+                    )
+                    .background(Color(0xFFF0F0F0))
+            ) {
+                // Placeholder for image - you can replace with actual image loading
+                Icon(
+                    imageVector = Icons.Filled.AccountCircle,
+                    contentDescription = item.name,
+                    tint = Color.Gray,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .align(Alignment.Center)
+                )
+            }
+
+            // Content area
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = item.name,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = item.totalCalories,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                )
+            }
+        }
+    }
+}
+
+data class RecentlyUsedItem(
+    val id: Int,
+    val name: String,
+    val totalCalories: String,
+    val imageUrl: String
+)
 
 @Preview(showBackground = true)
 @Composable
