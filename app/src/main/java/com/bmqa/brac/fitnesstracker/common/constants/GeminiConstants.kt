@@ -2,7 +2,7 @@ package com.bmqa.brac.fitnesstracker.common.constants
 
 object GeminiConstants {
     // Mock mode configuration
-    const val USE_MOCK_DATA = false // Set to false to use real Gemini API
+    const val USE_MOCK_DATA = true // Set to false to use real Gemini API
     
     // Gemini API key for food analysis
     const val API_KEY = "AIzaSyBhUoekElrETZCSoJKV4HB_l0V08IWiixw"

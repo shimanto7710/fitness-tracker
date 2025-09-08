@@ -9,6 +9,8 @@ data class GeminiApiResponse(
     val errorMessage: String = "",
     @SerializedName("foodItems")
     val foodItems: List<GeminiApiFoodItem>,
+    @SerializedName("totalNutrition")
+    val totalNutrition: GeminiApiTotalNutrition?,
     @SerializedName("analysisSummary")
     val analysisSummary: String
 )
@@ -33,5 +35,24 @@ data class GeminiApiFoodItem(
     @SerializedName("healthBenefits")
     val healthBenefits: List<String>,
     @SerializedName("healthConcerns")
-    val healthConcerns: List<String>
+    val healthConcerns: List<String>,
+    @SerializedName("analysisSummary")
+    val analysisSummary: String
+)
+
+data class GeminiApiTotalNutrition(
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("totalPortion")
+    val totalPortion: String,
+    @SerializedName("totalCalories")
+    val totalCalories: Int?,
+    @SerializedName("totalProtein")
+    val totalProtein: String?,
+    @SerializedName("totalCarbs")
+    val totalCarbs: String?,
+    @SerializedName("totalFat")
+    val totalFat: String?,
+    @SerializedName("overallHealthStatus")
+    val overallHealthStatus: String
 )

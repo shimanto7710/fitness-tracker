@@ -4,6 +4,7 @@ data class GeminiFoodAnalysis(
     val isError: Boolean = false,
     val errorMessage: String = "",
     val foodItems: List<GeminiFoodItem>,
+    val totalNutrition: TotalNutrition?,
     val analysisSummary: String
 )
 
@@ -17,7 +18,18 @@ data class GeminiFoodItem(
     val carbs: String?,
     val fat: String?,
     val healthBenefits: List<String>,
-    val healthConcerns: List<String>
+    val healthConcerns: List<String>,
+    val analysisSummary: String
+)
+
+data class TotalNutrition(
+    val name: String,
+    val totalPortion: String,
+    val totalCalories: Int?,
+    val totalProtein: String?,
+    val totalCarbs: String?,
+    val totalFat: String?,
+    val overallHealthStatus: HealthStatus
 )
 
 enum class HealthStatus {
