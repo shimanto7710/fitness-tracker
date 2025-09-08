@@ -10,8 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.bmqa.brac.fitnesstracker.presentation.navigation.AppNavigation
-import com.bmqa.brac.fitnesstracker.presentation.ui.components.AppBar
-import com.bmqa.brac.fitnesstracker.presentation.state.AppBarState
 import com.bmqa.brac.fitnesstracker.ui.theme.FitnessTrackerTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,18 +17,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FitnessTrackerTheme {
-                // Suppress lint warning for unused padding parameter
-                @Suppress("UnusedMaterial3ScaffoldPaddingParameter")
                 Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    topBar = {
-                        AppBar(
-                            title = AppBarState.title,
-                            showBackButton = AppBarState.showBackButton,
-                            onBackClick = AppBarState.onBackClick,
-                            isTransparent = AppBarState.isTransparent
-                        )
-                    }
+                    modifier = Modifier.fillMaxSize()
                 ) { paddingValues ->
                     AppNavigation(
                         modifier = Modifier

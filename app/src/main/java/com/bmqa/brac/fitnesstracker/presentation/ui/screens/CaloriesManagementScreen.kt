@@ -10,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.bmqa.brac.fitnesstracker.common.constants.AppConstants
-import com.bmqa.brac.fitnesstracker.presentation.state.AppBarState
 import com.bmqa.brac.fitnesstracker.presentation.ui.components.ImagePicker
 import com.bmqa.brac.fitnesstracker.presentation.ui.components.ClarifaiFoodRecognizer
 import com.bmqa.brac.fitnesstracker.ui.theme.Dimensions
@@ -21,11 +20,6 @@ fun CaloriesManagementScreen(
 ) {
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     
-    // Update app bar title and show back button
-    LaunchedEffect(Unit) {
-        AppBarState.updateTitle(AppConstants.UiText.CALORIES_MANAGEMENT_TITLE)
-        AppBarState.showBackButton(onNavigateBack)
-    }
     
     Column(
         modifier = Modifier

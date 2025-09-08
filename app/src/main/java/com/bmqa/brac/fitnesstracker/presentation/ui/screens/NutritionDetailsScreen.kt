@@ -39,7 +39,6 @@ import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodItem
 import com.bmqa.brac.fitnesstracker.domain.entities.HealthStatus
 import com.bmqa.brac.fitnesstracker.domain.entities.TotalNutrition
-import com.bmqa.brac.fitnesstracker.presentation.state.AppBarState
 import com.bmqa.brac.fitnesstracker.presentation.viewmodel.GeminiFoodAnalysisViewModel
 import com.bmqa.brac.fitnesstracker.ui.theme.Dimensions
 import org.koin.androidx.compose.koinViewModel
@@ -51,12 +50,6 @@ fun NutritionDetailsScreen(
     modifier: Modifier = Modifier,
     viewModel: GeminiFoodAnalysisViewModel = koinViewModel()
 ) {
-    // Update app bar state
-    LaunchedEffect(Unit) {
-        AppBarState.updateTitle(AppConstants.UiText.NUTRITION_TITLE)
-        AppBarState.showBackButton(onNavigateBack)
-        AppBarState.setTransparentMode(false)
-    }
 
     // Get analysis data (provided or mock)
     val analysis = geminiAnalysis ?: createMockGeminiAnalysis()

@@ -18,7 +18,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bmqa.brac.fitnesstracker.common.constants.AppConstants
-import com.bmqa.brac.fitnesstracker.presentation.state.AppBarState
 import com.bmqa.brac.fitnesstracker.ui.theme.Dimensions
 
 @Composable
@@ -28,11 +27,6 @@ fun HomeScreen(
     onNavigateToNutrition: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Update app bar title and hide back button
-    LaunchedEffect(Unit) {
-        AppBarState.updateTitle(AppConstants.UiText.NAVIGATION_TITLE)
-        AppBarState.hideBackButton()
-    }
     
     Column(
         modifier = modifier

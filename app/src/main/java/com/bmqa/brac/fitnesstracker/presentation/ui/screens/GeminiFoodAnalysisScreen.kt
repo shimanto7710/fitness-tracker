@@ -23,7 +23,6 @@ import coil.compose.AsyncImage
 import com.bmqa.brac.fitnesstracker.common.constants.AppConstants
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodItem
 import com.bmqa.brac.fitnesstracker.domain.entities.HealthStatus
-import com.bmqa.brac.fitnesstracker.presentation.state.AppBarState
 import com.bmqa.brac.fitnesstracker.presentation.ui.components.ImagePicker
 import com.bmqa.brac.fitnesstracker.presentation.viewmodel.GeminiFoodAnalysisViewModel
 import com.bmqa.brac.fitnesstracker.presentation.viewmodel.GeminiFoodAnalysisUiState
@@ -38,11 +37,6 @@ fun GeminiFoodAnalysisScreen(
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     val viewModel: GeminiFoodAnalysisViewModel = koinViewModel()
     
-    // Update app bar title and show back button
-    LaunchedEffect(Unit) {
-        AppBarState.updateTitle(AppConstants.UiText.GEMINI_FOOD_ANALYSIS_TITLE)
-        AppBarState.showBackButton(onNavigateBack)
-    }
     
     Column(
         modifier = modifier
