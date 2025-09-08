@@ -60,10 +60,9 @@ fun NutritionDetailsScreen(
 
     // Get analysis data (provided or mock)
     val analysis = geminiAnalysis ?: createMockGeminiAnalysis()
-    val foodItem = analysis.foodItems.firstOrNull()
 
     NutritionDetailsContent(
-        foodItem = foodItem,
+        geminiAnalysis = analysis,
         onNavigateBack = onNavigateBack
     )
 
@@ -71,7 +70,7 @@ fun NutritionDetailsScreen(
 
 @Composable
 private fun NutritionDetailsContent(
-    foodItem: GeminiFoodItem?,
+    geminiAnalysis: GeminiFoodAnalysis,
     onNavigateBack: () -> Unit,
 ) {
     Scaffold { paddingValues ->
@@ -135,7 +134,7 @@ private fun NutritionDetailsContent(
                             }
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                foodItem?.name ?: "Unknown Food",
+                                geminiAnalysis.foodItems.firstOrNull()?.name ?: "Unknown Food",
                                 style = MaterialTheme.typography.titleMedium,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
@@ -146,32 +145,52 @@ private fun NutritionDetailsContent(
 
                             Spacer(modifier = Modifier.height(16.dp))
                             // Total Calories
-                            CaloriesCard()
+                            CaloriesCard(
+                                calories = geminiAnalysis.totalNutrition?.totalCalories
+                            )
 
                             Spacer(modifier = Modifier.height(16.dp))
                             // Calorie details
-                            CalorieDetails()
+                            CalorieDetails(
+                                protein = geminiAnalysis.totalNutrition?.totalProtein,
+                                carbs = geminiAnalysis.totalNutrition?.totalCarbs,
+                                fat = geminiAnalysis.totalNutrition?.totalFat
+                            )
 
                             Spacer(modifier = Modifier.height(16.dp))
 
                             // Health info
                             HealthScoreCard(
                                 title = "Health Score",
-                                value = "7/10",
-                                progress = 0.7f,
+                                value = when (geminiAnalysis.totalNutrition?.overallHealthStatus) {
+                                    HealthStatus.EXCELLENT -> "9/10"
+                                    HealthStatus.GOOD -> "7/10"
+                                    HealthStatus.MODERATE -> "5/10"
+                                    HealthStatus.POOR -> "3/10"
+                                    else -> "N/A"
+                                },
+                                progress = when (geminiAnalysis.totalNutrition?.overallHealthStatus) {
+                                    HealthStatus.EXCELLENT -> 0.9f
+                                    HealthStatus.GOOD -> 0.7f
+                                    HealthStatus.MODERATE -> 0.5f
+                                    HealthStatus.POOR -> 0.3f
+                                    else -> 0.0f
+                                },
                                 icon = Icons.Filled.Favorite
                             )
 
                             Spacer(modifier = Modifier.height(24.dp))
 
                             Text(
-                                "Ingredients",
+                                "Food Items",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.height(8.dp))
 
-                            FoodItemDetails()
+                            FoodItemDetails(
+                                foodItems = geminiAnalysis.foodItems
+                            )
                         }
                     }
                 }
@@ -182,7 +201,9 @@ private fun NutritionDetailsContent(
 
 
 @Composable
-fun CaloriesCard() {
+fun CaloriesCard(
+    calories: Int? = null
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -226,7 +247,7 @@ fun CaloriesCard() {
             ) {
                 Text("Calories", fontSize = 10.sp)
                 Text(
-                    "621",
+                    calories?.toString() ?: "N/A",
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold
                 )
@@ -237,16 +258,20 @@ fun CaloriesCard() {
 
 
 @Composable
-private fun CalorieDetails() {
+private fun CalorieDetails(
+    protein: String? = null,
+    carbs: String? = null,
+    fat: String? = null
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp) // space between cards
     ) {
-        CalorieCard(label = "Protein", value = "621", modifier = Modifier.weight(1f))
-        CalorieCard(label = "Carb", value = "52g", modifier = Modifier.weight(1f))
-        CalorieCard(label = "Fats", value = "20g", modifier = Modifier.weight(1f))
+        CalorieCard(label = "Protein", value = protein ?: "N/A", modifier = Modifier.weight(1f))
+        CalorieCard(label = "Carb", value = carbs ?: "N/A", modifier = Modifier.weight(1f))
+        CalorieCard(label = "Fats", value = fat ?: "N/A", modifier = Modifier.weight(1f))
     }
 }
 
@@ -387,33 +412,9 @@ data class FoodItemData(
 )
 
 @Composable
-fun FoodItemDetails(){
-    val foodItems = listOf(
-        FoodItemData(
-            name = "Salad with eggs",
-            calories = "294 Kcal-100gm",
-            description = "A salad with boiled eggs, mixed greens, cherry tomatoes, cucumbers, and a light vinaigrette dressing. This dish is rich in protein from the eggs and packed with vitamins and minerals from the fresh vegetables.",
-            protein = "12g",
-            carbs = "8g",
-            fat = "5g"
-        ),
-        FoodItemData(
-            name = "Grilled Chicken Breast",
-            calories = "165 Kcal-100gm",
-            description = "Lean grilled chicken breast seasoned with herbs and spices. High in protein and low in fat, perfect for muscle building and weight management.",
-            protein = "31g",
-            carbs = "0g",
-            fat = "3.6g"
-        ),
-        FoodItemData(
-            name = "Quinoa Bowl",
-            calories = "120 Kcal-100gm",
-            description = "Nutritious quinoa mixed with vegetables, chickpeas, and a tahini dressing. A complete protein source with fiber and essential nutrients.",
-            protein = "4.4g",
-            carbs = "22g",
-            fat = "1.9g"
-        )
-    )
+fun FoodItemDetails(
+    foodItems: List<GeminiFoodItem>
+){
     
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -422,11 +423,11 @@ fun FoodItemDetails(){
         foodItems.forEach { foodItem ->
             FoodItem(
                 name = foodItem.name,
-                calories = foodItem.calories,
-                description = foodItem.description,
-                protein = foodItem.protein,
-                carbs = foodItem.carbs,
-                fat = foodItem.fat
+                calories = foodItem.calories?.toString() ?: "N/A",
+                description = foodItem.analysisSummary,
+                protein = foodItem.protein ?: "N/A",
+                carbs = foodItem.carbs ?: "N/A",
+                fat = foodItem.fat ?: "N/A"
             )
         }
     }
@@ -472,7 +473,7 @@ fun FoodItem(
                 )
                 Text(
                     modifier = Modifier.padding(start = 4.dp),
-                    text = calories,
+                    text = calories + " kcal",
                     fontSize = 12.sp,
                     color = Color.Gray
                 )
@@ -664,7 +665,7 @@ private fun NutritionDetailsContent_Preview() {
     val mockData = createMockGeminiAnalysis()
 
     NutritionDetailsContent(
-        foodItem = mockData.foodItems.firstOrNull(),
+        geminiAnalysis = mockData,
         onNavigateBack = {}
     )
 }
