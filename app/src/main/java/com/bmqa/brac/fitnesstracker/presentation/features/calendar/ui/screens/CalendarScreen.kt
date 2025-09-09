@@ -48,7 +48,6 @@ fun CalendarScreen(
     onNavigateToGeminiFoodAnalysis: (String, String) -> Unit = { _, _ -> },
     onNavigateToNutrition: (GeminiFoodAnalysis) -> Unit = {},
     onNavigateToDashboard: () -> Unit = {},
-    onNavigateToDatabaseTest: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val today = LocalDate.now()

@@ -31,8 +31,5 @@ data class GeminiFoodAnalysis(
         val parent: String? = null,
         val geminiAnalysis: String? = null // JSON string of GeminiFoodAnalysis
     ) : Route
-
-    @Serializable
-    object DatabaseTest : Route
 }
 

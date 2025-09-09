@@ -15,7 +15,6 @@ import androidx.navigation.toRoute
 import com.bmqa.brac.fitnesstracker.common.utils.JsonUtils
 import com.bmqa.brac.fitnesstracker.presentation.ui.screens.CaloriesManagementScreen
 import com.bmqa.brac.fitnesstracker.presentation.ui.screens.DashboardScreen
-import com.bmqa.brac.fitnesstracker.presentation.ui.screens.DatabaseTestScreen
 import com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.ui.screens.GeminiFoodAnalysisScreen
 import com.bmqa.brac.fitnesstracker.presentation.features.calendar.ui.screens.CalendarScreen
 import com.bmqa.brac.fitnesstracker.presentation.features.nutrition.ui.screens.NutritionDetailsScreen
@@ -54,9 +53,6 @@ fun AppNavigation(
                 },
                 onNavigateToDashboard = {
                     navController.navigateToDashboard()
-                },
-                onNavigateToDatabaseTest = {
-                    navController.navigateToDatabaseTest()
                 }
             )
         }
@@ -74,9 +70,6 @@ fun AppNavigation(
                 },
                 onNavigateToCalendar = {
                     navController.navigateToHome()
-                },
-                onNavigateToDatabaseTest = {
-                    navController.navigateToDatabaseTest()
                 }
             )
         }
@@ -126,8 +119,5 @@ fun AppNavigation(
         }
 
 
-        composable<Route.DatabaseTest> {
-            DatabaseTestScreen()
-        }
     }
 }
