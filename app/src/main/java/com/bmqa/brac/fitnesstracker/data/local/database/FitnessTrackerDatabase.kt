@@ -18,7 +18,7 @@ import com.bmqa.brac.fitnesstracker.data.local.database.entities.TotalNutritionE
         FoodItemEntity::class,
         TotalNutritionEntity::class
     ],
-    version = 2,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(

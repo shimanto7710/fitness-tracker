@@ -37,6 +37,11 @@ class LocalFoodAnalysisRepository(private val context: Context) {
             saveImageToInternalStorage(imageBitmap, imageUri)
         } else null
 
+        // Convert image to base64 if provided
+        val base64Image = if (imageBitmap != null) {
+            convertBitmapToBase64(imageBitmap)
+        } else null
+
         // Insert main food analysis entity
         val foodAnalysisEntity = FoodAnalysisEntity(
             isError = foodAnalysis.isError,
@@ -45,6 +50,7 @@ class LocalFoodAnalysisRepository(private val context: Context) {
             dateNTime = foodAnalysis.dateNTime,
             imagePath = imagePath,
             imageUri = imageUri,
+            base64Image = base64Image,
             selectedDate = foodAnalysis.selectedDate
         )
         
@@ -155,9 +161,17 @@ class LocalFoodAnalysisRepository(private val context: Context) {
         }
     }
 
+    private fun convertBitmapToBase64(bitmap: Bitmap): String {
+        val outputStream = java.io.ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream)
+        val byteArray = outputStream.toByteArray()
+        return android.util.Base64.encodeToString(byteArray, android.util.Base64.DEFAULT)
+    }
+
     // Extension function to convert database model to domain model
     private fun CompleteFoodAnalysis.toDomainModel(): GeminiFoodAnalysis {
         return GeminiFoodAnalysis(
+            id = foodAnalysis.id,
             isError = foodAnalysis.isError,
             errorMessage = foodAnalysis.errorMessage,
             foodItems = foodItems.map { item ->
@@ -189,6 +203,8 @@ class LocalFoodAnalysisRepository(private val context: Context) {
             analysisSummary = foodAnalysis.analysisSummary,
             dateNTime = foodAnalysis.dateNTime,
             imageUri = foodAnalysis.imageUri,
+            imagePath = foodAnalysis.imagePath,
+            base64Image = foodAnalysis.base64Image,
             selectedDate = foodAnalysis.selectedDate
         )
     }

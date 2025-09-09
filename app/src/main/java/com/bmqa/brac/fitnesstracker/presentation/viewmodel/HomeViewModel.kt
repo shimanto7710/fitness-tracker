@@ -48,4 +48,15 @@ class HomeViewModel(
     fun refreshData() {
         loadSavedAnalyses()
     }
+    
+    fun deleteAnalysis(analysis: GeminiFoodAnalysis) {
+        viewModelScope.launch {
+            try {
+                repository.deleteFoodAnalysis(analysis.id)
+                loadSavedAnalyses() // Refresh the list
+            } catch (e: Exception) {
+                // Handle error if needed
+            }
+        }
+    }
 }

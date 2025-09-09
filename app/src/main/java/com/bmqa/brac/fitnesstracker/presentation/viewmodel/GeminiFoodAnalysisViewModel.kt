@@ -2,6 +2,7 @@ package com.bmqa.brac.fitnesstracker.presentation.viewmodel
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,6 +30,9 @@ class GeminiFoodAnalysisViewModel(
             _uiState.value = GeminiFoodAnalysisUiState.Loading
             
             try {
+                // Load the image bitmap from URI
+                val imageBitmap = loadImageFromUri(imageUri, context)
+                
                 val result = geminiFoodAnalysisUseCase(imageUri.toString())
                 result.fold(
                     onSuccess = { foodAnalysis ->
@@ -38,11 +43,12 @@ class GeminiFoodAnalysisViewModel(
                             selectedDate = selectedDate
                         )
                         
-                        // Save to database
+                        // Save to database with image bitmap
                         try {
                             repository.saveFoodAnalysis(
                                 foodAnalysis = updatedFoodAnalysis,
-                                imageUri = imageUri.toString()
+                                imageUri = imageUri.toString(),
+                                imageBitmap = imageBitmap
                             )
                             _uiState.value = GeminiFoodAnalysisUiState.Success(updatedFoodAnalysis)
                         } catch (dbException: Exception) {
@@ -63,6 +69,15 @@ class GeminiFoodAnalysisViewModel(
     private fun getCurrentDateTime(): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         return sdf.format(Date())
+    }
+    
+    private fun loadImageFromUri(uri: Uri, context: Context): Bitmap? {
+        return try {
+            val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+            BitmapFactory.decodeStream(inputStream)
+        } catch (e: Exception) {
+            null
+        }
     }
     
     fun resetState() {

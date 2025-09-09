@@ -1,7 +1,9 @@
 package com.bmqa.brac.fitnesstracker.presentation.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -12,15 +14,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 import com.bmqa.brac.fitnesstracker.domain.entities.HealthStatus
 import com.bmqa.brac.fitnesstracker.ui.theme.Dimensions
+import android.graphics.BitmapFactory
+import android.util.Base64
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,12 +35,19 @@ import java.util.*
 fun FoodAnalysisListItem(
     analysis: GeminiFoodAnalysis,
     onClick: () -> Unit,
+    onLongPress: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onClick() }
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = { onClick() },
+                    onLongPress = { onLongPress() }
+                )
+            }
             .padding(vertical = 4.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(12.dp),
@@ -53,9 +67,18 @@ fun FoodAnalysisListItem(
                     .background(Color(0xFFF0F0F0)),
                 contentAlignment = Alignment.Center
             ) {
-                if (analysis.imageUri != null) {
-                    AsyncImage(
-                        model = analysis.imageUri,
+                val imageBitmap = analysis.base64Image?.let { base64String ->
+                    try {
+                        val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
+                        BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
+                
+                if (imageBitmap != null) {
+                    Image(
+                        bitmap = imageBitmap.asImageBitmap(),
                         contentDescription = "Food Image",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop

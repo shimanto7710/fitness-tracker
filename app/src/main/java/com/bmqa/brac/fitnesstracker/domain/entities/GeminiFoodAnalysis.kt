@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class GeminiFoodAnalysis(
+    val id: Long = 0,
     val isError: Boolean = false,
     val errorMessage: String = "",
     val foodItems: List<GeminiFoodItem>,
@@ -11,6 +12,8 @@ data class GeminiFoodAnalysis(
     val analysisSummary: String,
     val dateNTime: String?=null,
     val imageUri: String? = null,
+    val imagePath: String? = null,
+    val base64Image: String? = null,
     val selectedDate: String? = null
 )
 

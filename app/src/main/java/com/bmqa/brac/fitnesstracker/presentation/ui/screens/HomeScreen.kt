@@ -21,6 +21,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import com.bmqa.brac.fitnesstracker.presentation.ui.components.ImagePickerDialog
 import com.bmqa.brac.fitnesstracker.presentation.ui.components.FoodAnalysisListItem
+import com.bmqa.brac.fitnesstracker.presentation.ui.components.DeleteConfirmationDialog
 import com.bmqa.brac.fitnesstracker.presentation.viewmodel.HomeViewModel
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,6 +57,8 @@ fun HomeScreen(
     var currentYear by remember { mutableStateOf(today.year) }
     var showMonthDropdown by remember { mutableStateOf(false) }
     var showImagePickerDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var analysisToDelete by remember { mutableStateOf<GeminiFoodAnalysis?>(null) }
     val homeViewModel: HomeViewModel = koinViewModel()
     val savedAnalyses by homeViewModel.savedAnalyses.collectAsStateWithLifecycle()
     val isLoading by homeViewModel.isLoading.collectAsStateWithLifecycle()
@@ -309,24 +312,6 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Debug section - remove after testing
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-            ) {
-                Column(modifier = Modifier.padding(8.dp)) {
-                    Text("DEBUG INFO:", fontWeight = FontWeight.Bold)
-                    Text("Selected Date: ${selectedDate.toString()}")
-                    Text("Total Analyses: ${savedAnalyses.size}")
-                    Text("Filtered Analyses: ${filteredAnalyses.size}")
-                    savedAnalyses.forEachIndexed { index, analysis ->
-                        Text("Analysis $index selectedDate: '${analysis.selectedDate}'")
-                    }
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
             // Saved Food Analyses List
             Text(
                 text = "Recent Food Analyses",
@@ -378,6 +363,10 @@ fun HomeScreen(
                             analysis = analysis,
                             onClick = {
                                 onNavigateToNutrition(analysis)
+                            },
+                            onLongPress = {
+                                analysisToDelete = analysis
+                                showDeleteDialog = true
                             }
                         )
                     }
@@ -398,6 +387,23 @@ fun HomeScreen(
             onDismiss = { showImagePickerDialog = false }
         )
     }
+    
+    // Delete Confirmation Dialog
+    DeleteConfirmationDialog(
+        isVisible = showDeleteDialog,
+        itemName = analysisToDelete?.foodItems?.firstOrNull()?.name ?: "this food analysis",
+        onConfirm = {
+            analysisToDelete?.let { analysis ->
+                homeViewModel.deleteAnalysis(analysis)
+            }
+            showDeleteDialog = false
+            analysisToDelete = null
+        },
+        onDismiss = {
+            showDeleteDialog = false
+            analysisToDelete = null
+        }
+    )
 }
 
 @SuppressLint("NewApi")
