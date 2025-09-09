@@ -12,11 +12,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.bmqa.brac.fitnesstracker.presentation.ui.screens.CalendarScreen
+import com.bmqa.brac.fitnesstracker.common.utils.JsonUtils
 import com.bmqa.brac.fitnesstracker.presentation.ui.screens.CaloriesManagementScreen
+import com.bmqa.brac.fitnesstracker.presentation.ui.screens.DashboardScreen
 import com.bmqa.brac.fitnesstracker.presentation.ui.screens.DatabaseTestScreen
-import com.bmqa.brac.fitnesstracker.presentation.ui.screens.HomeScreen
 import com.bmqa.brac.fitnesstracker.presentation.ui.screens.GeminiFoodAnalysisScreen
+import com.bmqa.brac.fitnesstracker.presentation.ui.screens.HomeScreen
 import com.bmqa.brac.fitnesstracker.presentation.ui.screens.NutritionDetailsScreen
 
 @Composable
@@ -45,6 +46,26 @@ fun AppNavigation(
                 onNavigateToCaloriesManagement = {
                     navController.navigateToCaloriesManagement()
                 },
+                onNavigateToGeminiFoodAnalysis = { imageUri ->
+                    navController.navigateToGeminiFoodAnalysis(imageUri = imageUri)
+                },
+                onNavigateToNutrition = { analysis ->
+                    navController.navigateToNutritionWithAnalysis(analysis)
+                },
+                onNavigateToDashboard = {
+                    navController.navigateToDashboard()
+                },
+                onNavigateToDatabaseTest = {
+                    navController.navigateToDatabaseTest()
+                }
+            )
+        }
+
+        composable<Route.Dashboard> {
+            DashboardScreen(
+                onNavigateToCaloriesManagement = {
+                    navController.navigateToCaloriesManagement()
+                },
                 onNavigateToGeminiFoodAnalysis = {
                     navController.navigateToGeminiFoodAnalysis()
                 },
@@ -52,7 +73,7 @@ fun AppNavigation(
                     navController.navigateToNutrition()
                 },
                 onNavigateToCalendar = {
-                    navController.navigateToCalendar()
+                    navController.navigateToHome()
                 },
                 onNavigateToDatabaseTest = {
                     navController.navigateToDatabaseTest()
@@ -71,29 +92,38 @@ fun AppNavigation(
 
         composable<Route.GeminiFoodAnalysis> {
             val args = it.toRoute<Route.GeminiFoodAnalysis>()
+            val imageUri = args.imageUri?.let { uriString ->
+                try {
+                    android.net.Uri.parse(uriString)
+                } catch (e: Exception) {
+                    null
+                }
+            }
             GeminiFoodAnalysisScreen(
                 onNavigateBack = {
                     navController.navigateBack()
-                }
+                },
+                onNavigateToNutritionDetails = { geminiAnalysis ->
+                    navController.navigateToNutritionWithAnalysis(geminiAnalysis)
+                },
+                preSelectedImageUri = imageUri
             )
         }
 
         composable<Route.Nutrition> {
             val args = it.toRoute<Route.Nutrition>()
-            // In a real implementation, you would deserialize the JSON to GeminiFoodAnalysis
-            // val geminiAnalysis = deserializeGeminiAnalysis(args.geminiAnalysis)
+            val geminiAnalysis = args.geminiAnalysis?.let { jsonString ->
+                JsonUtils.deserializeGeminiFoodAnalysis(jsonString)
+            }
             
             NutritionDetailsScreen(
-                geminiAnalysis = null, // TODO: Implement JSON deserialization
+                geminiAnalysis = geminiAnalysis,
                 onNavigateBack = {
                     navController.navigateBack()
                 }
             )
         }
 
-        composable<Route.Calendar> {
-            CalendarScreen()
-        }
 
         composable<Route.DatabaseTest> {
             DatabaseTestScreen()

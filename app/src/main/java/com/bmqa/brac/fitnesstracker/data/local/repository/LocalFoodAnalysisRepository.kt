@@ -186,7 +186,8 @@ class LocalFoodAnalysisRepository(private val context: Context) {
                 )
             },
             analysisSummary = foodAnalysis.analysisSummary,
-            dateNTime = foodAnalysis.dateNTime
+            dateNTime = foodAnalysis.dateNTime,
+            imageUri = foodAnalysis.imageUri
         )
     }
 }

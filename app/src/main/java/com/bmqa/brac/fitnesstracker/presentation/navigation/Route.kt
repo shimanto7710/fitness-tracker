@@ -12,13 +12,17 @@ sealed interface Route {
     object Home : Route
 
     @Serializable
+    object Dashboard : Route
+
+    @Serializable
     data class CaloriesManagement(
         val parent: String? = null
     ) : Route
 
     @Serializable
     data class GeminiFoodAnalysis(
-        val parent: String? = null
+        val parent: String? = null,
+        val imageUri: String? = null
     ) : Route
 
     @Serializable
@@ -26,9 +30,6 @@ sealed interface Route {
         val parent: String? = null,
         val geminiAnalysis: String? = null // JSON string of GeminiFoodAnalysis
     ) : Route
-
-    @Serializable
-    object Calendar : Route
 
     @Serializable
     object DatabaseTest : Route

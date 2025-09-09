@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.bmqa.brac.fitnesstracker.common.constants.AppConstants
+import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodItem
 import com.bmqa.brac.fitnesstracker.domain.entities.HealthStatus
 import com.bmqa.brac.fitnesstracker.presentation.ui.components.ImagePicker
@@ -32,10 +33,13 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun GeminiFoodAnalysisScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToNutritionDetails: (GeminiFoodAnalysis) -> Unit = {},
+    preSelectedImageUri: Uri? = null,
     modifier: Modifier = Modifier
 ) {
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var selectedImageUri by remember { mutableStateOf<Uri?>(preSelectedImageUri) }
     val viewModel: GeminiFoodAnalysisViewModel = koinViewModel()
+    val context = LocalContext.current
     
     
     Column(
@@ -96,7 +100,7 @@ fun GeminiFoodAnalysisScreen(
             // Analyze Button - Only visible when image is selected
             Button(
                 onClick = { 
-                    viewModel.analyzeFoodWithGemini(uri)
+                    viewModel.analyzeFoodWithGemini(uri, context)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -124,7 +128,8 @@ fun GeminiFoodAnalysisScreen(
             // Analysis Results Section
             GeminiAnalysisResultsSection(
                 selectedImageUri = uri,
-                viewModel = viewModel
+                viewModel = viewModel,
+                onNavigateToNutritionDetails = onNavigateToNutritionDetails
             )
         }
     }
@@ -133,9 +138,21 @@ fun GeminiFoodAnalysisScreen(
 @Composable
 private fun GeminiAnalysisResultsSection(
     selectedImageUri: Uri,
-    viewModel: GeminiFoodAnalysisViewModel
+    viewModel: GeminiFoodAnalysisViewModel,
+    onNavigateToNutritionDetails: (GeminiFoodAnalysis) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    
+    // Automatically navigate to nutrition details when analysis is successful
+    LaunchedEffect(uiState) {
+        if (uiState is GeminiFoodAnalysisUiState.Success) {
+            val foodAnalysis = (uiState as GeminiFoodAnalysisUiState.Success).foodAnalysis
+            if (!foodAnalysis.isError) {
+                onNavigateToNutritionDetails(foodAnalysis)
+            }
+        }
+    }
     
     when {
         uiState is GeminiFoodAnalysisUiState.Loading -> {
@@ -198,7 +215,7 @@ private fun GeminiAnalysisResultsSection(
                     
                     Button(
                         onClick = { 
-                            viewModel.analyzeFoodWithGemini(selectedImageUri)
+                            viewModel.analyzeFoodWithGemini(selectedImageUri, context)
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.error
@@ -286,17 +303,17 @@ private fun GeminiAnalysisResultsSection(
                         Spacer(modifier = Modifier.height(Dimensions.spacingMedium))
                         
                         // Food items list
-                        foodAnalysis.foodItems.forEach { foodItem ->
+                        /*foodAnalysis.foodItems.forEach { foodItem ->
                             GeminiFoodItemResult(foodItem = foodItem)
                             Spacer(modifier = Modifier.height(Dimensions.spacingMedium))
-                        }
+                        }*/
                         
                         Spacer(modifier = Modifier.height(Dimensions.spacingMedium))
                         
                         // New Analysis button
                         OutlinedButton(
                             onClick = { 
-                                viewModel.analyzeFoodWithGemini(selectedImageUri)
+                                viewModel.analyzeFoodWithGemini(selectedImageUri, context)
                             },
                             modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.outlinedButtonColors(

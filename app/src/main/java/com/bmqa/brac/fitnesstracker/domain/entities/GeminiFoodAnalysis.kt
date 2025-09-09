@@ -1,14 +1,19 @@
 package com.bmqa.brac.fitnesstracker.domain.entities
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class GeminiFoodAnalysis(
     val isError: Boolean = false,
     val errorMessage: String = "",
     val foodItems: List<GeminiFoodItem>,
     val totalNutrition: TotalNutrition?,
     val analysisSummary: String,
-    val dateNTime: String?=null
+    val dateNTime: String?=null,
+    val imageUri: String? = null
 )
 
+@Serializable
 data class GeminiFoodItem(
     val name: String,
     val portion: String,
@@ -23,6 +28,7 @@ data class GeminiFoodItem(
     val analysisSummary: String
 )
 
+@Serializable
 data class TotalNutrition(
     val name: String,
     val totalPortion: String,
@@ -33,6 +39,7 @@ data class TotalNutrition(
     val overallHealthStatus: HealthStatus
 )
 
+@Serializable
 enum class HealthStatus {
     EXCELLENT,
     GOOD,
@@ -41,6 +48,7 @@ enum class HealthStatus {
     UNKNOWN
 }
 
+@Serializable
 data class GeminiAnalysisRequest(
     val imageUri: String,
     val prompt: String

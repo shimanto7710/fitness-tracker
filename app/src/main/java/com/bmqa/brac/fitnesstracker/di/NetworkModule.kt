@@ -5,6 +5,7 @@ import com.bmqa.brac.fitnesstracker.data.remote.network.KtorClient
 import com.bmqa.brac.fitnesstracker.data.repository.ClarifaiRepositoryImpl
 import com.bmqa.brac.fitnesstracker.data.repository.GeminiFoodAnalysisRepositoryImpl
 import com.bmqa.brac.fitnesstracker.data.repository.MockGeminiFoodAnalysisRepositoryImpl
+import com.bmqa.brac.fitnesstracker.data.local.repository.LocalFoodAnalysisRepository
 import com.bmqa.brac.fitnesstracker.data.mapper.ClarifaiMapper
 import com.bmqa.brac.fitnesstracker.domain.repository.ClarifaiRepository
 import com.bmqa.brac.fitnesstracker.domain.repository.GeminiFoodAnalysisRepository
@@ -45,6 +46,9 @@ val networkModule = module {
     
     // Services
     single<ImageProcessingService> { ImageProcessingServiceImpl(androidContext()) }
+    
+    // Local Repository
+    single { LocalFoodAnalysisRepository(androidContext()) }
     
     // Use Cases
     single { RecognizeFoodUseCase(get()) }

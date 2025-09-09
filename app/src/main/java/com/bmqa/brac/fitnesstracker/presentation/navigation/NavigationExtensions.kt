@@ -2,6 +2,8 @@ package com.bmqa.brac.fitnesstracker.presentation.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
+import com.bmqa.brac.fitnesstracker.common.utils.JsonUtils
+import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 
 /**
  * Navigation extensions for type-safe navigation
@@ -22,10 +24,17 @@ fun NavController.navigateToRoute(
 }
 
 /**
- * Navigate to home screen
+ * Navigate to home screen (calendar)
  */
 fun NavController.navigateToHome() {
     navigateToRoute(Route.Home)
+}
+
+/**
+ * Navigate to dashboard screen
+ */
+fun NavController.navigateToDashboard() {
+    navigateToRoute(Route.Dashboard)
 }
 
 /**
@@ -38,8 +47,8 @@ fun NavController.navigateToCaloriesManagement(parent: String? = null) {
 /**
  * Navigate to Gemini food analysis screen
  */
-fun NavController.navigateToGeminiFoodAnalysis(parent: String? = null) {
-    navigateToRoute(Route.GeminiFoodAnalysis(parent))
+fun NavController.navigateToGeminiFoodAnalysis(parent: String? = null, imageUri: String? = null) {
+    navigateToRoute(Route.GeminiFoodAnalysis(parent, imageUri))
 }
 
 /**
@@ -53,11 +62,21 @@ fun NavController.navigateToNutrition(
 }
 
 /**
- * Navigate to calendar screen
+ * Navigate to nutrition details screen with GeminiFoodAnalysis data
  */
-fun NavController.navigateToCalendar() {
-    navigateToRoute(Route.Calendar)
+fun NavController.navigateToNutritionWithAnalysis(
+    geminiAnalysis: GeminiFoodAnalysis,
+    parent: String? = null
+) {
+    val serializedAnalysis = JsonUtils.serializeGeminiFoodAnalysis(geminiAnalysis)
+    navigateToRoute(Route.Nutrition(parent, serializedAnalysis)) {
+        // Pop the GeminiFoodAnalysis screen from the back stack
+        popUpTo(Route.GeminiFoodAnalysis::class) {
+            inclusive = true
+        }
+    }
 }
+
 
 /**
  * Navigate to database test screen

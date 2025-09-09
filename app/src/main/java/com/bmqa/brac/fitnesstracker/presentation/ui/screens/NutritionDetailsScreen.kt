@@ -49,9 +49,9 @@ import org.koin.androidx.compose.koinViewModel
 fun NutritionDetailsScreen(
     geminiAnalysis: GeminiFoodAnalysis? = null,
     onNavigateBack: () -> Unit,
-    onTryAgain: () -> Unit = {},
+    /*onTryAgain: () -> Unit = {},
     modifier: Modifier = Modifier,
-    viewModel: GeminiFoodAnalysisViewModel = koinViewModel()
+    viewModel: GeminiFoodAnalysisViewModel = koinViewModel()*/
 ) {
 
     // Get analysis data (provided or mock)
@@ -60,7 +60,7 @@ fun NutritionDetailsScreen(
     NutritionDetailsContent(
         geminiAnalysis = analysis,
         onNavigateBack = onNavigateBack,
-        onTryAgain = onTryAgain
+        /*onTryAgain = onTryAgain*/
     )
 
 }
@@ -70,7 +70,7 @@ fun NutritionDetailsScreen(
 private fun NutritionDetailsContent(
     geminiAnalysis: GeminiFoodAnalysis,
     onNavigateBack: () -> Unit,
-    onTryAgain: () -> Unit,
+    /*onTryAgain: () -> Unit,*/
 ) {
     Scaffold(
         topBar = {
@@ -704,7 +704,7 @@ private fun NutritionDetailsContent_Preview() {
     NutritionDetailsContent(
         geminiAnalysis = mockData,
         onNavigateBack = {},
-        onTryAgain = {}
+        /*onTryAgain = {}*/
     )
 }
 
