@@ -1,4 +1,4 @@
-package com.bmqa.brac.fitnesstracker.presentation.ui.components
+package com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,7 +16,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 
 @Composable
-fun DeleteConfirmationDialog(
+fun DeleteFoodAnalysisDialog(
     isVisible: Boolean,
     itemName: String = "this item",
     onConfirm: () -> Unit,

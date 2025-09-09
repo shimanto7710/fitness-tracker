@@ -1,4 +1,4 @@
-package com.bmqa.brac.fitnesstracker.presentation.ui.components
+package com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,7 +32,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun FoodAnalysisListItem(
+fun FoodAnalysisCard(
     analysis: GeminiFoodAnalysis,
     onClick: () -> Unit,
     onLongPress: () -> Unit = {},

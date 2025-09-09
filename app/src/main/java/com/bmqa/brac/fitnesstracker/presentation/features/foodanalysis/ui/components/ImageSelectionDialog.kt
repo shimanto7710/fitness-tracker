@@ -1,4 +1,4 @@
-package com.bmqa.brac.fitnesstracker.presentation.ui.components
+package com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.ui.components
 
 import android.Manifest
 import android.content.Context
@@ -28,7 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun ImagePickerDialog(
+fun ImageSelectionDialog(
     onImageSelected: (Uri) -> Unit,
     onDismiss: () -> Unit
 ) {

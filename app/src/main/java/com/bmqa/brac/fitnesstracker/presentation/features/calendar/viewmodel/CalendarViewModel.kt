@@ -1,4 +1,4 @@
-package com.bmqa.brac.fitnesstracker.presentation.viewmodel
+package com.bmqa.brac.fitnesstracker.presentation.features.calendar.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class HomeViewModel(
+class CalendarViewModel(
     private val repository: LocalFoodAnalysisRepository
 ) : ViewModel() {
     

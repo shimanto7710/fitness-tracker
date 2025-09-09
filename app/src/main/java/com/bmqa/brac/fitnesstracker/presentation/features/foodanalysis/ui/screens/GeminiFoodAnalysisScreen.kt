@@ -1,4 +1,4 @@
-package com.bmqa.brac.fitnesstracker.presentation.ui.screens
+package com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.ui.screens
 
 import android.content.Context
 import android.net.Uri
@@ -25,8 +25,8 @@ import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodItem
 import com.bmqa.brac.fitnesstracker.domain.entities.HealthStatus
 import com.bmqa.brac.fitnesstracker.presentation.ui.components.ImagePicker
-import com.bmqa.brac.fitnesstracker.presentation.viewmodel.GeminiFoodAnalysisViewModel
-import com.bmqa.brac.fitnesstracker.presentation.viewmodel.GeminiFoodAnalysisUiState
+import com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.viewmodel.GeminiFoodAnalysisViewModel
+import com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.viewmodel.GeminiFoodAnalysisUiState
 import com.bmqa.brac.fitnesstracker.ui.theme.Dimensions
 import org.koin.androidx.compose.koinViewModel
 
