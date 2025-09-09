@@ -11,13 +11,7 @@ sealed interface Route {
     @Serializable
     object Home : Route
 
-    @Serializable
-    object Dashboard : Route
 
-    @Serializable
-    data class CaloriesManagement(
-        val parent: String? = null
-    ) : Route
 
 @Serializable
 data class GeminiFoodAnalysis(

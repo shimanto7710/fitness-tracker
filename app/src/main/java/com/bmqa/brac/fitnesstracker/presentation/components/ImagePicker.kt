@@ -1,11 +1,13 @@
-package com.bmqa.brac.fitnesstracker.presentation.ui.components
+package com.bmqa.brac.fitnesstracker.presentation.components
 
 import android.Manifest
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,6 +17,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -22,17 +25,19 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import android.content.pm.PackageManager
+import com.bmqa.brac.fitnesstracker.common.constants.AppConstants
 import com.bmqa.brac.fitnesstracker.ui.theme.Dimensions
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun ImageSelectionDialog(
+fun ImagePicker(
     onImageSelected: (Uri) -> Unit,
-    onDismiss: () -> Unit
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    var showPictureDialog by remember { mutableStateOf(false) }
     var showPermissionDialog by remember { mutableStateOf(false) }
     var permissionType by remember { mutableStateOf("") }
     
@@ -52,7 +57,6 @@ fun ImageSelectionDialog(
     ) { uri ->
         uri?.let { 
             onImageSelected(it)
-            onDismiss()
         }
     }
     
@@ -64,7 +68,6 @@ fun ImageSelectionDialog(
             when (permissionType) {
                 "camera" -> launchCamera(context, cameraLauncher) { uri ->
                     onImageSelected(uri)
-                    onDismiss()
                 }
                 "gallery" -> galleryLauncher.launch("image/*")
             }
@@ -73,40 +76,73 @@ fun ImageSelectionDialog(
         }
     }
     
-    // Picture Selection Dialog
-    PictureSelectionDialog(
-        onCameraClick = {
-            if (checkCameraPermission(context)) {
-                launchCamera(context, cameraLauncher) { uri ->
-                    onImageSelected(uri)
-                    onDismiss()
-                }
-            } else {
-                permissionType = "camera"
-                permissionLauncher.launch(Manifest.permission.CAMERA)
-            }
-        },
-        onGalleryClick = {
-            if (checkStoragePermission(context)) {
-                galleryLauncher.launch("image/*")
-            } else {
-                permissionType = "gallery"
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
-                } else {
-                    permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-                }
-            }
-        },
-        onDismiss = onDismiss
-    )
-    
-    // Permission Dialog
-    if (showPermissionDialog) {
-        PermissionDialog(
-            permissionType = permissionType,
-            onDismiss = { showPermissionDialog = false }
-        )
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Image Picker Button
+        Button(
+            onClick = {
+                showPictureDialog = true
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(Dimensions.buttonHeight)
+                .padding(horizontal = Dimensions.spacingMedium, vertical = Dimensions.spacingSmall),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+            shape = RoundedCornerShape(Dimensions.borderRadiusMedium)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Select Image",
+                modifier = Modifier.size(Dimensions.iconSizeMedium)
+            )
+            Spacer(modifier = Modifier.width(Dimensions.spacingSmall))
+            Text(
+                text = AppConstants.UiText.PICK_FOOD_IMAGE,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        
+        // Picture Selection Dialog
+        if (showPictureDialog) {
+            PictureSelectionDialog(
+                onCameraClick = {
+                    showPictureDialog = false
+                    if (checkCameraPermission(context)) {
+                        launchCamera(context, cameraLauncher) { uri ->
+                            onImageSelected(uri)
+                        }
+                    } else {
+                        permissionType = "camera"
+                        permissionLauncher.launch(Manifest.permission.CAMERA)
+                    }
+                },
+                onGalleryClick = {
+                    showPictureDialog = false
+                    if (checkStoragePermission(context)) {
+                        galleryLauncher.launch("image/*")
+                    } else {
+                        permissionType = "gallery"
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                        } else {
+                            permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                        }
+                    }
+                },
+                onDismiss = { showPictureDialog = false }
+            )
+        }
+        
+        // Permission Dialog
+        if (showPermissionDialog) {
+            PermissionDialog(
+                permissionType = permissionType,
+                onDismiss = { showPermissionDialog = false }
+            )
+        }
     }
 }
 

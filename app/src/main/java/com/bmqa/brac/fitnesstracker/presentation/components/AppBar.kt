@@ -1,4 +1,4 @@
-package com.bmqa.brac.fitnesstracker.presentation.ui.components
+package com.bmqa.brac.fitnesstracker.presentation.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack

@@ -22,7 +22,7 @@ import androidx.compose.material3.*
 import com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.ui.components.ImageSelectionDialog
 import com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.ui.components.FoodAnalysisCard
 import com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.ui.components.DeleteFoodAnalysisDialog
-import com.bmqa.brac.fitnesstracker.presentation.features.calendar.viewmodel.CalendarViewModel
+import com.bmqa.brac.fitnesstracker.presentation.features.calendar.viewmodel.HomeViewModel
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
@@ -43,11 +43,9 @@ import java.util.*
 
 @SuppressLint("NewApi")
 @Composable
-fun CalendarScreen(
-    onNavigateToCaloriesManagement: () -> Unit = {},
+fun HomeScreen(
     onNavigateToGeminiFoodAnalysis: (String, String) -> Unit = { _, _ -> },
     onNavigateToNutrition: (GeminiFoodAnalysis) -> Unit = {},
-    onNavigateToDashboard: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val today = LocalDate.now()
@@ -58,9 +56,9 @@ fun CalendarScreen(
     var showImagePickerDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var analysisToDelete by remember { mutableStateOf<GeminiFoodAnalysis?>(null) }
-    val calendarViewModel: CalendarViewModel = koinViewModel()
-    val savedAnalyses by calendarViewModel.savedAnalyses.collectAsStateWithLifecycle()
-    val isLoading by calendarViewModel.isLoading.collectAsStateWithLifecycle()
+    val homeViewModel: HomeViewModel = koinViewModel()
+    val savedAnalyses by homeViewModel.savedAnalyses.collectAsStateWithLifecycle()
+    val isLoading by homeViewModel.isLoading.collectAsStateWithLifecycle()
     
     // Filter analyses by selected date
     val filteredAnalyses = remember(savedAnalyses, selectedDate) {
@@ -76,7 +74,7 @@ fun CalendarScreen(
     
     // Update selected date in viewmodel when it changes
     LaunchedEffect(selectedDate) {
-        calendarViewModel.setSelectedDate(selectedDate.toString())
+        homeViewModel.setSelectedDate(selectedDate.toString())
     }
 
     // Initialize displayedWeekIndex to show the week containing today's date
@@ -298,15 +296,15 @@ fun CalendarScreen(
 
             // Calories Card
             TotalCalorieCount(
-                calories = calendarViewModel.getTotalCaloriesForDate(selectedDate.toString())
+                calories = homeViewModel.getTotalCaloriesForDate(selectedDate.toString())
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
              CalorieTypeDetails(
-                 protein = calendarViewModel.getTotalProteinForDate(selectedDate.toString()),
-                 carbs = calendarViewModel.getTotalCarbsForDate(selectedDate.toString()),
-                 fat = calendarViewModel.getTotalFatForDate(selectedDate.toString())
+                 protein = homeViewModel.getTotalProteinForDate(selectedDate.toString()),
+                 carbs = homeViewModel.getTotalCarbsForDate(selectedDate.toString()),
+                 fat = homeViewModel.getTotalFatForDate(selectedDate.toString())
              )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -393,7 +391,7 @@ fun CalendarScreen(
         itemName = analysisToDelete?.foodItems?.firstOrNull()?.name ?: "this food analysis",
         onConfirm = {
             analysisToDelete?.let { analysis ->
-                calendarViewModel.deleteAnalysis(analysis)
+                homeViewModel.deleteAnalysis(analysis)
             }
             showDeleteDialog = false
             analysisToDelete = null
@@ -723,8 +721,8 @@ data class RecentlyUsedItem(
 
 @Preview(showBackground = true)
 @Composable
-private fun CalendarScreenPreview() {
+private fun HomeScreenPreview() {
     MaterialTheme {
-        CalendarScreen()
+        HomeScreen()
     }
 }

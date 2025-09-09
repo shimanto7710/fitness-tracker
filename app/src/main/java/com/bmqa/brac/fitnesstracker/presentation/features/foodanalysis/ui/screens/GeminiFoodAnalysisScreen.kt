@@ -24,7 +24,7 @@ import com.bmqa.brac.fitnesstracker.common.constants.AppConstants
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodItem
 import com.bmqa.brac.fitnesstracker.domain.entities.HealthStatus
-import com.bmqa.brac.fitnesstracker.presentation.ui.components.ImagePicker
+import com.bmqa.brac.fitnesstracker.presentation.components.ImagePicker
 import com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.viewmodel.GeminiFoodAnalysisViewModel
 import com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.viewmodel.GeminiFoodAnalysisUiState
 import com.bmqa.brac.fitnesstracker.ui.theme.Dimensions

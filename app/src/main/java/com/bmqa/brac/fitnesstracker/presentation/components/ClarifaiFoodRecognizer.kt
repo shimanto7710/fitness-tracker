@@ -1,4 +1,4 @@
-package com.bmqa.brac.fitnesstracker.presentation.ui.components
+package com.bmqa.brac.fitnesstracker.presentation.components
 
 import android.net.Uri
 import androidx.compose.foundation.Image

@@ -13,10 +13,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.bmqa.brac.fitnesstracker.common.utils.JsonUtils
-import com.bmqa.brac.fitnesstracker.presentation.ui.screens.CaloriesManagementScreen
-import com.bmqa.brac.fitnesstracker.presentation.ui.screens.DashboardScreen
 import com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.ui.screens.GeminiFoodAnalysisScreen
-import com.bmqa.brac.fitnesstracker.presentation.features.calendar.ui.screens.CalendarScreen
+import com.bmqa.brac.fitnesstracker.presentation.features.calendar.ui.screens.HomeScreen
 import com.bmqa.brac.fitnesstracker.presentation.features.nutrition.ui.screens.NutritionDetailsScreen
 
 @Composable
@@ -41,47 +39,17 @@ fun AppNavigation(
         },
     ) {
         composable<Route.Home> {
-            CalendarScreen(
-                onNavigateToCaloriesManagement = {
-                    navController.navigateToCaloriesManagement()
-                },
+            HomeScreen(
                 onNavigateToGeminiFoodAnalysis = { imageUri, selectedDate ->
                     navController.navigateToGeminiFoodAnalysis(imageUri = imageUri, selectedDate = selectedDate)
                 },
                 onNavigateToNutrition = { analysis ->
                     navController.navigateToNutritionWithAnalysis(analysis)
-                },
-                onNavigateToDashboard = {
-                    navController.navigateToDashboard()
                 }
             )
         }
 
-        composable<Route.Dashboard> {
-            DashboardScreen(
-                onNavigateToCaloriesManagement = {
-                    navController.navigateToCaloriesManagement()
-                },
-                onNavigateToGeminiFoodAnalysis = {
-                    navController.navigateToGeminiFoodAnalysis()
-                },
-                onNavigateToNutrition = {
-                    navController.navigateToNutrition()
-                },
-                onNavigateToCalendar = {
-                    navController.navigateToHome()
-                }
-            )
-        }
 
-        composable<Route.CaloriesManagement> {
-            val args = it.toRoute<Route.CaloriesManagement>()
-            CaloriesManagementScreen(
-                onNavigateBack = {
-                    navController.navigateBack()
-                }
-            )
-        }
 
         composable<Route.GeminiFoodAnalysis> {
             val args = it.toRoute<Route.GeminiFoodAnalysis>()

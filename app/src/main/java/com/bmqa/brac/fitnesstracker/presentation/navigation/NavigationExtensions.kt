@@ -30,19 +30,7 @@ fun NavController.navigateToHome() {
     navigateToRoute(Route.Home)
 }
 
-/**
- * Navigate to dashboard screen
- */
-fun NavController.navigateToDashboard() {
-    navigateToRoute(Route.Dashboard)
-}
 
-/**
- * Navigate to calories management screen
- */
-fun NavController.navigateToCaloriesManagement(parent: String? = null) {
-    navigateToRoute(Route.CaloriesManagement(parent))
-}
 
 /**
  * Navigate to Gemini food analysis screen
