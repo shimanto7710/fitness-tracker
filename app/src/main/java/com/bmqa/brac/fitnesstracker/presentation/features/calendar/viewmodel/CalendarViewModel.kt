@@ -59,4 +59,58 @@ class CalendarViewModel(
             }
         }
     }
+    
+    fun getTotalCaloriesForDate(selectedDate: String?): Int {
+        if (selectedDate == null) return 0
+        
+        val filteredAnalyses = _savedAnalyses.value.filter { analysis ->
+            analysis.selectedDate == selectedDate
+        }
+        
+        return filteredAnalyses.sumOf { analysis ->
+            analysis.totalNutrition?.totalCalories ?: 0
+        }
+    }
+    
+    fun getTotalProteinForDate(selectedDate: String?): String {
+        if (selectedDate == null) return "0g"
+        
+        val filteredAnalyses = _savedAnalyses.value.filter { analysis ->
+            analysis.selectedDate == selectedDate
+        }
+        
+        val totalProtein = filteredAnalyses.sumOf { analysis ->
+            analysis.totalNutrition?.totalProtein?.toDoubleOrNull() ?: 0.0
+        }
+        
+        return "${totalProtein.toInt()}g"
+    }
+    
+    fun getTotalCarbsForDate(selectedDate: String?): String {
+        if (selectedDate == null) return "0g"
+        
+        val filteredAnalyses = _savedAnalyses.value.filter { analysis ->
+            analysis.selectedDate == selectedDate
+        }
+        
+        val totalCarbs = filteredAnalyses.sumOf { analysis ->
+            analysis.totalNutrition?.totalCarbs?.toDoubleOrNull() ?: 0.0
+        }
+        
+        return "${totalCarbs.toInt()}g"
+    }
+    
+    fun getTotalFatForDate(selectedDate: String?): String {
+        if (selectedDate == null) return "0g"
+        
+        val filteredAnalyses = _savedAnalyses.value.filter { analysis ->
+            analysis.selectedDate == selectedDate
+        }
+        
+        val totalFat = filteredAnalyses.sumOf { analysis ->
+            analysis.totalNutrition?.totalFat?.toDoubleOrNull() ?: 0.0
+        }
+        
+        return "${totalFat.toInt()}g"
+    }
 }

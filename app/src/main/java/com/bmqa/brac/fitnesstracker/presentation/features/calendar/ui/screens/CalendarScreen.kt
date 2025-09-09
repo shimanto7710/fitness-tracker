@@ -299,15 +299,15 @@ fun CalendarScreen(
 
             // Calories Card
             TotalCalorieCount(
-                calories = 250 // You can make this dynamic based on selected date
+                calories = calendarViewModel.getTotalCaloriesForDate(selectedDate.toString())
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
              CalorieTypeDetails(
-                 protein = "30g",
-                 carbs = "50g",
-                 fat = "10g"
+                 protein = calendarViewModel.getTotalProteinForDate(selectedDate.toString()),
+                 carbs = calendarViewModel.getTotalCarbsForDate(selectedDate.toString()),
+                 fat = calendarViewModel.getTotalFatForDate(selectedDate.toString())
              )
 
             Spacer(modifier = Modifier.height(16.dp))
