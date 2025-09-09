@@ -5,7 +5,8 @@ data class GeminiFoodAnalysis(
     val errorMessage: String = "",
     val foodItems: List<GeminiFoodItem>,
     val totalNutrition: TotalNutrition?,
-    val analysisSummary: String
+    val analysisSummary: String,
+    val dateNTime: String?=null
 )
 
 data class GeminiFoodItem(

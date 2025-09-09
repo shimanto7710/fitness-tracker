@@ -26,6 +26,7 @@ fun HomeScreen(
     onNavigateToGeminiFoodAnalysis: () -> Unit,
     onNavigateToNutrition: () -> Unit,
     onNavigateToCalendar: () -> Unit,
+    onNavigateToDatabaseTest: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     
@@ -233,6 +234,53 @@ fun HomeScreen(
                         contentDescription = "Navigate to Calendar",
                         modifier = Modifier.size(Dimensions.iconSizeMedium),
                         tint = MaterialTheme.colorScheme.tertiary
+                    )
+                }
+            }
+
+            // Database Test Card
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(Dimensions.cardHeight),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+                onClick = onNavigateToDatabaseTest
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(Dimensions.spacingMedium),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Database Test",
+                        modifier = Modifier.size(Dimensions.iconSizeExtraLarge),
+                        tint = MaterialTheme.colorScheme.onErrorContainer
+                    )
+                    Spacer(modifier = Modifier.width(Dimensions.spacingMedium))
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = "Database Test",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                        Spacer(modifier = Modifier.height(Dimensions.spacingSmall))
+                        Text(
+                            text = "Test Room database functionality",
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.7f)
+                        )
+                    }
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Navigate to Database Test",
+                        modifier = Modifier.size(Dimensions.iconSizeMedium),
+                        tint = MaterialTheme.colorScheme.onErrorContainer
                     )
                 }
             }

@@ -660,7 +660,8 @@ private fun createMockGeminiAnalysis(): GeminiFoodAnalysis {
             totalFat = "28g",
             overallHealthStatus = HealthStatus.MODERATE
         ),
-        analysisSummary = "The meal provides a good balance of protein and carbohydrates. The high fat content from the pork chop is a concern, suggesting moderation in portion size. The salad adds essential vitamins and minerals. Overall, a moderately healthy meal."
+        analysisSummary = "The meal provides a good balance of protein and carbohydrates. The high fat content from the pork chop is a concern, suggesting moderation in portion size. The salad adds essential vitamins and minerals. Overall, a moderately healthy meal.",
+        dateNTime = "2024-10-05 12:46 PM"
     )
 }
 

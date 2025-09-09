@@ -60,6 +60,13 @@ fun NavController.navigateToCalendar() {
 }
 
 /**
+ * Navigate to database test screen
+ */
+fun NavController.navigateToDatabaseTest() {
+    navigateToRoute(Route.DatabaseTest)
+}
+
+/**
  * Navigate back with proper handling
  */
 fun NavController.navigateBack() {

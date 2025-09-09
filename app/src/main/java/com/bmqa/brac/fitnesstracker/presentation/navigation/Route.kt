@@ -29,5 +29,8 @@ sealed interface Route {
 
     @Serializable
     object Calendar : Route
+
+    @Serializable
+    object DatabaseTest : Route
 }
 
