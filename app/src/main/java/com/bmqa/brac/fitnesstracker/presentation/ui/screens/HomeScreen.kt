@@ -19,9 +19,9 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.*
-import com.bmqa.brac.fitnesstracker.presentation.ui.components.ImagePickerDialog
-import com.bmqa.brac.fitnesstracker.presentation.ui.components.FoodAnalysisListItem
-import com.bmqa.brac.fitnesstracker.presentation.ui.components.DeleteConfirmationDialog
+import com.bmqa.brac.fitnesstracker.presentation.ui.components.ImageSelectionDialog
+import com.bmqa.brac.fitnesstracker.presentation.ui.components.FoodAnalysisCard
+import com.bmqa.brac.fitnesstracker.presentation.ui.components.DeleteFoodAnalysisDialog
 import com.bmqa.brac.fitnesstracker.presentation.viewmodel.HomeViewModel
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -359,7 +359,7 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     filteredAnalyses.forEach { analysis ->
-                        FoodAnalysisListItem(
+                        FoodAnalysisCard(
                             analysis = analysis,
                             onClick = {
                                 onNavigateToNutrition(analysis)
@@ -376,9 +376,9 @@ fun HomeScreen(
         }
     }
     
-    // Image Picker Dialog
+    // Image Selection Dialog
     if (showImagePickerDialog) {
-        ImagePickerDialog(
+        ImageSelectionDialog(
             onImageSelected = { imageUri ->
                 // Navigate to Gemini Food Analysis with the selected image and date
                 val selectedDateString = selectedDate.toString()
@@ -388,8 +388,8 @@ fun HomeScreen(
         )
     }
     
-    // Delete Confirmation Dialog
-    DeleteConfirmationDialog(
+    // Delete Food Analysis Dialog
+    DeleteFoodAnalysisDialog(
         isVisible = showDeleteDialog,
         itemName = analysisToDelete?.foodItems?.firstOrNull()?.name ?: "this food analysis",
         onConfirm = {
