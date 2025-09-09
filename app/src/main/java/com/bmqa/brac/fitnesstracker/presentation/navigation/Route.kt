@@ -19,11 +19,12 @@ sealed interface Route {
         val parent: String? = null
     ) : Route
 
-    @Serializable
-    data class GeminiFoodAnalysis(
-        val parent: String? = null,
-        val imageUri: String? = null
-    ) : Route
+@Serializable
+data class GeminiFoodAnalysis(
+    val parent: String? = null,
+    val imageUri: String? = null,
+    val selectedDate: String? = null
+) : Route
 
     @Serializable
     data class Nutrition(

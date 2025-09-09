@@ -19,6 +19,9 @@ class HomeViewModel(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
     
+    private var _selectedDate = MutableStateFlow<String?>(null)
+    val selectedDate: StateFlow<String?> = _selectedDate.asStateFlow()
+    
     init {
         loadSavedAnalyses()
     }
@@ -36,6 +39,10 @@ class HomeViewModel(
                 // Handle error if needed
             }
         }
+    }
+    
+    fun setSelectedDate(date: String?) {
+        _selectedDate.value = date
     }
     
     fun refreshData() {

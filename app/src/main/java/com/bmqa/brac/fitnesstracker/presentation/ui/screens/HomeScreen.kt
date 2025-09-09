@@ -44,7 +44,7 @@ import java.util.*
 @Composable
 fun HomeScreen(
     onNavigateToCaloriesManagement: () -> Unit = {},
-    onNavigateToGeminiFoodAnalysis: (String) -> Unit = {},
+    onNavigateToGeminiFoodAnalysis: (String, String) -> Unit = { _, _ -> },
     onNavigateToNutrition: (GeminiFoodAnalysis) -> Unit = {},
     onNavigateToDashboard: () -> Unit = {},
     onNavigateToDatabaseTest: () -> Unit = {},
@@ -59,6 +59,23 @@ fun HomeScreen(
     val homeViewModel: HomeViewModel = koinViewModel()
     val savedAnalyses by homeViewModel.savedAnalyses.collectAsStateWithLifecycle()
     val isLoading by homeViewModel.isLoading.collectAsStateWithLifecycle()
+    
+    // Filter analyses by selected date
+    val filteredAnalyses = remember(savedAnalyses, selectedDate) {
+        if (selectedDate != null) {
+            val selectedDateString = selectedDate.toString()
+            savedAnalyses.filter { analysis ->
+                analysis.selectedDate == selectedDateString
+            }
+        } else {
+            savedAnalyses
+        }
+    }
+    
+    // Update selected date in viewmodel when it changes
+    LaunchedEffect(selectedDate) {
+        homeViewModel.setSelectedDate(selectedDate.toString())
+    }
 
     // Initialize displayedWeekIndex to show the week containing today's date
     val initialCalendarDays = generateCalendarDays(today.year, today.month.value)
@@ -292,6 +309,24 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Debug section - remove after testing
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+            ) {
+                Column(modifier = Modifier.padding(8.dp)) {
+                    Text("DEBUG INFO:", fontWeight = FontWeight.Bold)
+                    Text("Selected Date: ${selectedDate.toString()}")
+                    Text("Total Analyses: ${savedAnalyses.size}")
+                    Text("Filtered Analyses: ${filteredAnalyses.size}")
+                    savedAnalyses.forEachIndexed { index, analysis ->
+                        Text("Analysis $index selectedDate: '${analysis.selectedDate}'")
+                    }
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
             // Saved Food Analyses List
             Text(
                 text = "Recent Food Analyses",
@@ -310,7 +345,7 @@ fun HomeScreen(
                 ) {
                     CircularProgressIndicator()
                 }
-            } else if (savedAnalyses.isEmpty()) {
+            } else if (filteredAnalyses.isEmpty()) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -322,13 +357,13 @@ fun HomeScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "No food analyses yet",
+                            text = if (selectedDate == today) "No food analyses for today" else "No food analyses for selected date",
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Tap the + button to analyze your first meal!",
+                            text = "Tap the + button to analyze a meal for this date!",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -338,7 +373,7 @@ fun HomeScreen(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    savedAnalyses.forEach { analysis ->
+                    filteredAnalyses.forEach { analysis ->
                         FoodAnalysisListItem(
                             analysis = analysis,
                             onClick = {
@@ -356,8 +391,9 @@ fun HomeScreen(
     if (showImagePickerDialog) {
         ImagePickerDialog(
             onImageSelected = { imageUri ->
-                // Navigate to Gemini Food Analysis with the selected image
-                onNavigateToGeminiFoodAnalysis(imageUri.toString())
+                // Navigate to Gemini Food Analysis with the selected image and date
+                val selectedDateString = selectedDate.toString()
+                onNavigateToGeminiFoodAnalysis(imageUri.toString(), selectedDateString)
             },
             onDismiss = { showImagePickerDialog = false }
         )

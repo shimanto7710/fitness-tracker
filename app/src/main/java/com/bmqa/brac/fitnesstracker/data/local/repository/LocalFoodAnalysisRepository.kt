@@ -44,7 +44,8 @@ class LocalFoodAnalysisRepository(private val context: Context) {
             analysisSummary = foodAnalysis.analysisSummary,
             dateNTime = foodAnalysis.dateNTime,
             imagePath = imagePath,
-            imageUri = imageUri
+            imageUri = imageUri,
+            selectedDate = foodAnalysis.selectedDate
         )
         
         val analysisId = dao.insertFoodAnalysis(foodAnalysisEntity)
@@ -187,7 +188,8 @@ class LocalFoodAnalysisRepository(private val context: Context) {
             },
             analysisSummary = foodAnalysis.analysisSummary,
             dateNTime = foodAnalysis.dateNTime,
-            imageUri = foodAnalysis.imageUri
+            imageUri = foodAnalysis.imageUri,
+            selectedDate = foodAnalysis.selectedDate
         )
     }
 }

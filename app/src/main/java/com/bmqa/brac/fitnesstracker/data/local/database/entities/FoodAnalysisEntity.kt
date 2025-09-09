@@ -17,6 +17,7 @@ data class FoodAnalysisEntity(
     val dateNTime: String? = null,
     val imagePath: String? = null, // Path to the stored image
     val imageUri: String? = null,  // Original URI of the image
+    val selectedDate: String? = null, // Date selected by user in calendar
     val createdAt: Long = System.currentTimeMillis()
 )
 

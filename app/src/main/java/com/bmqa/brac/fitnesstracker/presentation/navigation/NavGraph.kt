@@ -46,8 +46,8 @@ fun AppNavigation(
                 onNavigateToCaloriesManagement = {
                     navController.navigateToCaloriesManagement()
                 },
-                onNavigateToGeminiFoodAnalysis = { imageUri ->
-                    navController.navigateToGeminiFoodAnalysis(imageUri = imageUri)
+                onNavigateToGeminiFoodAnalysis = { imageUri, selectedDate ->
+                    navController.navigateToGeminiFoodAnalysis(imageUri = imageUri, selectedDate = selectedDate)
                 },
                 onNavigateToNutrition = { analysis ->
                     navController.navigateToNutritionWithAnalysis(analysis)
@@ -106,7 +106,8 @@ fun AppNavigation(
                 onNavigateToNutritionDetails = { geminiAnalysis ->
                     navController.navigateToNutritionWithAnalysis(geminiAnalysis)
                 },
-                preSelectedImageUri = imageUri
+                preSelectedImageUri = imageUri,
+                selectedDate = args.selectedDate
             )
         }
 

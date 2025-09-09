@@ -35,6 +35,7 @@ fun GeminiFoodAnalysisScreen(
     onNavigateBack: () -> Unit,
     onNavigateToNutritionDetails: (GeminiFoodAnalysis) -> Unit = {},
     preSelectedImageUri: Uri? = null,
+    selectedDate: String? = null,
     modifier: Modifier = Modifier
 ) {
     var selectedImageUri by remember { mutableStateOf<Uri?>(preSelectedImageUri) }
@@ -100,7 +101,7 @@ fun GeminiFoodAnalysisScreen(
             // Analyze Button - Only visible when image is selected
             Button(
                 onClick = { 
-                    viewModel.analyzeFoodWithGemini(uri, context)
+                    viewModel.analyzeFoodWithGemini(uri, context, selectedDate)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -129,7 +130,8 @@ fun GeminiFoodAnalysisScreen(
             GeminiAnalysisResultsSection(
                 selectedImageUri = uri,
                 viewModel = viewModel,
-                onNavigateToNutritionDetails = onNavigateToNutritionDetails
+                onNavigateToNutritionDetails = onNavigateToNutritionDetails,
+                selectedDate = selectedDate
             )
         }
     }
@@ -139,7 +141,8 @@ fun GeminiFoodAnalysisScreen(
 private fun GeminiAnalysisResultsSection(
     selectedImageUri: Uri,
     viewModel: GeminiFoodAnalysisViewModel,
-    onNavigateToNutritionDetails: (GeminiFoodAnalysis) -> Unit = {}
+    onNavigateToNutritionDetails: (GeminiFoodAnalysis) -> Unit = {},
+    selectedDate: String? = null
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -215,7 +218,7 @@ private fun GeminiAnalysisResultsSection(
                     
                     Button(
                         onClick = { 
-                            viewModel.analyzeFoodWithGemini(selectedImageUri, context)
+                            viewModel.analyzeFoodWithGemini(selectedImageUri, context, selectedDate)
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.error
@@ -313,7 +316,7 @@ private fun GeminiAnalysisResultsSection(
                         // New Analysis button
                         OutlinedButton(
                             onClick = { 
-                                viewModel.analyzeFoodWithGemini(selectedImageUri, context)
+                                viewModel.analyzeFoodWithGemini(selectedImageUri, context, selectedDate)
                             },
                             modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.outlinedButtonColors(

@@ -47,8 +47,8 @@ fun NavController.navigateToCaloriesManagement(parent: String? = null) {
 /**
  * Navigate to Gemini food analysis screen
  */
-fun NavController.navigateToGeminiFoodAnalysis(parent: String? = null, imageUri: String? = null) {
-    navigateToRoute(Route.GeminiFoodAnalysis(parent, imageUri))
+fun NavController.navigateToGeminiFoodAnalysis(parent: String? = null, imageUri: String? = null, selectedDate: String? = null) {
+    navigateToRoute(Route.GeminiFoodAnalysis(parent, imageUri, selectedDate))
 }
 
 /**

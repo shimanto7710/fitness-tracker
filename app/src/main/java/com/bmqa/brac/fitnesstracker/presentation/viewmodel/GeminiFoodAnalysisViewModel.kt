@@ -23,7 +23,7 @@ class GeminiFoodAnalysisViewModel(
     private val _uiState = MutableStateFlow<GeminiFoodAnalysisUiState>(GeminiFoodAnalysisUiState.Idle)
     val uiState: StateFlow<GeminiFoodAnalysisUiState> = _uiState.asStateFlow()
     
-    fun analyzeFoodWithGemini(imageUri: Uri, context: Context) {
+    fun analyzeFoodWithGemini(imageUri: Uri, context: Context, selectedDate: String? = null) {
         viewModelScope.launch {
             _uiState.value = GeminiFoodAnalysisUiState.Loading
             
@@ -33,7 +33,10 @@ class GeminiFoodAnalysisViewModel(
                     onSuccess = { foodAnalysis ->
                         // Set current date and time
                         val currentDateTime = getCurrentDateTime()
-                        val updatedFoodAnalysis = foodAnalysis.copy(dateNTime = currentDateTime)
+                        val updatedFoodAnalysis = foodAnalysis.copy(
+                            dateNTime = currentDateTime,
+                            selectedDate = selectedDate
+                        )
                         
                         // Save to database
                         try {

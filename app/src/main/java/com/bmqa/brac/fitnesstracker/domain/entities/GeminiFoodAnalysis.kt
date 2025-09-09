@@ -10,7 +10,8 @@ data class GeminiFoodAnalysis(
     val totalNutrition: TotalNutrition?,
     val analysisSummary: String,
     val dateNTime: String?=null,
-    val imageUri: String? = null
+    val imageUri: String? = null,
+    val selectedDate: String? = null
 )
 
 @Serializable
