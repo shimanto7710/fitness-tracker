@@ -5,11 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
@@ -25,10 +21,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import coil.compose.rememberAsyncImagePainter
-import com.bmqa.brac.fitnesstracker.presentation.ui.utils.AssetImageUtils
-import java.io.File
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,36 +33,43 @@ import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodItem
 import com.bmqa.brac.fitnesstracker.domain.entities.HealthStatus
 import com.bmqa.brac.fitnesstracker.domain.entities.TotalNutrition
-import com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.viewmodel.GeminiFoodAnalysisViewModel
-import com.bmqa.brac.fitnesstracker.ui.theme.Dimensions
-import org.koin.androidx.compose.koinViewModel
+
+private object NutritionDetailsConstants {
+    const val IMAGE_HEIGHT = 300
+    const val CARD_ELEVATION = 8
+    const val CORNER_RADIUS = 12
+    const val BORDER_WIDTH = 1
+    const val ICON_SIZE = 24
+    const val SMALL_ICON_SIZE = 16
+    const val CARD_HEIGHT = 60
+    const val PROGRESS_HEIGHT = 8
+    const val MAX_DESCRIPTION_LINES = 5
+    const val HEALTH_SCORE_EXCELLENT = 0.9f
+    const val HEALTH_SCORE_GOOD = 0.7f
+    const val HEALTH_SCORE_MODERATE = 0.5f
+    const val HEALTH_SCORE_POOR = 0.3f
+}
+
 
 @Composable
 fun NutritionDetailsScreen(
     geminiAnalysis: GeminiFoodAnalysis? = null,
     onNavigateBack: () -> Unit,
-    /*onTryAgain: () -> Unit = {},
-    modifier: Modifier = Modifier,
-    viewModel: GeminiFoodAnalysisViewModel = koinViewModel()*/
+    modifier: Modifier = Modifier
 ) {
-
-    // Get analysis data (provided or mock)
     val analysis = geminiAnalysis ?: createMockGeminiAnalysis()
 
     NutritionDetailsContent(
         geminiAnalysis = analysis,
-        onNavigateBack = onNavigateBack,
-        /*onTryAgain = onTryAgain*/
+        onNavigateBack = onNavigateBack
     )
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun NutritionDetailsContent(
     geminiAnalysis: GeminiFoodAnalysis,
-    onNavigateBack: () -> Unit,
-    /*onTryAgain: () -> Unit,*/
+    onNavigateBack: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -114,7 +113,7 @@ private fun NutritionDetailsContent(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(300.dp)
+                            .height(NutritionDetailsConstants.IMAGE_HEIGHT.dp)
                     ) {
                         AssetOrDrawableImage(
                             assetFileName = "food_plate.jpg",
@@ -133,7 +132,7 @@ private fun NutritionDetailsContent(
                             .fillMaxWidth()
                             .fillMaxHeight()
                             .background(Color.White),
-                        elevation = CardDefaults.cardElevation(8.dp),
+                        elevation = CardDefaults.cardElevation(NutritionDetailsConstants.CARD_ELEVATION.dp),
                         shape = RoundedCornerShape(
                             topStart = 16.dp,
                             topEnd = 16.dp,
@@ -143,83 +142,71 @@ private fun NutritionDetailsContent(
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
-                        // Title and time
-                        Box(
-                            modifier = Modifier
-                                .width(80.dp)
-                                .heightIn(min = 20.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(Color(0xFFF8F8F8)),
-                            contentAlignment = Alignment.Center
-                        ) {
+                            // Title and time
+                            Box(
+                                modifier = Modifier
+                                    .width(80.dp)
+                                    .heightIn(min = 20.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(Color(0xFFF8F8F8)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    "12:46 PM",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = Color.Gray,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.padding(horizontal = 4.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                "12:46 PM",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = Color.Gray,
+                                geminiAnalysis.foodItems.firstOrNull()?.name ?: "Unknown Food",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
                                 maxLines = 2,
                                 overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.padding(horizontal = 4.dp)
+                                modifier = Modifier.fillMaxWidth()
                             )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            geminiAnalysis.foodItems.firstOrNull()?.name ?: "Unknown Food",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.fillMaxWidth()
-                        )
 
-                        Spacer(modifier = Modifier.height(16.dp))
-                        // Total Calories
-                        CaloriesCard(
-                            calories = geminiAnalysis.totalNutrition?.totalCalories
-                        )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            // Total Calories
+                            CaloriesCard(
+                                calories = geminiAnalysis.totalNutrition?.totalCalories
+                            )
 
-                        Spacer(modifier = Modifier.height(16.dp))
-                        // Calorie details
-                        CalorieDetails(
-                            protein = geminiAnalysis.totalNutrition?.totalProtein,
-                            carbs = geminiAnalysis.totalNutrition?.totalCarbs,
-                            fat = geminiAnalysis.totalNutrition?.totalFat
-                        )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            // Calorie details
+                            CalorieDetails(
+                                protein = geminiAnalysis.totalNutrition?.totalProtein,
+                                carbs = geminiAnalysis.totalNutrition?.totalCarbs,
+                                fat = geminiAnalysis.totalNutrition?.totalFat
+                            )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
 
-                        // Health info
-                        HealthScoreCard(
-                            title = "Health Score",
-                            value = when (geminiAnalysis.totalNutrition?.overallHealthStatus) {
-                                HealthStatus.EXCELLENT -> "9/10"
-                                HealthStatus.GOOD -> "7/10"
-                                HealthStatus.MODERATE -> "5/10"
-                                HealthStatus.POOR -> "3/10"
-                                else -> "N/A"
-                            },
-                            progress = when (geminiAnalysis.totalNutrition?.overallHealthStatus) {
-                                HealthStatus.EXCELLENT -> 0.9f
-                                HealthStatus.GOOD -> 0.7f
-                                HealthStatus.MODERATE -> 0.5f
-                                HealthStatus.POOR -> 0.3f
-                                else -> 0.0f
-                            },
-                            icon = Icons.Filled.Favorite
-                        )
+                            // Health info
+                            HealthScoreCard(
+                                title = "Health Score",
+                                value = getHealthScoreValue(geminiAnalysis.totalNutrition?.overallHealthStatus),
+                                progress = getHealthScoreProgress(geminiAnalysis.totalNutrition?.overallHealthStatus),
+                                icon = Icons.Filled.Favorite
+                            )
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(24.dp))
 
-                        Text(
-                            "Food Items",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                "Food Items",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                         FoodItemDetails(
-                             foodItems = geminiAnalysis.foodItems
-                         )
+                            FoodItemDetails(
+                                foodItems = geminiAnalysis.foodItems
+                            )
                         }
                     }
                 }
@@ -229,6 +216,27 @@ private fun NutritionDetailsContent(
 }
 
 
+private fun getHealthScoreValue(healthStatus: HealthStatus?): String {
+    return when (healthStatus) {
+        HealthStatus.EXCELLENT -> "9/10"
+        HealthStatus.GOOD -> "7/10"
+        HealthStatus.MODERATE -> "5/10"
+        HealthStatus.POOR -> "3/10"
+        else -> "N/A"
+    }
+}
+
+
+private fun getHealthScoreProgress(healthStatus: HealthStatus?): Float {
+    return when (healthStatus) {
+        HealthStatus.EXCELLENT -> NutritionDetailsConstants.HEALTH_SCORE_EXCELLENT
+        HealthStatus.GOOD -> NutritionDetailsConstants.HEALTH_SCORE_GOOD
+        HealthStatus.MODERATE -> NutritionDetailsConstants.HEALTH_SCORE_MODERATE
+        HealthStatus.POOR -> NutritionDetailsConstants.HEALTH_SCORE_POOR
+        else -> 0.0f
+    }
+}
+
 @Composable
 fun CaloriesCard(
     calories: Int? = null
@@ -236,14 +244,14 @@ fun CaloriesCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .height(NutritionDetailsConstants.CARD_HEIGHT.dp)
+            .clip(RoundedCornerShape(NutritionDetailsConstants.CORNER_RADIUS.dp))
             .border(
-                width = 1.dp,
+                width = NutritionDetailsConstants.BORDER_WIDTH.dp,
                 color = Color(0xFFE0E0E0),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(NutritionDetailsConstants.CORNER_RADIUS.dp)
             ),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(NutritionDetailsConstants.CORNER_RADIUS.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
@@ -263,8 +271,8 @@ fun CaloriesCard(
                 Icon(
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .size(24.dp),
-                    imageVector = Icons.Filled.AccountCircle,
+                        .size(NutritionDetailsConstants.ICON_SIZE.dp),
+                    imageVector = Icons.Filled.Favorite,
                     contentDescription = "Calories Icon",
                     tint = Color.Black
                 )
@@ -308,18 +316,17 @@ private fun CalorieDetails(
 fun CalorieCard(label: String, value: String, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
-            .fillMaxWidth() // slightly taller for balance
-            .height(60.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .fillMaxWidth()
+            .height(NutritionDetailsConstants.CARD_HEIGHT.dp)
+            .clip(RoundedCornerShape(NutritionDetailsConstants.CORNER_RADIUS.dp))
             .border(
-                width = 1.dp,
+                width = NutritionDetailsConstants.BORDER_WIDTH.dp,
                 color = Color(0xFFE0E0E0),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(NutritionDetailsConstants.CORNER_RADIUS.dp)
             ),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(NutritionDetailsConstants.CORNER_RADIUS.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-
 
         Row(
             verticalAlignment = Alignment.Top,
@@ -339,7 +346,7 @@ fun CalorieCard(label: String, value: String, modifier: Modifier = Modifier) {
                     imageVector = Icons.Filled.AccountCircle,
                     contentDescription = null,
                     tint = Color.Black,
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(NutritionDetailsConstants.SMALL_ICON_SIZE.dp)
                 )
             }
 
@@ -372,14 +379,14 @@ fun HealthScoreCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(60.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .height(NutritionDetailsConstants.CARD_HEIGHT.dp)
+            .clip(RoundedCornerShape(NutritionDetailsConstants.CORNER_RADIUS.dp))
             .border(
-                width = 1.dp,
+                width = NutritionDetailsConstants.BORDER_WIDTH.dp,
                 color = Color(0xFFE0E0E0),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(NutritionDetailsConstants.CORNER_RADIUS.dp)
             ),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(NutritionDetailsConstants.CORNER_RADIUS.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
@@ -419,10 +426,10 @@ fun HealthScoreCard(
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 LinearProgressIndicator(
-                    progress = progress.coerceIn(0f, 1f), // clamp between 0 and 1
+                    progress = { progress.coerceIn(0f, 1f) }, // clamp between 0 and 1
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(8.dp)
+                        .height(NutritionDetailsConstants.PROGRESS_HEIGHT.dp)
                         .clip(RoundedCornerShape(4.dp)),
                     color = Color(0xFF4CAF50),
                     trackColor = Color(0xFFE0E0E0)
@@ -431,16 +438,6 @@ fun HealthScoreCard(
         }
     }
 }
-
-// Data class for food items
-data class FoodItemData(
-    val name: String,
-    val calories: String,
-    val description: String,
-    val protein: String,
-    val carbs: String,
-    val fat: String
-)
 
 @Composable
 fun FoodItemDetails(
@@ -477,13 +474,13 @@ fun FoodItem(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(NutritionDetailsConstants.CORNER_RADIUS.dp))
             .border(
-                width = 1.dp,
+                width = NutritionDetailsConstants.BORDER_WIDTH.dp,
                 color = Color(0xFFE0E0E0),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(NutritionDetailsConstants.CORNER_RADIUS.dp)
             ),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(NutritionDetailsConstants.CORNER_RADIUS.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(
@@ -500,10 +497,10 @@ fun FoodItem(
                 horizontalArrangement = Arrangement.Start
             ) {
                 Icon(
-                    imageVector = Icons.Filled.AccountCircle,
-                    contentDescription = null,
+                    imageVector = Icons.Filled.Favorite,
+                    contentDescription = "Calories",
                     tint = Color.Black,
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(NutritionDetailsConstants.SMALL_ICON_SIZE.dp)
                 )
                 Text(
                     modifier = Modifier.padding(start = 4.dp),
@@ -517,7 +514,7 @@ fun FoodItem(
                 text = description,
                 fontSize = 12.sp,
                 color = Color.Black,
-                maxLines = 5,
+                maxLines = NutritionDetailsConstants.MAX_DESCRIPTION_LINES,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
             )
@@ -698,13 +695,11 @@ fun AssetOrDrawableImage(
 @Preview(showBackground = true)
 @Composable
 private fun NutritionDetailsContent_Preview() {
-    // Use the drawable version of food_plate for preview
     val mockData = createMockGeminiAnalysis()
 
     NutritionDetailsContent(
         geminiAnalysis = mockData,
-        onNavigateBack = {},
-        /*onTryAgain = {}*/
+        onNavigateBack = {}
     )
 }
 

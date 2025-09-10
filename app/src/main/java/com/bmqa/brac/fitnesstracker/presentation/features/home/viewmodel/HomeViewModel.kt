@@ -1,4 +1,4 @@
-package com.bmqa.brac.fitnesstracker.presentation.features.calendar.viewmodel
+package com.bmqa.brac.fitnesstracker.presentation.features.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

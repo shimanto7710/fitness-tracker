@@ -1,4 +1,4 @@
-package com.bmqa.brac.fitnesstracker.presentation.features.calendar.ui.screens
+package com.bmqa.brac.fitnesstracker.presentation.features.home.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -6,23 +6,18 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.ui.components.ImageSelectionDialog
 import com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.ui.components.FoodAnalysisCard
 import com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.ui.components.DeleteFoodAnalysisDialog
-import com.bmqa.brac.fitnesstracker.presentation.features.calendar.viewmodel.HomeViewModel
+import com.bmqa.brac.fitnesstracker.presentation.features.home.viewmodel.HomeViewModel
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
