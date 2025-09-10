@@ -27,6 +27,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -57,14 +58,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 import com.bmqa.brac.fitnesstracker.presentation.features.home.ui.components.DeleteFoodAnalysisDialog
 import com.bmqa.brac.fitnesstracker.presentation.features.home.ui.components.FoodAnalysisCard
-
 import com.bmqa.brac.fitnesstracker.presentation.features.home.ui.components.ImageSelectionDialog
 import com.bmqa.brac.fitnesstracker.presentation.features.home.viewmodel.HomeViewModel
+import com.bmqa.brac.fitnesstracker.presentation.features.home.viewmodel.HomeUiState
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 import androidx.compose.runtime.*
 
@@ -110,8 +110,29 @@ fun HomeScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var analysisToDelete by remember { mutableStateOf<GeminiFoodAnalysis?>(null) }
     val homeViewModel: HomeViewModel = koinViewModel()
-    val savedAnalyses by homeViewModel.savedAnalyses.collectAsStateWithLifecycle()
-    val isLoading by homeViewModel.isLoading.collectAsStateWithLifecycle()
+    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    
+    // Extract data from UI state
+    val savedAnalyses = remember(uiState) {
+        val currentState = uiState
+        when (currentState) {
+            is HomeUiState.Success -> currentState.analyses
+            else -> emptyList()
+        }
+    }
+    val isLoading = remember(uiState) {
+        val currentState = uiState
+        currentState is HomeUiState.Loading
+    }
+    
+    // Handle error state
+    val errorMessage = remember(uiState) {
+        val currentState = uiState
+        when (currentState) {
+            is HomeUiState.Error -> currentState.message
+            else -> null
+        }
+    }
     
     // Filter analyses by selected date
     val filteredAnalyses = remember(savedAnalyses, selectedDate) {
@@ -156,6 +177,9 @@ fun HomeScreen(
         totalCarbs = homeViewModel.getTotalCarbsForDate(selectedDate.toString()),
         totalFat = homeViewModel.getTotalFatForDate(selectedDate.toString()),
         
+        // Error handling
+        errorMessage = errorMessage,
+        
         // State setters
         onSelectedDateChange = { selectedDate = it },
         onCurrentMonthChange = { currentMonth = it },
@@ -197,6 +221,9 @@ fun HomeContent(
     totalProtein: String?,
     totalCarbs: String?,
     totalFat: String?,
+    
+    // Error handling
+    errorMessage: String?,
     
     // State setters
     onSelectedDateChange: (LocalDate) -> Unit,
@@ -240,6 +267,37 @@ fun HomeContent(
                 .padding(paddingValues),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Error Message Display
+            if (errorMessage != null) {
+                item {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer
+                        )
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Warning,
+                                contentDescription = "Error",
+                                tint = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = errorMessage,
+                                color = MaterialTheme.colorScheme.onErrorContainer,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+                }
+            }
+            
             // Compact Month Header - Integrated with Calendar
             item {
                 MonthHeader(
@@ -864,6 +922,9 @@ fun HomeContentWithDataPreview() {
             totalProtein = "120g",
             totalCarbs = "180g",
             totalFat = "65g",
+            
+            // Error handling
+            errorMessage = null,
 
             // State setters
             onSelectedDateChange = {},
