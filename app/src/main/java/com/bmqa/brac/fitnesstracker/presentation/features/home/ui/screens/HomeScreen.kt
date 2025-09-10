@@ -14,9 +14,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.*
-import com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.ui.components.ImageSelectionDialog
-import com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.ui.components.FoodAnalysisCard
-import com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.ui.components.DeleteFoodAnalysisDialog
+import com.bmqa.brac.fitnesstracker.presentation.features.home.ui.components.ImageSelectionDialog
+import com.bmqa.brac.fitnesstracker.presentation.features.home.ui.components.FoodAnalysisCard
+import com.bmqa.brac.fitnesstracker.presentation.features.home.ui.components.DeleteFoodAnalysisDialog
 import com.bmqa.brac.fitnesstracker.presentation.features.home.viewmodel.HomeViewModel
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 import androidx.lifecycle.compose.collectAsStateWithLifecycle

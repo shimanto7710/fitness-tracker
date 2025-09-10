@@ -1,4 +1,4 @@
-package com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.ui.components
+package com.bmqa.brac.fitnesstracker.presentation.features.home.ui.components
 
 import android.Manifest
 import android.content.Context
