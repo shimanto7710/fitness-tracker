@@ -6,9 +6,9 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bmqa.brac.fitnesstracker.data.local.repository.LocalFoodAnalysisRepository
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 import com.bmqa.brac.fitnesstracker.domain.usecase.GeminiFoodAnalysisUseCase
+import com.bmqa.brac.fitnesstracker.domain.usecase.SaveFoodAnalysisUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +19,7 @@ import java.util.*
 
 class GeminiFoodAnalysisViewModel(
     private val geminiFoodAnalysisUseCase: GeminiFoodAnalysisUseCase,
-    private val repository: LocalFoodAnalysisRepository
+    private val saveFoodAnalysisUseCase: SaveFoodAnalysisUseCase
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow<GeminiFoodAnalysisUiState>(GeminiFoodAnalysisUiState.Idle)
@@ -43,18 +43,22 @@ class GeminiFoodAnalysisViewModel(
                             selectedDate = selectedDate
                         )
                         
-                        // Save to database with image bitmap
-                        try {
-                            repository.saveFoodAnalysis(
-                                foodAnalysis = updatedFoodAnalysis,
-                                imageUri = imageUri.toString(),
-                                imageBitmap = imageBitmap
-                            )
-                            _uiState.value = GeminiFoodAnalysisUiState.Success(updatedFoodAnalysis)
-                        } catch (dbException: Exception) {
-                            // If database save fails, still show success but log the error
-                            _uiState.value = GeminiFoodAnalysisUiState.Success(updatedFoodAnalysis)
-                        }
+                        // Save to database using use case
+                        val saveResult = saveFoodAnalysisUseCase(
+                            foodAnalysis = updatedFoodAnalysis,
+                            imageUri = imageUri.toString(),
+                            imageBitmap = imageBitmap
+                        )
+                        
+                        saveResult.fold(
+                            onSuccess = {
+                                _uiState.value = GeminiFoodAnalysisUiState.Success(updatedFoodAnalysis)
+                            },
+                            onFailure = { dbException ->
+                                // If database save fails, still show success but log the error
+                                _uiState.value = GeminiFoodAnalysisUiState.Success(updatedFoodAnalysis)
+                            }
+                        )
                     },
                     onFailure = { exception ->
                         _uiState.value = GeminiFoodAnalysisUiState.Error(exception.message ?: "Unknown error occurred")

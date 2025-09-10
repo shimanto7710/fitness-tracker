@@ -12,6 +12,7 @@ import com.bmqa.brac.fitnesstracker.data.local.database.entities.TotalNutritionE
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodItem
 import com.bmqa.brac.fitnesstracker.domain.entities.TotalNutrition
+import com.bmqa.brac.fitnesstracker.domain.repository.FoodAnalysisRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -20,13 +21,81 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 
-class LocalFoodAnalysisRepository(private val context: Context) {
+class LocalFoodAnalysisRepository(private val context: Context) : FoodAnalysisRepository {
 
     private val database = FitnessTrackerDatabase.getDatabase(context)
     private val dao = database.foodAnalysisDao()
 
-    // Save complete food analysis with image
-    suspend fun saveFoodAnalysis(
+    // Implementation of domain interface
+    override suspend fun saveFoodAnalysis(
+        foodAnalysis: GeminiFoodAnalysis,
+        imageUri: String,
+        imageBitmap: Bitmap?
+    ): Unit = withContext(Dispatchers.IO) {
+        
+        // Save image to internal storage if provided
+        val imagePath = if (imageBitmap != null) {
+            saveImageToInternalStorage(imageBitmap, imageUri)
+        } else null
+
+        // Convert image to base64 if provided
+        val base64Image = if (imageBitmap != null) {
+            convertBitmapToBase64(imageBitmap)
+        } else null
+
+        // Insert main food analysis entity
+        val foodAnalysisEntity = FoodAnalysisEntity(
+            isError = foodAnalysis.isError,
+            errorMessage = foodAnalysis.errorMessage,
+            analysisSummary = foodAnalysis.analysisSummary,
+            dateNTime = foodAnalysis.dateNTime,
+            imagePath = imagePath,
+            imageUri = imageUri,
+            base64Image = base64Image,
+            selectedDate = foodAnalysis.selectedDate
+        )
+        
+        val analysisId = dao.insertFoodAnalysis(foodAnalysisEntity)
+
+        // Insert food items
+        val foodItemEntities = foodAnalysis.foodItems.map { item ->
+            FoodItemEntity(
+                analysisId = analysisId,
+                name = item.name,
+                portion = item.portion,
+                digestionTime = item.digestionTime,
+                healthStatus = item.healthStatus,
+                calories = item.calories,
+                protein = item.protein,
+                carbs = item.carbs,
+                fat = item.fat,
+                healthBenefits = item.healthBenefits,
+                healthConcerns = item.healthConcerns,
+                analysisSummary = item.analysisSummary
+            )
+        }
+        dao.insertFoodItems(foodItemEntities)
+
+        // Insert total nutrition if available
+        foodAnalysis.totalNutrition?.let { totalNutrition ->
+            val totalNutritionEntity = TotalNutritionEntity(
+                analysisId = analysisId,
+                name = totalNutrition.name,
+                totalPortion = totalNutrition.totalPortion,
+                totalCalories = totalNutrition.totalCalories,
+                totalProtein = totalNutrition.totalProtein,
+                totalCarbs = totalNutrition.totalCarbs,
+                totalFat = totalNutrition.totalFat,
+                overallHealthStatus = totalNutrition.overallHealthStatus
+            )
+            dao.insertTotalNutrition(totalNutritionEntity)
+        }
+
+        // Return Unit as per interface
+    }
+
+    // Additional method for testing that returns the ID
+    suspend fun saveFoodAnalysisWithId(
         foodAnalysis: GeminiFoodAnalysis,
         imageUri: String? = null,
         imageBitmap: Bitmap? = null

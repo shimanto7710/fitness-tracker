@@ -5,7 +5,9 @@ import com.bmqa.brac.fitnesstracker.data.repository.GeminiFoodAnalysisRepository
 import com.bmqa.brac.fitnesstracker.data.repository.MockGeminiFoodAnalysisRepositoryImpl
 import com.bmqa.brac.fitnesstracker.data.local.repository.LocalFoodAnalysisRepository
 import com.bmqa.brac.fitnesstracker.domain.repository.GeminiFoodAnalysisRepository
+import com.bmqa.brac.fitnesstracker.domain.repository.FoodAnalysisRepository
 import com.bmqa.brac.fitnesstracker.domain.usecase.GeminiFoodAnalysisUseCase
+import com.bmqa.brac.fitnesstracker.domain.usecase.SaveFoodAnalysisUseCase
 import com.bmqa.brac.fitnesstracker.domain.service.ImageProcessingService
 import com.bmqa.brac.fitnesstracker.data.service.ImageProcessingServiceImpl
 import com.bmqa.brac.fitnesstracker.common.constants.GeminiConstants
@@ -33,7 +35,9 @@ val networkModule = module {
     
     // Local Repository
     single { LocalFoodAnalysisRepository(androidContext()) }
+    single<FoodAnalysisRepository> { get<LocalFoodAnalysisRepository>() }
     
     // Use Cases
     single { GeminiFoodAnalysisUseCase(get(), get()) }
+    single { SaveFoodAnalysisUseCase(get()) }
 }

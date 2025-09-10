@@ -29,7 +29,7 @@ class DatabaseTestRunner(private val context: Context) {
                 val testAnalysis = createTestAnalysis()
                 val testBitmap = createTestBitmap()
                 
-                val analysisId = repository.saveFoodAnalysis(
+                val analysisId = repository.saveFoodAnalysisWithId(
                     foodAnalysis = testAnalysis,
                     imageUri = "test://image/uri",
                     imageBitmap = testBitmap
