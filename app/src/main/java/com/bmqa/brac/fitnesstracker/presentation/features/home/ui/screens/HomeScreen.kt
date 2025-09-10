@@ -1,40 +1,98 @@
 package com.bmqa.brac.fitnesstracker.presentation.features.home.ui.screens
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.*
-import com.bmqa.brac.fitnesstracker.presentation.features.home.ui.components.ImageSelectionDialog
-import com.bmqa.brac.fitnesstracker.presentation.features.home.ui.components.FoodAnalysisCard
-import com.bmqa.brac.fitnesstracker.presentation.features.home.ui.components.DeleteFoodAnalysisDialog
-import com.bmqa.brac.fitnesstracker.presentation.features.home.viewmodel.HomeViewModel
-import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import org.koin.androidx.compose.koinViewModel
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
+import com.bmqa.brac.fitnesstracker.presentation.features.home.ui.components.DeleteFoodAnalysisDialog
+import com.bmqa.brac.fitnesstracker.presentation.features.home.ui.components.FoodAnalysisCard
+
+import com.bmqa.brac.fitnesstracker.presentation.features.home.ui.components.ImageSelectionDialog
+import com.bmqa.brac.fitnesstracker.presentation.features.home.viewmodel.HomeViewModel
+import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.format.TextStyle
+import java.util.Locale
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+
+import androidx.compose.runtime.*
+
+import androidx.compose.ui.draw.clip
+
+import androidx.compose.ui.text.style.TextOverflow
+
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodItem
+import com.bmqa.brac.fitnesstracker.domain.entities.HealthStatus
+import com.bmqa.brac.fitnesstracker.domain.entities.TotalNutrition
+import org.koin.androidx.compose.koinViewModel
+
 import java.util.*
+
+private object HomeScreenConstants {
+    const val CALENDAR_DAYS_PER_WEEK = 7
+    const val CALENDAR_DAY_SIZE = 40
+    const val CALENDAR_SPACING = 8
+    const val NUTRITION_CARD_SPACING = 16
+    const val ANALYSIS_ITEM_HEIGHT = 100
+    const val ANALYSIS_IMAGE_SIZE = 80
+    const val FAB_SIZE = 56
+    const val PREVIEW_YEAR = 2024
+    const val PREVIEW_MONTH = 1
+    const val PREVIEW_DAY = 15
+}
 
 @SuppressLint("NewApi")
 @Composable
@@ -78,11 +136,92 @@ fun HomeScreen(
     val initialWeekIndex = initialWeeks.indexOfFirst { it.contains(today) }.coerceAtLeast(0)
     var displayedWeekIndex by remember { mutableStateOf(initialWeekIndex) }
 
+    HomeContent(
+        // State variables
+        selectedDate = selectedDate,
+        currentMonth = currentMonth,
+        currentYear = currentYear,
+        showMonthDropdown = showMonthDropdown,
+        showImagePickerDialog = showImagePickerDialog,
+        showDeleteDialog = showDeleteDialog,
+        analysisToDelete = analysisToDelete,
+        displayedWeekIndex = displayedWeekIndex,
+        filteredAnalyses = filteredAnalyses,
+        isLoading = isLoading,
+        today = today,
+        
+        // Nutrition data
+        totalCalories = homeViewModel.getTotalCaloriesForDate(selectedDate.toString()),
+        totalProtein = homeViewModel.getTotalProteinForDate(selectedDate.toString()),
+        totalCarbs = homeViewModel.getTotalCarbsForDate(selectedDate.toString()),
+        totalFat = homeViewModel.getTotalFatForDate(selectedDate.toString()),
+        
+        // State setters
+        onSelectedDateChange = { selectedDate = it },
+        onCurrentMonthChange = { currentMonth = it },
+        onCurrentYearChange = { currentYear = it },
+        onShowMonthDropdownChange = { showMonthDropdown = it },
+        onShowImagePickerDialogChange = { showImagePickerDialog = it },
+        onShowDeleteDialogChange = { showDeleteDialog = it },
+        onAnalysisToDeleteChange = { analysisToDelete = it },
+        onDisplayedWeekIndexChange = { displayedWeekIndex = it },
+        
+        // Business logic callbacks
+        onDeleteAnalysis = { analysis -> homeViewModel.deleteAnalysis(analysis) },
+        
+        // Navigation callbacks
+        onNavigateToGeminiFoodAnalysis = onNavigateToGeminiFoodAnalysis,
+        onNavigateToNutrition = onNavigateToNutrition,
+        modifier = modifier
+    )
+}
+
+@SuppressLint("NewApi")
+@Composable
+fun HomeContent(
+    // State variables
+    selectedDate: LocalDate,
+    currentMonth: java.time.Month,
+    currentYear: Int,
+    showMonthDropdown: Boolean,
+    showImagePickerDialog: Boolean,
+    showDeleteDialog: Boolean,
+    analysisToDelete: GeminiFoodAnalysis?,
+    displayedWeekIndex: Int,
+    filteredAnalyses: List<GeminiFoodAnalysis>,
+    isLoading: Boolean,
+    today: LocalDate,
+    
+    // Nutrition data
+    totalCalories: Int?,
+    totalProtein: String?,
+    totalCarbs: String?,
+    totalFat: String?,
+    
+    // State setters
+    onSelectedDateChange: (LocalDate) -> Unit,
+    onCurrentMonthChange: (java.time.Month) -> Unit,
+    onCurrentYearChange: (Int) -> Unit,
+    onShowMonthDropdownChange: (Boolean) -> Unit,
+    onShowImagePickerDialogChange: (Boolean) -> Unit,
+    onShowDeleteDialogChange: (Boolean) -> Unit,
+    onAnalysisToDeleteChange: (GeminiFoodAnalysis?) -> Unit,
+    onDisplayedWeekIndexChange: (Int) -> Unit,
+    
+    // Business logic callbacks
+    onDeleteAnalysis: (GeminiFoodAnalysis) -> Unit,
+    
+    // Navigation callbacks
+    onNavigateToGeminiFoodAnalysis: (String, String) -> Unit = { _, _ -> },
+    onNavigateToNutrition: (GeminiFoodAnalysis) -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { showImagePickerDialog = true },
+                onClick = { onShowImagePickerDialogChange(true) },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
@@ -101,282 +240,91 @@ fun HomeScreen(
                 .padding(paddingValues),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-        // Compact Month Header - Integrated with Calendar
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Previous Month Button
-                IconButton(
-                    onClick = {
+            // Compact Month Header - Integrated with Calendar
+            item {
+                MonthHeader(
+                    currentMonth = currentMonth,
+                    currentYear = currentYear,
+                    showMonthDropdown = showMonthDropdown,
+                    onPreviousMonth = {
                         if (currentMonth == java.time.Month.JANUARY) {
-                            currentMonth = java.time.Month.DECEMBER
-                            currentYear--
+                            onCurrentMonthChange(java.time.Month.DECEMBER)
+                            onCurrentYearChange(currentYear - 1)
                         } else {
-                            currentMonth = currentMonth.minus(1)
+                            onCurrentMonthChange(currentMonth.minus(1))
                         }
-                        displayedWeekIndex = 0
+                        onDisplayedWeekIndexChange(0)
                     },
-                    modifier = Modifier.size(32.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                        contentDescription = "Previous Month",
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-
-                // Month/Year Display - Clickable for dropdown
-                Box {
-                    Text(
-                        text = "${currentMonth.getDisplayName(TextStyle.SHORT, Locale.getDefault())} $currentYear",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.clickable { showMonthDropdown = true }
-                    )
-
-                    // Month Dropdown Menu
-                    DropdownMenu(
-                        expanded = showMonthDropdown,
-                        onDismissRequest = { showMonthDropdown = false }
-                    ) {
-                        (1..12).forEach { month ->
-                            DropdownMenuItem(
-                                text = {
-                                    Text(
-                                        text = java.time.Month.of(month)
-                                            .getDisplayName(TextStyle.FULL, Locale.getDefault())
-                                    )
-                                },
-                                onClick = {
-                                    currentMonth = java.time.Month.of(month)
-                                    displayedWeekIndex = 0 // Reset to first week of new month
-                                    showMonthDropdown = false
-                                }
-                            )
-                        }
-                    }
-                }
-
-                // Next Month Button
-                IconButton(
-                    onClick = {
+                    onNextMonth = {
                         if (currentMonth == java.time.Month.DECEMBER) {
-                            currentMonth = java.time.Month.JANUARY
-                            currentYear++
+                            onCurrentMonthChange(java.time.Month.JANUARY)
+                            onCurrentYearChange(currentYear + 1)
                         } else {
-                            currentMonth = currentMonth.plus(1)
+                            onCurrentMonthChange(currentMonth.plus(1))
                         }
-                        displayedWeekIndex = 0
+                        onDisplayedWeekIndexChange(0)
                     },
-                    modifier = Modifier.size(32.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "Next Month",
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-            }
-        }
-
-        // Calendar Days - Single Row with Week Navigation
-        item {
-            val calendarDays = generateCalendarDays(currentYear, currentMonth.value)
-            val weeks = calendarDays.chunked(7)
-            val safeWeekIndex = displayedWeekIndex.coerceIn(0, weeks.size - 1)
-            val currentWeek = weeks[safeWeekIndex]
-
-            // Days of Week Header - Aligned with calendar days
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                // Spacer to align with previous week button
-                Spacer(modifier = Modifier.width(48.dp))
-
-                // Day names aligned with calendar days
-                Row(
-                    modifier = Modifier.weight(1f),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    currentWeek.forEach { day ->
-                        Text(
-                            text = day.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.weight(1f)
-                        )
+                    onMonthDropdownToggle = { onShowMonthDropdownChange(!showMonthDropdown) },
+                    onMonthSelected = { month ->
+                        onCurrentMonthChange(month)
+                        onDisplayedWeekIndexChange(0)
+                        onShowMonthDropdownChange(false)
                     }
-                }
-
-                // Spacer to align with next week button
-                Spacer(modifier = Modifier.width(48.dp))
+                )
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Previous Week Button
-                IconButton(
-                    onClick = {
-                        if (safeWeekIndex > 0) {
-                            displayedWeekIndex--
+            // Calendar Days - Single Row with Week Navigation
+            item {
+                CalendarWeekView(
+                    currentYear = currentYear,
+                    currentMonth = currentMonth,
+                    selectedDate = selectedDate,
+                    displayedWeekIndex = displayedWeekIndex,
+                    onDateSelected = { onSelectedDateChange(it) },
+                    onPreviousWeek = {
+                        if (displayedWeekIndex > 0) {
+                            onDisplayedWeekIndexChange(displayedWeekIndex - 1)
                         }
                     },
-                    enabled = safeWeekIndex > 0
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                        contentDescription = "Previous Week",
-                        tint = if (safeWeekIndex > 0)
-                            MaterialTheme.colorScheme.onBackground
-                        else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
-                    )
-                }
-
-                // Calendar Days
-                Row(
-                    modifier = Modifier.weight(1f),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    currentWeek.forEach { day ->
-                        CalendarDayItem(
-                            day = day,
-                            isSelected = day == selectedDate,
-                            isCurrentMonth = day.month == currentMonth,
-                            onClick = { selectedDate = day },
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                }
-
-                // Next Week Button
-                IconButton(
-                    onClick = {
-                        if (safeWeekIndex < weeks.size - 1) {
-                            displayedWeekIndex++
+                    onNextWeek = {
+                        val calendarDays = generateCalendarDays(currentYear, currentMonth.value)
+                        val weeks = calendarDays.chunked(7)
+                        if (displayedWeekIndex < weeks.size - 1) {
+                            onDisplayedWeekIndexChange(displayedWeekIndex + 1)
                         }
-                    },
-                    enabled = safeWeekIndex < weeks.size - 1
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "Next Week",
-                        tint = if (safeWeekIndex < weeks.size - 1)
-                            MaterialTheme.colorScheme.onBackground
-                        else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
-                    )
-                }
-            }
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Calories Card
-            TotalCalorieCount(
-                calories = homeViewModel.getTotalCaloriesForDate(selectedDate.toString())
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-             CalorieTypeDetails(
-                 protein = homeViewModel.getTotalProteinForDate(selectedDate.toString()),
-                 carbs = homeViewModel.getTotalCarbsForDate(selectedDate.toString()),
-                 fat = homeViewModel.getTotalFatForDate(selectedDate.toString())
-             )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Saved Food Analyses List
-            Text(
-                text = "Recent Food Analyses",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(bottom = 12.dp)
-            )
-
-            if (isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            } else if (filteredAnalyses.isEmpty()) {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = if (selectedDate == today) "No food analyses for today" else "No food analyses for selected date",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Tap the + button to analyze a meal for this date!",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
                     }
-                }
-            } else {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    filteredAnalyses.forEach { analysis ->
-                        FoodAnalysisCard(
-                            analysis = analysis,
-                            onClick = {
-                                onNavigateToNutrition(analysis)
-                            },
-                            onLongPress = {
-                                analysisToDelete = analysis
-                                showDeleteDialog = true
-                            }
-                        )
-                    }
-                }
+                )
             }
-        }
+
+            // Nutrition Summary and Food Analyses
+            item {
+                NutritionAndAnalysesSection(
+                    selectedDate = selectedDate,
+                    today = today,
+                    totalCalories = totalCalories,
+                    totalProtein = totalProtein,
+                    totalCarbs = totalCarbs,
+                    totalFat = totalFat,
+                    filteredAnalyses = filteredAnalyses,
+                    isLoading = isLoading,
+                    onNavigateToNutrition = onNavigateToNutrition,
+                    onDeleteAnalysis = { analysis ->
+                        onAnalysisToDeleteChange(analysis)
+                        onShowDeleteDialogChange(true)
+                    }
+                )
+            }
         }
     }
-    
+
     // Image Selection Dialog
     if (showImagePickerDialog) {
         ImageSelectionDialog(
             onImageSelected = { imageUri ->
-                // Navigate to Gemini Food Analysis with the selected image and date
                 val selectedDateString = selectedDate.toString()
                 onNavigateToGeminiFoodAnalysis(imageUri.toString(), selectedDateString)
             },
-            onDismiss = { showImagePickerDialog = false }
+            onDismiss = { onShowImagePickerDialogChange(false) }
         )
     }
     
@@ -386,16 +334,280 @@ fun HomeScreen(
         itemName = analysisToDelete?.foodItems?.firstOrNull()?.name ?: "this food analysis",
         onConfirm = {
             analysisToDelete?.let { analysis ->
-                homeViewModel.deleteAnalysis(analysis)
+                onDeleteAnalysis(analysis)
             }
-            showDeleteDialog = false
-            analysisToDelete = null
+            onShowDeleteDialogChange(false)
+            onAnalysisToDeleteChange(null)
         },
         onDismiss = {
-            showDeleteDialog = false
-            analysisToDelete = null
+            onShowDeleteDialogChange(false)
+            onAnalysisToDeleteChange(null)
         }
     )
+}
+
+@SuppressLint("NewApi")
+@Composable
+private fun MonthHeader(
+    currentMonth: java.time.Month,
+    currentYear: Int,
+    showMonthDropdown: Boolean,
+    onPreviousMonth: () -> Unit,
+    onNextMonth: () -> Unit,
+    onMonthDropdownToggle: () -> Unit,
+    onMonthSelected: (java.time.Month) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Previous Month Button
+        IconButton(
+            onClick = onPreviousMonth,
+            modifier = Modifier.size(32.dp)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                contentDescription = "Previous Month",
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+
+        // Month/Year Display - Clickable for dropdown
+        Box {
+            Text(
+                text = "${currentMonth.getDisplayName(TextStyle.SHORT, Locale.getDefault())} $currentYear",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.clickable { onMonthDropdownToggle() }
+            )
+
+            // Month Dropdown Menu
+            DropdownMenu(
+                expanded = showMonthDropdown,
+                onDismissRequest = { onMonthDropdownToggle() }
+            ) {
+                (1..12).forEach { month ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = java.time.Month.of(month)
+                                    .getDisplayName(TextStyle.FULL, Locale.getDefault())
+                            )
+                        },
+                        onClick = {
+                            onMonthSelected(java.time.Month.of(month))
+                        }
+                    )
+                }
+            }
+        }
+
+        // Next Month Button
+        IconButton(
+            onClick = onNextMonth,
+            modifier = Modifier.size(32.dp)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = "Next Month",
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
+
+@SuppressLint("NewApi")
+@Composable
+private fun CalendarWeekView(
+    currentYear: Int,
+    currentMonth: java.time.Month,
+    selectedDate: LocalDate,
+    displayedWeekIndex: Int,
+    onDateSelected: (LocalDate) -> Unit,
+    onPreviousWeek: () -> Unit,
+    onNextWeek: () -> Unit
+) {
+    val calendarDays = generateCalendarDays(currentYear, currentMonth.value)
+    val weeks = calendarDays.chunked(7)
+    val safeWeekIndex = displayedWeekIndex.coerceIn(0, weeks.size - 1)
+    val currentWeek = weeks[safeWeekIndex]
+
+    // Days of Week Header - Aligned with calendar days
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        // Spacer to align with previous week button
+        Spacer(modifier = Modifier.width(48.dp))
+
+        // Day names aligned with calendar days
+        Row(
+            modifier = Modifier.weight(1f),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            currentWeek.forEach { day ->
+                Text(
+                    text = day.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+
+        // Spacer to align with next week button
+        Spacer(modifier = Modifier.width(48.dp))
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Previous Week Button
+        IconButton(
+            onClick = onPreviousWeek,
+            enabled = safeWeekIndex > 0
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                contentDescription = "Previous Week",
+                tint = if (safeWeekIndex > 0)
+                    MaterialTheme.colorScheme.onBackground
+                else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+            )
+        }
+
+        // Calendar Days
+        Row(
+            modifier = Modifier.weight(1f),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            currentWeek.forEach { day ->
+                CalendarDayItem(
+                    day = day,
+                    isSelected = day == selectedDate,
+                    isCurrentMonth = day.month == currentMonth,
+                    onClick = { onDateSelected(day) },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+
+        // Next Week Button
+        IconButton(
+            onClick = onNextWeek,
+            enabled = safeWeekIndex < weeks.size - 1
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = "Next Week",
+                tint = if (safeWeekIndex < weeks.size - 1)
+                    MaterialTheme.colorScheme.onBackground
+                else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun NutritionAndAnalysesSection(
+    selectedDate: LocalDate,
+    today: LocalDate,
+    totalCalories: Int?,
+    totalProtein: String?,
+    totalCarbs: String?,
+    totalFat: String?,
+    filteredAnalyses: List<GeminiFoodAnalysis>,
+    isLoading: Boolean,
+    onNavigateToNutrition: (GeminiFoodAnalysis) -> Unit,
+    onDeleteAnalysis: (GeminiFoodAnalysis) -> Unit
+) {
+    Spacer(modifier = Modifier.height(16.dp))
+
+    // Calories Card
+    TotalCalorieCount(
+        calories = totalCalories
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    CalorieTypeDetails(
+        protein = totalProtein,
+        carbs = totalCarbs,
+        fat = totalFat
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    // Saved Food Analyses List
+    Text(
+        text = "Recent Food Analyses",
+        fontSize = 18.sp,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onBackground,
+        modifier = Modifier.padding(bottom = 12.dp)
+    )
+
+    if (isLoading) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    } else if (filteredAnalyses.isEmpty()) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
+            )
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = if (selectedDate == today) "No food analyses for today" else "No food analyses for selected date",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Tap the + button to analyze a meal for this date!",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    } else {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            filteredAnalyses.forEach { analysis ->
+                FoodAnalysisCard(
+                    analysis = analysis,
+                    onClick = { onNavigateToNutrition(analysis) },
+                    onLongPress = { onDeleteAnalysis(analysis) }
+                )
+            }
+        }
+    }
 }
 
 @SuppressLint("NewApi")
@@ -496,7 +708,6 @@ fun TotalCalorieCount(
                     fontWeight = FontWeight.Bold
                 )
                 Text("Calories", fontSize = 10.sp)
-
             }
 
             // Icon box
@@ -516,13 +727,12 @@ fun TotalCalorieCount(
                     tint = Color.Black
                 )
             }
-
         }
     }
 }
 
 @Composable
-private fun CalorieTypeDetails(
+fun CalorieTypeDetails(
     protein: String? = null,
     carbs: String? = null,
     fat: String? = null
@@ -554,8 +764,6 @@ fun CalorieTypeCard(label: String, value: String, modifier: Modifier = Modifier)
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-
-
         Row(
             verticalAlignment = Alignment.Top,
             modifier = Modifier
@@ -591,133 +799,181 @@ fun CalorieTypeCard(label: String, value: String, modifier: Modifier = Modifier)
                 )
             }
         }
-
     }
 }
 
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true, name = "HomeContent - With Data")
 @Composable
-private fun RecentlyUsedList() {
-    val recentlyUsedItems = listOf(
-        RecentlyUsedItem(
-            id = 1,
-            name = "Grilled Chicken Breast",
-            totalCalories = "165 kcal",
-            imageUrl = "https://example.com/chicken.jpg"
-        ),
-        RecentlyUsedItem(
-            id = 2,
-            name = "Brown Rice Bowl",
-            totalCalories = "220 kcal",
-            imageUrl = "https://example.com/rice.jpg"
-        ),
-        RecentlyUsedItem(
-            id = 3,
-            name = "Mixed Green Salad",
-            totalCalories = "85 kcal",
-            imageUrl = "https://example.com/salad.jpg"
-        ),
-        RecentlyUsedItem(
-            id = 4,
-            name = "Greek Yogurt",
-            totalCalories = "100 kcal",
-            imageUrl = "https://example.com/yogurt.jpg"
-        )
-    )
-
-    Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        recentlyUsedItems.forEach { item ->
-            RecentlyUsedItemCard(item = item)
-        }
-    }
-}
-
-@Composable
-private fun RecentlyUsedItemCard(
-    item: RecentlyUsedItem,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .border(
-                width = 1.dp,
-                color = Color(0xFFE0E0E0),
-                shape = RoundedCornerShape(12.dp)
-            ),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Left side image with rounded corners on left side only
-            Box(
-                modifier = Modifier
-                    .width(80.dp)
-                    .height(80.dp)
-                    .clip(
-                        RoundedCornerShape(
-                            topStart = 12.dp,
-                            bottomStart = 12.dp,
-                            topEnd = 0.dp,
-                            bottomEnd = 0.dp
-                        )
-                    )
-                    .background(Color(0xFFF0F0F0))
-            ) {
-                // Placeholder for image - you can replace with actual image loading
-                Icon(
-                    imageVector = Icons.Filled.AccountCircle,
-                    contentDescription = item.name,
-                    tint = Color.Gray,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .align(Alignment.Center)
-                )
-            }
-
-            // Content area
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = item.name,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = item.totalCalories,
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                )
-            }
-        }
-    }
-}
-
-data class RecentlyUsedItem(
-    val id: Int,
-    val name: String,
-    val totalCalories: String,
-    val imageUrl: String
-)
-
-@Preview(showBackground = true)
-@Composable
-private fun HomeScreenPreview() {
+fun HomeContentWithDataPreview() {
     MaterialTheme {
-        HomeScreen()
+        HomeContent(
+            // State variables
+            selectedDate = LocalDate.of(HomeScreenConstants.PREVIEW_YEAR, HomeScreenConstants.PREVIEW_MONTH, HomeScreenConstants.PREVIEW_DAY),
+            currentMonth = java.time.Month.JANUARY,
+            currentYear = HomeScreenConstants.PREVIEW_YEAR,
+            showMonthDropdown = false,
+            showImagePickerDialog = false,
+            showDeleteDialog = false,
+            analysisToDelete = null,
+            displayedWeekIndex = 0,
+            filteredAnalyses = listOf(
+                // Mock food analysis data
+                GeminiFoodAnalysis(
+                    id = 1,
+                    isError = false,
+                    errorMessage = "",
+                    foodItems = listOf(
+                        GeminiFoodItem(
+                            name = "Grilled Chicken Breast",
+                            portion = "150g",
+                            digestionTime = "2-3 hours",
+                            healthStatus = HealthStatus.GOOD,
+                            calories = 165,
+                            protein = "31g",
+                            carbs = "0g",
+                            fat = "3.6g",
+                            healthBenefits = listOf("High protein", "Low fat"),
+                            healthConcerns = emptyList(),
+                            analysisSummary = "Lean protein source"
+                        )
+                    ),
+                    totalNutrition = TotalNutrition(
+                        name = "Meal Total",
+                        totalPortion = "150g",
+                        totalCalories = 165,
+                        totalProtein = "31g",
+                        totalCarbs = "0g",
+                        totalFat = "3.6g",
+                        overallHealthStatus = HealthStatus.GOOD
+                    ),
+                    analysisSummary = "Healthy protein-rich meal",
+                    dateNTime = "2024-01-15 12:30:00",
+                    imageUri = null,
+                    imagePath = null,
+                    base64Image = null,
+                    selectedDate = "2024-01-15"
+                )
+            ),
+            isLoading = false,
+            today = LocalDate.of(HomeScreenConstants.PREVIEW_YEAR, HomeScreenConstants.PREVIEW_MONTH, HomeScreenConstants.PREVIEW_DAY),
+
+            // Nutrition data
+            totalCalories = 1650,
+            totalProtein = "120g",
+            totalCarbs = "180g",
+            totalFat = "65g",
+
+            // State setters
+            onSelectedDateChange = {},
+            onCurrentMonthChange = {},
+            onCurrentYearChange = {},
+            onShowMonthDropdownChange = {},
+            onShowImagePickerDialogChange = {},
+            onShowDeleteDialogChange = {},
+            onAnalysisToDeleteChange = {},
+            onDisplayedWeekIndexChange = {},
+
+            // Business logic callbacks
+            onDeleteAnalysis = {},
+
+            // Navigation callbacks
+            onNavigateToGeminiFoodAnalysis = { _, _ -> },
+            onNavigateToNutrition = {}
+        )
     }
 }
+
+
+/*@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true, name = "HomeContent - Default State")
+@Composable
+fun HomeContentDefaultPreview() {
+    MaterialTheme {
+        HomeContent(
+            // State variables
+            selectedDate = LocalDate.of(HomeScreenConstants.PREVIEW_YEAR, HomeScreenConstants.PREVIEW_MONTH, HomeScreenConstants.PREVIEW_DAY),
+            currentMonth = java.time.Month.JANUARY,
+            currentYear = HomeScreenConstants.PREVIEW_YEAR,
+            showMonthDropdown = false,
+            showImagePickerDialog = false,
+            showDeleteDialog = false,
+            analysisToDelete = null,
+            displayedWeekIndex = 0,
+            filteredAnalyses = emptyList(),
+            isLoading = false,
+            today = LocalDate.of(HomeScreenConstants.PREVIEW_YEAR, HomeScreenConstants.PREVIEW_MONTH, HomeScreenConstants.PREVIEW_DAY),
+            
+            // Nutrition data
+            totalCalories = 1200,
+            totalProtein = "80g",
+            totalCarbs = "150g",
+            totalFat = "45g",
+            
+            // State setters
+            onSelectedDateChange = {},
+            onCurrentMonthChange = {},
+            onCurrentYearChange = {},
+            onShowMonthDropdownChange = {},
+            onShowImagePickerDialogChange = {},
+            onShowDeleteDialogChange = {},
+            onAnalysisToDeleteChange = {},
+            onDisplayedWeekIndexChange = {},
+            
+            // Business logic callbacks
+            onDeleteAnalysis = {},
+            
+            // Navigation callbacks
+            onNavigateToGeminiFoodAnalysis = { _, _ -> },
+            onNavigateToNutrition = {}
+        )
+    }
+}
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true, name = "HomeContent - Loading State")
+@Composable
+fun HomeContentLoadingPreview() {
+    MaterialTheme {
+        HomeContent(
+            // State variables
+            selectedDate = LocalDate.of(HomeScreenConstants.PREVIEW_YEAR, HomeScreenConstants.PREVIEW_MONTH, HomeScreenConstants.PREVIEW_DAY),
+            currentMonth = java.time.Month.JANUARY,
+            currentYear = HomeScreenConstants.PREVIEW_YEAR,
+            showMonthDropdown = false,
+            showImagePickerDialog = false,
+            showDeleteDialog = false,
+            analysisToDelete = null,
+            displayedWeekIndex = 0,
+            filteredAnalyses = emptyList(),
+            isLoading = true,
+            today = LocalDate.of(HomeScreenConstants.PREVIEW_YEAR, HomeScreenConstants.PREVIEW_MONTH, HomeScreenConstants.PREVIEW_DAY),
+            
+            // Nutrition data
+            totalCalories = null,
+            totalProtein = null,
+            totalCarbs = null,
+            totalFat = null,
+            
+            // State setters
+            onSelectedDateChange = {},
+            onCurrentMonthChange = {},
+            onCurrentYearChange = {},
+            onShowMonthDropdownChange = {},
+            onShowImagePickerDialogChange = {},
+            onShowDeleteDialogChange = {},
+            onAnalysisToDeleteChange = {},
+            onDisplayedWeekIndexChange = {},
+            
+            // Business logic callbacks
+            onDeleteAnalysis = {},
+            
+            // Navigation callbacks
+            onNavigateToGeminiFoodAnalysis = { _, _ -> },
+            onNavigateToNutrition = {}
+        )
+    }
+}*/
+
