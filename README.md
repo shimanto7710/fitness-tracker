@@ -1,96 +1,254 @@
-# Food Analysis App
+# 🏃‍♂️ Fitness Tracker App
 
-A comprehensive food analysis application with AI-powered nutritional information capabilities.
+A comprehensive Android application that combines AI-powered food analysis with nutrition tracking and calendar-based meal planning. Built with modern Android development practices and clean architecture principles.
 
-## Features
+## 📱 App Concept
 
-- **Food Recognition**: Uses Clarifai API to recognize food items from images
-- **AI Food Analysis**: Uses Google Gemini API to analyze food images and provide nutritional information
-- **Image Capture**: Take photos or select from gallery for food analysis
-- **Network Profiling**: Built-in OkHttp Profiler for debugging API calls
+### Phase 1: Core Food Analysis & Nutrition Tracking
+The Fitness Tracker app is designed to help users maintain a healthy lifestyle through intelligent food analysis and nutrition tracking. The app allows users to:
 
-## Network Debugging with OkHttp Profiler
+- **📸 Capture Food Images**: Take photos of meals or select images from gallery
+- **🤖 AI-Powered Analysis**: Get detailed nutritional information using Google Gemini AI
+- **📊 Nutrition Breakdown**: View comprehensive nutrition data including calories, protein, carbs, and fats
+- **📅 Calendar Integration**: Track daily nutrition with a beautiful calendar interface
+- **💾 Local Storage**: Save and manage food analysis history locally
+- **🗑️ Data Management**: Delete unwanted analyses with confirmation dialogs
 
-The app includes OkHttp Profiler integration to help debug and monitor network calls to the OpenRouter API.
+### Phase 2: AI Integration & Smart Features
 
-### How to Use OkHttp Profiler
+#### Google Gemini AI Integration
+The app leverages Google's Gemini AI for advanced food analysis capabilities:
 
-1. **Install the OkHttp Profiler Plugin** (if not already installed):
-   - In Android Studio, go to `File` → `Settings` → `Plugins`
-   - Search for "OkHttp Profiler" and install it
-   - Restart Android Studio
+- **🧠 Intelligent Food Recognition**: Gemini AI analyzes food images and identifies individual food items
+- **📋 Detailed Nutritional Analysis**: Provides comprehensive nutrition breakdown for each food item
+- **🏥 Health Status Assessment**: Evaluates the healthiness of food items (Excellent, Good, Moderate, Poor)
+- **💡 Health Benefits & Concerns**: Lists specific health benefits and potential concerns for each food
+- **⏱️ Digestion Time**: Estimates how long each food takes to digest
+- **📝 Analysis Summary**: Generates detailed summaries of the overall meal analysis
 
-2. **View Network Calls**:
-   - Run the app in debug mode
-   - Navigate to the "AI Food Analysis" screen
-   - Take a photo or select an image
-   - Click "Analyze Food Image"
-   - In Android Studio, look for the "OkHttp Profiler" tab at the bottom
-   - You'll see detailed information about the OpenRouter API call including:
-     - Request headers and body
-     - Response headers and body
-     - Timing information
-     - Network errors (if any)
+#### AI Features:
+- **Base64 Image Processing**: Efficient image encoding for AI analysis
+- **Custom Prompts**: Tailored prompts for optimal food analysis results
+- **Error Handling**: Robust error management for AI API failures
+- **Real-time Analysis**: Fast and accurate food recognition and analysis
 
-3. **What You'll See**:
-   - **Request Details**: Full HTTP request with headers, body, and URL
-   - **Response Details**: Complete API response from OpenRouter
-   - **Timing**: Request duration and network performance metrics
-   - **Headers**: All request and response headers including authentication
+### Phase 3: Technology Stack & Architecture
 
-### Network Configuration
-
-The app uses OkHttp clients for API calls:
-- **Clarifai API**: For food recognition
-- **Google Gemini API**: For advanced food analysis
-
-Both clients include:
-- HTTP logging interceptor (for console logs)
-- OkHttp Profiler interceptor (for debugging)
-- Custom authentication interceptors
-- Configurable timeouts
-
-### Example API Call Flow
+#### Clean Architecture Implementation
+The app follows Clean Architecture principles with clear separation of concerns:
 
 ```
-1. User selects/captures image
-2. Image converted to base64
-3. API request sent with:
-   - Image data in base64 format
-   - Custom prompt for food analysis
-4. Response processed and displayed in UI
-5. All network activity logged and profiled
+📁 Domain Layer
+├── 🏗️ Entities (GeminiFoodAnalysis, GeminiFoodItem, TotalNutrition)
+├── 🔄 Use Cases (SaveFoodAnalysisUseCase, GeminiFoodAnalysisUseCase)
+└── 📋 Repository Interfaces (FoodAnalysisRepository)
+
+📁 Data Layer
+├── 🗄️ Room Database (FitnessTrackerDatabase)
+├── 📊 Entities (FoodAnalysisEntity, FoodItemEntity, TotalNutritionEntity)
+├── 🔧 DAOs (FoodAnalysisDao)
+├── 🏪 Repository Implementations (LocalFoodAnalysisRepository)
+└── 🔄 Mappers (Entity to Domain model conversion)
+
+📁 Presentation Layer
+├── 🎨 UI Screens (HomeScreen, GeminiFoodAnalysisScreen, NutritionDetailsScreen)
+├── 🧩 UI Components (FoodAnalysisCard, ImageSelectionDialog, DeleteFoodAnalysisDialog)
+├── 🎯 ViewModels (HomeViewModel, GeminiFoodAnalysisViewModel)
+└── 🧭 Navigation (NavGraph, Route definitions)
 ```
 
-## Development
+#### Technology Stack
+
+**🖥️ Core Technologies:**
+- **Kotlin**: Modern Android development language
+- **Jetpack Compose**: Declarative UI framework
+- **Material 3**: Modern design system
+- **Android SDK 24+**: Support for modern Android versions
+
+**🏗️ Architecture & Patterns:**
+- **Clean Architecture**: Layered architecture with clear boundaries
+- **MVVM Pattern**: Model-View-ViewModel for UI logic separation
+- **Repository Pattern**: Data access abstraction
+- **Use Case Pattern**: Business logic encapsulation
+- **Dependency Injection**: Koin for clean dependency management
+
+**🗄️ Data Management:**
+- **Room Database**: Local SQLite database with type safety
+- **Flow & StateFlow**: Reactive data streams
+- **Coroutines**: Asynchronous programming
+- **Base64 Encoding**: Efficient image storage
+
+**🌐 Networking:**
+- **Ktor Client**: HTTP client for API calls
+- **OkHttp**: Underlying HTTP engine
+- **JSON Serialization**: Kotlinx Serialization for data parsing
+- **Retrofit**: REST API client (for future integrations)
+
+**🎨 UI/UX:**
+- **Jetpack Compose**: Modern declarative UI
+- **Material 3**: Google's latest design system
+- **Compose Navigation**: Type-safe navigation
+- **Coil**: Image loading library
+- **Preview Functions**: Comprehensive UI testing
+
+**🔧 Development Tools:**
+- **Koin**: Dependency injection framework
+- **Gradle KTS**: Kotlin DSL for build scripts
+- **Android Studio**: IDE with Compose support
+- **Git**: Version control
+
+## 📁 Project Structure
+
+```
+app/
+├── src/main/java/com/bmqa/brac/fitnesstracker/
+│   ├── 🏗️ common/
+│   │   └── utils/JsonUtils.kt
+│   ├── 🗄️ data/
+│   │   ├── local/
+│   │   │   ├── database/
+│   │   │   │   ├── FitnessTrackerDatabase.kt
+│   │   │   │   ├── entities/
+│   │   │   │   │   ├── FoodAnalysisEntity.kt
+│   │   │   │   │   ├── FoodItemEntity.kt
+│   │   │   │   │   └── TotalNutritionEntity.kt
+│   │   │   │   ├── dao/FoodAnalysisDao.kt
+│   │   │   │   └── converters/
+│   │   │   │       ├── HealthStatusConverter.kt
+│   │   │   │       └── StringListConverter.kt
+│   │   │   └── repository/LocalFoodAnalysisRepository.kt
+│   │   └── remote/
+│   │       └── api/GeminiApiService.kt
+│   ├── 🎯 domain/
+│   │   ├── entities/
+│   │   │   ├── GeminiFoodAnalysis.kt
+│   │   │   ├── GeminiFoodItem.kt
+│   │   │   └── TotalNutrition.kt
+│   │   ├── repository/FoodAnalysisRepository.kt
+│   │   └── usecase/
+│   │       ├── GeminiFoodAnalysisUseCase.kt
+│   │       └── SaveFoodAnalysisUseCase.kt
+│   ├── 🎨 presentation/
+│   │   ├── features/
+│   │   │   ├── home/
+│   │   │   │   ├── ui/
+│   │   │   │   │   ├── components/
+│   │   │   │   │   │   ├── DeleteFoodAnalysisDialog.kt
+│   │   │   │   │   │   ├── FoodAnalysisCard.kt
+│   │   │   │   │   │   └── ImageSelectionDialog.kt
+│   │   │   │   │   └── screens/HomeScreen.kt
+│   │   │   │   └── viewmodel/HomeViewModel.kt
+│   │   │   ├── foodanalysis/
+│   │   │   │   ├── ui/screens/GeminiFoodAnalysisScreen.kt
+│   │   │   │   └── viewmodel/GeminiFoodAnalysisViewModel.kt
+│   │   │   └── nutrition/
+│   │   │       └── ui/screens/NutritionDetailsScreen.kt
+│   │   ├── components/
+│   │   │   ├── AppBar.kt
+│   │   │   ├── DeleteFoodAnalysisDialog.kt
+│   │   │   ├── FoodAnalysisCard.kt
+│   │   │   ├── ImagePicker.kt
+│   │   │   └── ImageSelectionDialog.kt
+│   │   └── navigation/
+│   │       ├── NavGraph.kt
+│   │       ├── NavigationExtensions.kt
+│   │       └── Route.kt
+│   └── 🔧 di/
+│       ├── NetworkModule.kt
+│       └── ViewModelModule.kt
+└── src/test/java/com/bmqa/brac/fitnesstracker/
+    └── data/local/repository/LocalFoodAnalysisRepositoryTest.kt
+```
+
+## 🚀 Getting Started
 
 ### Prerequisites
-- Android Studio Hedgehog or later
-- Android SDK 24+
-- Kotlin 1.9+
+- **Android Studio**: Hedgehog or later
+- **Android SDK**: 24+ (Android 7.0+)
+- **Kotlin**: 1.9+
+- **JDK**: 11 or later
 
-### Building
-```bash
-./gradlew assembleDebug
-```
+### Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/shimanto7710/fitness-tracker.git
+   cd fitness-tracker
+   ```
+
+2. **Open in Android Studio**:
+   - Launch Android Studio
+   - Open the project folder
+   - Wait for Gradle sync to complete
+
+3. **Configure API Keys**:
+   - Add your Google Gemini API key to `local.properties`:
+   ```properties
+   GEMINI_API_KEY=your_api_key_here
+   ```
+
+4. **Build and Run**:
+   ```bash
+   ./gradlew assembleDebug
+   ```
 
 ### Running Tests
 ```bash
 ./gradlew test
 ```
 
-## Architecture
+## 🎯 Key Features
 
-The app follows Clean Architecture principles with:
-- **Presentation Layer**: Compose UI with ViewModels
-- **Domain Layer**: Use cases and repository interfaces
-- **Data Layer**: Repository implementations and data sources
-- **Network Layer**: Retrofit with OkHttp and interceptors
+### 🏠 Home Screen
+- **📅 Calendar View**: Interactive calendar for date selection
+- **📊 Nutrition Summary**: Daily calorie and macro tracking
+- **🍎 Food Analysis List**: View saved food analyses for selected date
+- **➕ Add Food**: Floating action button for new food analysis
+- **🗑️ Delete Management**: Long-press to delete analyses with confirmation
 
-## Dependencies
+### 🤖 AI Food Analysis
+- **📸 Image Capture**: Camera or gallery selection
+- **🧠 Gemini AI Analysis**: Intelligent food recognition and nutrition breakdown
+- **📋 Detailed Results**: Comprehensive nutrition information
+- **💾 Auto-Save**: Automatically saves successful analyses
+- **🔄 Retry Mechanism**: Easy retry for failed analyses
 
-- **UI**: Jetpack Compose, Material 3
-- **Networking**: Retrofit, OkHttp, OkHttp Profiler
-- **Dependency Injection**: Dagger Hilt
-- **Image Loading**: Coil
-- **Async Operations**: Kotlin Coroutines
+### 📊 Nutrition Details
+- **📈 Health Score**: Visual health assessment
+- **🥗 Food Items**: Individual food item breakdown
+- **📊 Total Nutrition**: Complete meal nutrition summary
+- **💡 Health Insights**: Benefits and concerns for each food
+
+## 🔧 Development
+
+### Architecture Benefits
+- **🧪 Testable**: Clear separation allows easy unit testing
+- **🔄 Maintainable**: Modular structure for easy updates
+- **📈 Scalable**: Easy to add new features
+- **🛡️ Robust**: Proper error handling and state management
+
+### Code Quality
+- **📝 Documentation**: Comprehensive KDoc comments
+- **🎨 Previews**: Extensive Compose preview functions
+- **⚡ Performance**: Optimized with Flow and Coroutines
+- **🛡️ Error Handling**: Comprehensive error states and recovery
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📞 Support
+
+For support, email support@fitnesstracker.com or create an issue in the repository.
+
+---
+
+**Built with ❤️ using Clean Architecture, Jetpack Compose, and Google Gemini AI**
