@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.LayoutDirection
 import coil.compose.AsyncImage
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import com.bmqa.brac.fitnesstracker.R
 import com.bmqa.brac.fitnesstracker.common.constants.AppConstants
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
@@ -152,7 +154,7 @@ private fun NutritionDetailsContent(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    "12:46 PM",
+                                    formatTimeForDisplay(geminiAnalysis.dateNTime),
                                     style = MaterialTheme.typography.labelMedium,
                                     color = Color.Gray,
                                     maxLines = 2,
@@ -234,6 +236,28 @@ private fun getHealthScoreProgress(healthStatus: HealthStatus?): Float {
         HealthStatus.MODERATE -> NutritionDetailsConstants.HEALTH_SCORE_MODERATE
         HealthStatus.POOR -> NutritionDetailsConstants.HEALTH_SCORE_POOR
         else -> 0.0f
+    }
+}
+
+private fun formatTimeForDisplay(dateNTime: String?): String {
+    return try {
+        if (!dateNTime.isNullOrEmpty()) {
+            // Try to parse the existing dateNTime format
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a")
+            val dateTime = LocalDateTime.parse(dateNTime, formatter)
+            val timeFormatter = DateTimeFormatter.ofPattern("h:mm a")
+            dateTime.format(timeFormatter)
+        } else {
+            // Fallback to current time
+            val now = LocalDateTime.now()
+            val timeFormatter = DateTimeFormatter.ofPattern("h:mm a")
+            now.format(timeFormatter)
+        }
+    } catch (e: Exception) {
+        // If parsing fails, use current time
+        val now = LocalDateTime.now()
+        val timeFormatter = DateTimeFormatter.ofPattern("h:mm a")
+        now.format(timeFormatter)
     }
 }
 
