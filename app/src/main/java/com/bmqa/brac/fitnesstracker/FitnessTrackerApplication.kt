@@ -7,7 +7,7 @@ import com.bmqa.brac.fitnesstracker.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
-class FitnessTrackerApplication : Application() {
+class FoodLensApplication : Application() {
     
     override fun onCreate() {
         super.onCreate()
@@ -16,7 +16,7 @@ class FitnessTrackerApplication : Application() {
         CrashHandler.getInstance().init(this)
         
         startKoin {
-            androidContext(this@FitnessTrackerApplication)
+            androidContext(this@FoodLensApplication)
             modules(
                 networkModule,
                 viewModelModule

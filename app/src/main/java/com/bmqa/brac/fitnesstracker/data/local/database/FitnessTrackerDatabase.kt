@@ -25,20 +25,20 @@ import com.bmqa.brac.fitnesstracker.data.local.database.entities.TotalNutritionE
     HealthStatusConverter::class,
     StringListConverter::class
 )
-abstract class FitnessTrackerDatabase : RoomDatabase() {
+abstract class FoodLensDatabase : RoomDatabase() {
 
     abstract fun foodAnalysisDao(): FoodAnalysisDao
 
     companion object {
         @Volatile
-        private var INSTANCE: FitnessTrackerDatabase? = null
+        private var INSTANCE: FoodLensDatabase? = null
 
-        fun getDatabase(context: Context): FitnessTrackerDatabase {
+        fun getDatabase(context: Context): FoodLensDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    FitnessTrackerDatabase::class.java,
-                    "fitness_tracker_database"
+                    FoodLensDatabase::class.java,
+                    "foodlens_database"
                 )
                 .fallbackToDestructiveMigration() // For development - remove in production
                 .build()

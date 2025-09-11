@@ -11,13 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import com.bmqa.brac.fitnesstracker.presentation.navigation.AppNavigation
-import com.bmqa.brac.fitnesstracker.ui.theme.FitnessTrackerTheme
+import com.bmqa.brac.fitnesstracker.ui.theme.FoodLensTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            FitnessTrackerTheme {
+            FoodLensTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize()
                 ) { paddingValues ->

@@ -17,7 +17,7 @@
     <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
-        android:name=".FitnessTrackerApplication"
+        android:name=".FoodLensApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -25,7 +25,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FitnessTracker"
+        android:theme="@style/Theme.FoodLens"
         android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
         
@@ -44,7 +44,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.FitnessTracker">
+            android:theme="@style/Theme.FoodLens">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

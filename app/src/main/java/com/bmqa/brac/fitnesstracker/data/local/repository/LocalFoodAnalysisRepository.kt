@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import com.bmqa.brac.fitnesstracker.data.local.database.FitnessTrackerDatabase
+import com.bmqa.brac.fitnesstracker.data.local.database.FoodLensDatabase
 import com.bmqa.brac.fitnesstracker.data.local.database.dao.CompleteFoodAnalysis
 import com.bmqa.brac.fitnesstracker.data.local.database.entities.FoodAnalysisEntity
 import com.bmqa.brac.fitnesstracker.data.local.database.entities.FoodItemEntity
@@ -23,7 +23,7 @@ import java.io.InputStream
 
 class LocalFoodAnalysisRepository(private val context: Context) : FoodAnalysisRepository {
 
-    private val database = FitnessTrackerDatabase.getDatabase(context)
+    private val database = FoodLensDatabase.getDatabase(context)
     private val dao = database.foodAnalysisDao()
 
     // Implementation of domain interface

@@ -38,7 +38,7 @@ class KtorClient {
                     host = "api.clarifai.com"
                 }
                 header(HttpHeaders.ContentType, ContentType.Application.Json)
-                header(HttpHeaders.UserAgent, "FitnessTracker-Android/1.0")
+                header(HttpHeaders.UserAgent, "FoodLens-Android/1.0")
             }
             
             // Timeout configuration

@@ -146,7 +146,7 @@ data/local/
 │   ├── converters/
 │   │   ├── HealthStatusConverter.kt
 │   │   └── StringListConverter.kt
-│   └── FitnessTrackerDatabase.kt
+│   └── FoodLensDatabase.kt
 ├── repository/
 │   └── LocalFoodAnalysisRepository.kt
 ├── model/

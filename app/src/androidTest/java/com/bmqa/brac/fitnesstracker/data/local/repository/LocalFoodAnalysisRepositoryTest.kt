@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.bmqa.brac.fitnesstracker.data.local.database.FitnessTrackerDatabase
+import com.bmqa.brac.fitnesstracker.data.local.database.FoodLensDatabase
 import com.bmqa.brac.fitnesstracker.data.local.database.dao.FoodAnalysisDao
 import com.bmqa.brac.fitnesstracker.data.local.database.entities.FoodAnalysisEntity
 import com.bmqa.brac.fitnesstracker.data.local.database.entities.FoodItemEntity
@@ -21,7 +21,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class LocalFoodAnalysisRepositoryTest {
 
-    private lateinit var database: FitnessTrackerDatabase
+    private lateinit var database: FoodLensDatabase
     private lateinit var dao: FoodAnalysisDao
     private lateinit var repository: LocalFoodAnalysisRepository
     private lateinit var context: Context
@@ -31,7 +31,7 @@ class LocalFoodAnalysisRepositoryTest {
         context = ApplicationProvider.getApplicationContext()
         database = Room.inMemoryDatabaseBuilder(
             context,
-            FitnessTrackerDatabase::class.java
+            FoodLensDatabase::class.java
         ).allowMainThreadQueries().build()
         
         dao = database.foodAnalysisDao()
