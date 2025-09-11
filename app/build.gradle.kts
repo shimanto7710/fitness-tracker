@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.bmqa.brac.foodlens"
+    namespace = "com.rookie.code"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.bmqa.brac.foodlens"
+        applicationId = "com.rookie.code"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
