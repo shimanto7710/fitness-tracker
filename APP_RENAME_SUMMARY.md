@@ -38,20 +38,20 @@ Your app has been successfully renamed from "FitnessTracker" to "FoodLens" throu
 ### **Core App Files:**
 - `app/src/main/res/values/strings.xml`
 - `app/src/main/AndroidManifest.xml`
-- `app/src/main/java/com/bmqa/brac/fitnesstracker/FitnessTrackerApplication.kt`
-- `app/src/main/java/com/bmqa/brac/fitnesstracker/MainActivity.kt`
+- `app/src/main/java/com/rookie/code/FoodLensApplication.kt`
+- `app/src/main/java/com/rookie/code/MainActivity.kt`
 
 ### **Database Files:**
-- `app/src/main/java/com/bmqa/brac/fitnesstracker/data/local/database/FitnessTrackerDatabase.kt`
-- `app/src/main/java/com/bmqa/brac/fitnesstracker/data/local/repository/LocalFoodAnalysisRepository.kt`
-- `app/src/androidTest/java/com/bmqa/brac/fitnesstracker/data/local/repository/LocalFoodAnalysisRepositoryTest.kt`
+- `app/src/main/java/com/rookie/code/data/local/database/FoodLensDatabase.kt`
+- `app/src/main/java/com/rookie/code/data/local/repository/LocalFoodAnalysisRepository.kt`
+- `app/src/androidTest/java/com/rookie/code/data/local/repository/LocalFoodAnalysisRepositoryTest.kt`
 
 ### **UI & Theme Files:**
 - `app/src/main/res/values/themes.xml`
-- `app/src/main/java/com/bmqa/brac/fitnesstracker/ui/theme/Theme.kt`
+- `app/src/main/java/com/rookie/code/ui/theme/Theme.kt`
 
 ### **Network Files:**
-- `app/src/main/java/com/bmqa/brac/fitnesstracker/data/remote/network/KtorClient.kt`
+- `app/src/main/java/com/rookie/code/data/remote/network/KtorClient.kt`
 
 ### **Documentation Files:**
 - `README.md`
