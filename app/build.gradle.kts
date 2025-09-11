@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.bmqa.brac.fitnesstracker"
+    namespace = "com.bmqa.brac.foodlens"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.bmqa.brac.fitnesstracker"
+        applicationId = "com.bmqa.brac.foodlens"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
