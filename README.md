@@ -338,10 +338,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 **Contact & Portfolio**
 
-**Developer**: [Your Name]  
-**Email**: [your.email@example.com]  
-**LinkedIn**: [Your LinkedIn Profile]  
-**Portfolio**: [Your Portfolio Website]
+**Developer**: Md Afser Uddin  
+**Email**: shimanto7710@gmail.com  
+**LinkedIn**: [https://www.linkedin.com/in/afser10/](https://www.linkedin.com/in/afser10/)  
+**GitHub**: [https://github.com/shimanto7710](https://github.com/shimanto7710)
 
 ---
 
