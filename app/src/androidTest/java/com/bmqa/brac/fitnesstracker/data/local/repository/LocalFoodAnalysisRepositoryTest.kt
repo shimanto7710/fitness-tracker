@@ -44,12 +44,12 @@ class LocalFoodAnalysisRepositoryTest {
     }
 
     @Test
-    fun `test save and retrieve food analysis`() = runTest {
+    fun testSaveAndRetrieveFoodAnalysis() = runTest {
         // Given
         val testAnalysis = createTestFoodAnalysis()
         
         // When
-        val analysisId = repository.saveFoodAnalysis(testAnalysis)
+        val analysisId = repository.saveFoodAnalysisWithId(testAnalysis)
         
         // Then
         assertTrue("Analysis ID should be greater than 0", analysisId > 0)
@@ -62,14 +62,14 @@ class LocalFoodAnalysisRepositoryTest {
     }
 
     @Test
-    fun `test get all food analyses`() = runTest {
+    fun testGetAllFoodAnalyses() = runTest {
         // Given
         val testAnalysis1 = createTestFoodAnalysis("Test Analysis 1")
         val testAnalysis2 = createTestFoodAnalysis("Test Analysis 2")
         
         // When
-        repository.saveFoodAnalysis(testAnalysis1)
-        repository.saveFoodAnalysis(testAnalysis2)
+        repository.saveFoodAnalysisWithId(testAnalysis1)
+        repository.saveFoodAnalysisWithId(testAnalysis2)
         
         // Then
         val allAnalyses = repository.getAllFoodAnalyses().first()
@@ -77,16 +77,16 @@ class LocalFoodAnalysisRepositoryTest {
     }
 
     @Test
-    fun `test get recent food analyses`() = runTest {
+    fun testGetRecentFoodAnalyses() = runTest {
         // Given
         val testAnalysis1 = createTestFoodAnalysis("Recent Analysis 1")
         val testAnalysis2 = createTestFoodAnalysis("Recent Analysis 2")
         val testAnalysis3 = createTestFoodAnalysis("Recent Analysis 3")
         
         // When
-        repository.saveFoodAnalysis(testAnalysis1)
-        repository.saveFoodAnalysis(testAnalysis2)
-        repository.saveFoodAnalysis(testAnalysis3)
+        repository.saveFoodAnalysisWithId(testAnalysis1)
+        repository.saveFoodAnalysisWithId(testAnalysis2)
+        repository.saveFoodAnalysisWithId(testAnalysis3)
         
         // Then
         val recentAnalyses = repository.getRecentFoodAnalyses(limit = 2).first()
@@ -94,10 +94,10 @@ class LocalFoodAnalysisRepositoryTest {
     }
 
     @Test
-    fun `test delete food analysis`() = runTest {
+    fun testDeleteFoodAnalysis() = runTest {
         // Given
         val testAnalysis = createTestFoodAnalysis()
-        val analysisId = repository.saveFoodAnalysis(testAnalysis)
+        val analysisId = repository.saveFoodAnalysisWithId(testAnalysis)
         
         // When
         repository.deleteFoodAnalysis(analysisId)
@@ -108,14 +108,14 @@ class LocalFoodAnalysisRepositoryTest {
     }
 
     @Test
-    fun `test food analysis with image`() = runTest {
+    fun testFoodAnalysisWithImage() = runTest {
         // Given
         val testAnalysis = createTestFoodAnalysis()
         val testBitmap = android.graphics.Bitmap.createBitmap(100, 100, android.graphics.Bitmap.Config.ARGB_8888)
         val imageUri = "content://test/image.jpg"
         
         // When
-        val analysisId = repository.saveFoodAnalysis(
+        val analysisId = repository.saveFoodAnalysisWithId(
             foodAnalysis = testAnalysis,
             imageUri = imageUri,
             imageBitmap = testBitmap
