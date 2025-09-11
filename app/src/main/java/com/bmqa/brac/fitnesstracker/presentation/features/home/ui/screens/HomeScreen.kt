@@ -54,7 +54,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bmqa.brac.fitnesstracker.R
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
 import com.bmqa.brac.fitnesstracker.presentation.features.home.ui.components.DeleteFoodAnalysisDialog
 import com.bmqa.brac.fitnesstracker.presentation.features.home.ui.components.FoodAnalysisCard
@@ -780,9 +782,9 @@ fun TotalCalorieCount(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .size(30.dp),
-                    imageVector = Icons.Filled.AccountCircle,
+                    painter = painterResource(id = R.drawable.calories),
                     contentDescription = "Calories Icon",
-                    tint = Color.Black
+                    tint = Color.Unspecified
                 )
             }
         }
@@ -836,12 +838,38 @@ fun CalorieTypeCard(label: String, value: String, modifier: Modifier = Modifier)
                     .background(Color(0xFFF0F0F0)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Filled.AccountCircle,
-                    contentDescription = null,
-                    tint = Color.Black,
-                    modifier = Modifier.size(16.dp)
-                )
+                when (label.lowercase()) {
+                    "protein" -> Icon(
+                        painter = painterResource(id = R.drawable.protein),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    "carb" -> Icon(
+                        painter = painterResource(id = R.drawable.carb),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    "fats" -> Icon(
+                        painter = painterResource(id = R.drawable.fats),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    "calories" -> Icon(
+                        painter = painterResource(id = R.drawable.calories),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    else -> Icon(
+                        imageVector = Icons.Filled.AccountCircle,
+                        contentDescription = null,
+                        tint = Color.Black,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
             }
 
             Column(

@@ -272,9 +272,9 @@ fun CaloriesCard(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .size(NutritionDetailsConstants.ICON_SIZE.dp),
-                    imageVector = Icons.Filled.Favorite,
+                    painter = painterResource(id = R.drawable.calories),
                     contentDescription = "Calories Icon",
-                    tint = Color.Black
+                    tint = Color.Unspecified
                 )
             }
 
@@ -342,12 +342,38 @@ fun CalorieCard(label: String, value: String, modifier: Modifier = Modifier) {
                     .background(Color(0xFFF0F0F0)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Filled.AccountCircle,
-                    contentDescription = null,
-                    tint = Color.Black,
-                    modifier = Modifier.size(NutritionDetailsConstants.SMALL_ICON_SIZE.dp)
-                )
+                when (label.lowercase()) {
+                    "protein" -> Icon(
+                        painter = painterResource(id = R.drawable.protein),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(NutritionDetailsConstants.SMALL_ICON_SIZE.dp)
+                    )
+                    "carb" -> Icon(
+                        painter = painterResource(id = R.drawable.carb),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(NutritionDetailsConstants.SMALL_ICON_SIZE.dp)
+                    )
+                    "fats" -> Icon(
+                        painter = painterResource(id = R.drawable.fats),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(NutritionDetailsConstants.SMALL_ICON_SIZE.dp)
+                    )
+                    "calories" -> Icon(
+                        painter = painterResource(id = R.drawable.calories),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(NutritionDetailsConstants.SMALL_ICON_SIZE.dp)
+                    )
+                    else -> Icon(
+                        imageVector = Icons.Filled.AccountCircle,
+                        contentDescription = null,
+                        tint = Color.Black,
+                        modifier = Modifier.size(NutritionDetailsConstants.SMALL_ICON_SIZE.dp)
+                    )
+                }
             }
 
             Column(
@@ -404,9 +430,9 @@ fun HealthScoreCard(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = icon,
+                    painter = painterResource(id = R.drawable.health),
                     contentDescription = null,
-                    tint = Color.Black,
+                    tint = Color.Unspecified,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -497,9 +523,9 @@ fun FoodItem(
                 horizontalArrangement = Arrangement.Start
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Favorite,
+                    painter = painterResource(id = R.drawable.calories),
                     contentDescription = "Calories",
-                    tint = Color.Black,
+                    tint = Color.Unspecified,
                     modifier = Modifier.size(NutritionDetailsConstants.SMALL_ICON_SIZE.dp)
                 )
                 Text(

@@ -138,12 +138,12 @@ fun FoodAnalysisCard(
             }
             
             // Arrow indicator
-            Icon(
+            /*Icon(
                 imageVector = Icons.Default.AccountCircle, // You can replace with arrow icon
                 contentDescription = "View Details",
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(20.dp)
-            )
+            )*/
         }
     }
 }
