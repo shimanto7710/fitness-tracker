@@ -1,5 +1,6 @@
 package com.bmqa.brac.fitnesstracker.presentation.features.nutrition.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,6 +30,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import coil.compose.AsyncImage
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import android.graphics.BitmapFactory
+import android.util.Base64
+import androidx.compose.ui.graphics.asImageBitmap
 import com.bmqa.brac.fitnesstracker.R
 import com.bmqa.brac.fitnesstracker.common.constants.AppConstants
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
@@ -117,12 +121,31 @@ private fun NutritionDetailsContent(
                             .fillMaxWidth()
                             .height(NutritionDetailsConstants.IMAGE_HEIGHT.dp)
                     ) {
-                        AssetOrDrawableImage(
-                            assetFileName = "food_plate.jpg",
-                            drawableRes = R.drawable.food_plate,
-                            modifier = Modifier.fillMaxSize(),
-                            contentDescription = "Meal Image"
-                        )
+                        val imageBitmap = geminiAnalysis.base64Image?.let { base64String ->
+                            try {
+                                val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
+                                BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+                            } catch (e: Exception) {
+                                null
+                            }
+                        }
+                        
+                        if (imageBitmap != null) {
+                            Image(
+                                bitmap = imageBitmap.asImageBitmap(),
+                                contentDescription = "Food Image",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            // Fallback to static image if no dynamic image available
+                            AssetOrDrawableImage(
+                                assetFileName = "food_plate.jpg",
+                                drawableRes = R.drawable.food_plate,
+                                modifier = Modifier.fillMaxSize(),
+                                contentDescription = "Meal Image"
+                            )
+                        }
                     }
                 }
 
@@ -239,6 +262,7 @@ private fun getHealthScoreProgress(healthStatus: HealthStatus?): Float {
     }
 }
 
+@SuppressLint("NewApi")
 private fun formatTimeForDisplay(dateNTime: String?): String {
     return try {
         if (!dateNTime.isNullOrEmpty()) {
@@ -505,7 +529,8 @@ fun FoodItemDetails(
                 description = foodItem.analysisSummary,
                 protein = foodItem.protein ?: "N/A",
                 carbs = foodItem.carbs ?: "N/A",
-                fat = foodItem.fat ?: "N/A"
+                fat = foodItem.fat ?: "N/A",
+                portion=foodItem.portion ?:"N/A"
             )
         }
     }
@@ -518,7 +543,8 @@ fun FoodItem(
     description: String,
     protein: String,
     carbs: String,
-    fat: String
+    fat: String,
+    portion: String
 ) {
     Card(
         modifier = Modifier
@@ -554,7 +580,7 @@ fun FoodItem(
                 )
                 Text(
                     modifier = Modifier.padding(start = 4.dp),
-                    text = calories + " kcal",
+                    text = calories + " kcal - "+portion,
                     fontSize = 12.sp,
                     color = Color.Gray
                 )
