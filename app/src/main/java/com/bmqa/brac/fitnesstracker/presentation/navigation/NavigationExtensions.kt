@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
 import com.bmqa.brac.fitnesstracker.common.utils.JsonUtils
 import com.bmqa.brac.fitnesstracker.domain.entities.GeminiFoodAnalysis
+import com.bmqa.brac.fitnesstracker.presentation.navigation.NavigationDataManager
 
 /**
  * Navigation extensions for type-safe navigation
@@ -56,10 +57,10 @@ fun NavController.navigateToNutritionWithAnalysis(
     geminiAnalysis: GeminiFoodAnalysis,
     parent: String? = null
 ) {
-    val serializedAnalysis = JsonUtils.serializeGeminiFoodAnalysis(geminiAnalysis)
-    navigateToRoute(Route.Nutrition(parent, serializedAnalysis)) {
+    val analysisId = NavigationDataManager.storeAnalysis(geminiAnalysis)
+    navigateToRoute(Route.Nutrition(parent, analysisId)) {
         // Pop the GeminiFoodAnalysis screen from the back stack
-        popUpTo(Route.GeminiFoodAnalysis::class) {
+        popUpTo<Route.GeminiFoodAnalysis> {
             inclusive = true
         }
     }

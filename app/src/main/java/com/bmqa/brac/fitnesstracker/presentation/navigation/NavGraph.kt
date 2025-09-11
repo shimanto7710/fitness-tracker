@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.bmqa.brac.fitnesstracker.common.utils.JsonUtils
+import com.bmqa.brac.fitnesstracker.presentation.navigation.NavigationDataManager
 import com.bmqa.brac.fitnesstracker.presentation.features.foodanalysis.ui.screens.GeminiFoodAnalysisScreen
 import com.bmqa.brac.fitnesstracker.presentation.features.home.ui.screens.HomeScreen
 import com.bmqa.brac.fitnesstracker.presentation.features.nutrition.ui.screens.NutritionDetailsScreen
@@ -74,8 +75,8 @@ fun AppNavigation(
 
         composable<Route.Nutrition> {
             val args = it.toRoute<Route.Nutrition>()
-            val geminiAnalysis = args.geminiAnalysis?.let { jsonString ->
-                JsonUtils.deserializeGeminiFoodAnalysis(jsonString)
+            val geminiAnalysis = args.geminiAnalysis?.let { analysisId ->
+                NavigationDataManager.getAnalysis(analysisId)
             }
             
             NutritionDetailsScreen(
