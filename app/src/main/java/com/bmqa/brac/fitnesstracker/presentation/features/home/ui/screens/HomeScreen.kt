@@ -148,6 +148,20 @@ fun HomeScreen(
         }
     }
     
+    // Calculate nutrition totals dynamically based on saved analyses and selected date
+    val totalCalories = remember(savedAnalyses, selectedDate) {
+        homeViewModel.getTotalCaloriesForDate(selectedDate.toString())
+    }
+    val totalProtein = remember(savedAnalyses, selectedDate) {
+        homeViewModel.getTotalProteinForDate(selectedDate.toString())
+    }
+    val totalCarbs = remember(savedAnalyses, selectedDate) {
+        homeViewModel.getTotalCarbsForDate(selectedDate.toString())
+    }
+    val totalFat = remember(savedAnalyses, selectedDate) {
+        homeViewModel.getTotalFatForDate(selectedDate.toString())
+    }
+    
     // Update selected date in viewmodel when it changes
     LaunchedEffect(selectedDate) {
         homeViewModel.setSelectedDate(selectedDate.toString())
@@ -174,10 +188,10 @@ fun HomeScreen(
         today = today,
         
         // Nutrition data
-        totalCalories = homeViewModel.getTotalCaloriesForDate(selectedDate.toString()),
-        totalProtein = homeViewModel.getTotalProteinForDate(selectedDate.toString()),
-        totalCarbs = homeViewModel.getTotalCarbsForDate(selectedDate.toString()),
-        totalFat = homeViewModel.getTotalFatForDate(selectedDate.toString()),
+        totalCalories = totalCalories,
+        totalProtein = totalProtein,
+        totalCarbs = totalCarbs,
+        totalFat = totalFat,
         
         // Error handling
         errorMessage = errorMessage,

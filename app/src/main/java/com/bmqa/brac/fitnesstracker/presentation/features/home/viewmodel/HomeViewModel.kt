@@ -137,7 +137,7 @@ class HomeViewModel(
         
         val totalProtein = getFilteredAnalysesForDate(selectedDate)
             .sumOf { analysis ->
-                analysis.totalNutrition?.totalProtein?.toDoubleOrNull() ?: HomeViewModelConstants.DEFAULT_NUTRITION_VALUE.toDouble()
+                extractNumericValue(analysis.totalNutrition?.totalProtein) ?: HomeViewModelConstants.DEFAULT_NUTRITION_VALUE.toDouble()
             }
         
         return "${totalProtein.toInt()}${HomeViewModelConstants.NUTRITION_UNIT_SUFFIX}"
@@ -148,7 +148,7 @@ class HomeViewModel(
         
         val totalCarbs = getFilteredAnalysesForDate(selectedDate)
             .sumOf { analysis ->
-                analysis.totalNutrition?.totalCarbs?.toDoubleOrNull() ?: HomeViewModelConstants.DEFAULT_NUTRITION_VALUE.toDouble()
+                extractNumericValue(analysis.totalNutrition?.totalCarbs) ?: HomeViewModelConstants.DEFAULT_NUTRITION_VALUE.toDouble()
             }
         
         return "${totalCarbs.toInt()}${HomeViewModelConstants.NUTRITION_UNIT_SUFFIX}"
@@ -159,7 +159,7 @@ class HomeViewModel(
         
         val totalFat = getFilteredAnalysesForDate(selectedDate)
             .sumOf { analysis ->
-                analysis.totalNutrition?.totalFat?.toDoubleOrNull() ?: HomeViewModelConstants.DEFAULT_NUTRITION_VALUE.toDouble()
+                extractNumericValue(analysis.totalNutrition?.totalFat) ?: HomeViewModelConstants.DEFAULT_NUTRITION_VALUE.toDouble()
             }
         
         return "${totalFat.toInt()}${HomeViewModelConstants.NUTRITION_UNIT_SUFFIX}"
@@ -169,6 +169,23 @@ class HomeViewModel(
         return _savedAnalyses.value.filter { analysis ->
             analysis.selectedDate == selectedDate
         }
+    }
+
+    /**
+     * Extracts numeric value from nutrition strings like "30g", "25.5g", "0g", etc.
+     * Returns null if the string is null, empty, or cannot be parsed
+     */
+    private fun extractNumericValue(nutritionString: String?): Double? {
+        if (nutritionString.isNullOrBlank()) return null
+        
+        // Remove common units and extract the number
+        val cleanString = nutritionString
+            .replace("g", "", ignoreCase = true)
+            .replace("mg", "", ignoreCase = true)
+            .replace("kg", "", ignoreCase = true)
+            .trim()
+        
+        return cleanString.toDoubleOrNull()
     }
 
     fun getAnalysisCountForDate(selectedDate: String?): Int {

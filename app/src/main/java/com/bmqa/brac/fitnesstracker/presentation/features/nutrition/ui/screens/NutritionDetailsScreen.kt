@@ -327,7 +327,7 @@ fun CaloriesCard(
             }
 
             Column(
-                modifier = Modifier.padding(start = 16.dp),
+                modifier = Modifier.padding(start = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text("Calories", fontSize = 10.sp)
