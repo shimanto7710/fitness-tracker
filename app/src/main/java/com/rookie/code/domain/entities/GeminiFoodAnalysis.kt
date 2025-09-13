@@ -52,9 +52,3 @@ enum class HealthStatus {
     UNKNOWN
 }
 
-@Serializable
-data class GeminiAnalysisRequest(
-    val imageUri: String,
-    val prompt: String
-)
-

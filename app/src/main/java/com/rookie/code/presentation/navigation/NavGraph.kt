@@ -12,7 +12,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.rookie.code.common.utils.JsonUtils
 import com.rookie.code.presentation.navigation.NavigationDataManager
 import com.rookie.code.presentation.features.foodanalysis.ui.screens.GeminiFoodAnalysisScreen
 import com.rookie.code.presentation.features.home.ui.screens.HomeScreen

@@ -8,7 +8,7 @@ import androidx.compose.runtime.setValue
  * Shared state for managing app bar title and navigation across the app
  */
 object AppBarState {
-    var title by mutableStateOf("Fitness Tracker")
+    var title by mutableStateOf("FoodLens")
         private set
     
     var showBackButton by mutableStateOf(false)
@@ -54,7 +54,7 @@ object AppBarState {
      * Reset to default state
      */
     fun resetToDefault() {
-        title = "Fitness Tracker"
+        title = "FoodLens"
         showBackButton = false
         onBackClick = null
         isTransparent = false

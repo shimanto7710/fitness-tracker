@@ -4,7 +4,7 @@ import com.rookie.code.domain.entities.GeminiFoodAnalysis
 import kotlinx.serialization.Serializable
 
 /**
- * Type-safe navigation routes for the Fitness Tracker app
+ * Type-safe navigation routes for the FoodLens app
  */
 sealed interface Route {
 
@@ -12,13 +12,12 @@ sealed interface Route {
     object Home : Route
 
 
-
-@Serializable
-data class GeminiFoodAnalysis(
-    val parent: String? = null,
-    val imageUri: String? = null,
-    val selectedDate: String? = null
-) : Route
+    @Serializable
+    data class GeminiFoodAnalysis(
+        val parent: String? = null,
+        val imageUri: String? = null,
+        val selectedDate: String? = null
+    ) : Route
 
     @Serializable
     data class Nutrition(

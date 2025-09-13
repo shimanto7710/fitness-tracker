@@ -81,23 +81,4 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
             Log.e(TAG, "Failed to save crash log to file", e)
         }
     }
-    
-    fun getCrashLogs(): String? {
-        return try {
-            val file = File(context?.filesDir, CRASH_LOG_FILE)
-            if (file.exists()) file.readText() else null
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to read crash logs", e)
-            null
-        }
-    }
-    
-    fun clearCrashLogs() {
-        try {
-            val file = File(context?.filesDir, CRASH_LOG_FILE)
-            if (file.exists()) file.delete()
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to clear crash logs", e)
-        }
-    }
 }
